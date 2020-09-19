@@ -1,0 +1,18 @@
+[build-system]
+requires = [
+    "setuptools >= 44",
+    "wheel >= 0.30",
+    "setuptools_scm[toml]>=3.4",
+]
+build-backend = 'setuptools.build_meta'
+
+[tool.black]
+line-length = 120
+
+[tool.setuptools_scm]
+write_to = "src/tox_ini_fmt/version.py"
+write_to_template = """
+\"\"\" Version information \"\"\"
+
+__version__ = "{version}"
+"""
