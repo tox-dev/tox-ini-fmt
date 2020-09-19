@@ -71,14 +71,9 @@ jobs:
       matrix:
         os:
           - Ubuntu
-          - Windows
         tox_env:
           - dev
-          - docs
-          - package_description
-        exclude:
-          - { os: Windows, tox_env: package_description }
-          - { os: Windows, tox_env: docs }
+          - pkg_check
     steps:
       - uses: actions/checkout@v2
       - name: setup Python 3.8

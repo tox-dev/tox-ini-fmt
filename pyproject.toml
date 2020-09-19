@@ -9,6 +9,10 @@ build-backend = 'setuptools.build_meta'
 [tool.black]
 line-length = 120
 
+[tool.isort]
+profile = "black"
+known_first_party = ["tox_ini_fmt"]
+
 [tool.setuptools_scm]
 write_to = "src/tox_ini_fmt/version.py"
 write_to_template = """
