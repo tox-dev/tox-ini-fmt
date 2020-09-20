@@ -72,6 +72,7 @@ jobs:
         os:
           - Ubuntu
         tox_env:
+          - type
           - dev
           - pkg_check
     steps:
