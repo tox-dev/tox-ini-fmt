@@ -1,5 +1,6 @@
+import re
 from configparser import ConfigParser
-from typing import Callable, Mapping
+from typing import Callable, List, Mapping, Tuple
 
 
 def format_tox_section(parser: ConfigParser) -> None:
@@ -37,7 +38,9 @@ def _list_of_env_values(payload: str) -> str:
             within_braces = True
         elif char == "}":
             within_braces = False
-            cur_str += f'{{{", ".join(i.strip() for i in brace_str[1:].split(","))}}}'
+            envs = [i.strip() for i in brace_str[1:].split(",")]
+            order_env_list(envs)
+            cur_str += f'{{{", ".join(envs)}}}'
             brace_str = ""
             continue
         elif char in (",", "\n"):
@@ -54,9 +57,34 @@ def _list_of_env_values(payload: str) -> str:
         else:
             cur_str += char
     values.append(cur_str.strip())
+    # start with higher python version
+    order_env_list(values)
     # use newline instead of coma as separator, indent values one per newline (no value on key-row)
     result = "\n{}".format("\n".join(f"{v}" for v in values))
     return result
+
+
+def order_env_list(values: List[str]) -> None:
+    values.sort(key=_get_py_version, reverse=True)
+
+
+def _get_py_version(env_list: str) -> Tuple[int, int]:
+    for element in env_list.split("-"):
+        match = _MATCHER.match(element)
+        if match is not None:
+            name, version = match.groups()
+            name = name.lower()
+            if name == "py":
+                main = 0
+            elif name == "pypy":
+                main = -1
+            else:
+                main = -2
+            return main, int(version) if version else 0
+    return 0, 0
+
+
+_MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
 
 
 def _boolean(payload: str) -> str:
