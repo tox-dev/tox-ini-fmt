@@ -1,23 +1,5 @@
-from collections import Mapping
 from configparser import ConfigParser
-from io import StringIO
-from pathlib import Path
-from typing import Callable
-
-
-def format_tox_ini(tox_ini: Path) -> str:
-    parser = ConfigParser()
-    with tox_ini.open("rt"):
-        parser.read([tox_ini])
-
-    format_tox_section(parser)
-
-    output = StringIO()
-    parser.write(output)
-    result = output.getvalue().strip() + "\n"
-    result = result.replace("\t", "  ")
-    result = result.replace(" \n", "\n")
-    return result
+from typing import Callable, Mapping
 
 
 def format_tox_section(parser: ConfigParser) -> None:
