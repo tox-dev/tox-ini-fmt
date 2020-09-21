@@ -2,29 +2,23 @@ import re
 from configparser import ConfigParser
 from typing import Callable, List, Mapping, Tuple
 
+from .util import fix_and_reorder, to_boolean
+
 
 def format_tox_section(parser: ConfigParser) -> None:
     if not parser.has_section("tox"):
         return
-    tox_section = parser["tox"]
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
-        "envlist": _list_of_env_values,
-        "isolated_build": _boolean,
-        "skipsdist": _boolean,
-        "skip_missing_interpreters": _boolean,
+        "envlist": to_list_of_env_values,
+        "isolated_build": to_boolean,
+        "skipsdist": to_boolean,
+        "skip_missing_interpreters": to_boolean,
         "minversion": str,
     }
-    for key, fix in tox_section_cfg.items():
-        if key in tox_section:
-            tox_section[key] = fix(tox_section[key])
-
-    # reorder keys within section
-    new_section = {k: tox_section.pop(k) for k in tox_section_cfg.keys() if k in tox_section}
-    new_section.update(sorted(tox_section.items()))  # sort any remaining keys
-    parser["tox"] = new_section
+    fix_and_reorder(parser, "tox", tox_section_cfg)
 
 
-def _list_of_env_values(payload: str) -> str:
+def to_list_of_env_values(payload: str) -> str:
     """
     Example:
 
@@ -85,7 +79,3 @@ def _get_py_version(env_list: str) -> Tuple[int, int]:
 
 
 _MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
-
-
-def _boolean(payload: str) -> str:
-    return "true" if payload.lower() == "true" else "false"
