@@ -1,40 +1,29 @@
 from configparser import ConfigParser
-from io import StringIO
-from pathlib import Path
+from typing import Callable, Mapping
 
 
-def format_tox_ini(tox_ini: Path):
-    parser = ConfigParser()
-    with tox_ini.open("rt"):
-        parser.read([tox_ini])
+def format_tox_section(parser: ConfigParser) -> None:
+    if not parser.has_section("tox"):
+        return
+    tox_section = parser["tox"]
+    tox_section_cfg: Mapping[str, Callable[[str], str]] = {
+        "envlist": _list_of_env_values,
+        "isolated_build": _boolean,
+        "skipsdist": _boolean,
+        "skip_missing_interpreters": _boolean,
+        "minversion": str,
+    }
+    for key, fix in tox_section_cfg.items():
+        if key in tox_section:
+            tox_section[key] = fix(tox_section[key])
 
-    if parser.has_section("tox"):
-        tox_section = parser["tox"]
-        tox_section_cfg = {
-            "envlist": _list_of_env_values,
-            "isolated_build": _boolean,
-            "skipsdist": _boolean,
-            "skip_missing_interpreters": _boolean,
-            "minversion": str,
-        }
-        for key, fix in tox_section_cfg.items():
-            if key in tox_section:
-                tox_section[key] = fix(tox_section[key])
-
-        # reorder keys within section
-        new_section = {k: tox_section.pop(k) for k in tox_section_cfg.keys() if k in tox_section}
-        new_section.update(sorted(tox_section.items()))  # sort any remaining keys
-        parser["tox"] = new_section
-
-    output = StringIO()
-    parser.write(output)
-    result = output.getvalue().strip() + "\n"
-    result = result.replace("\t", "  ")
-    result = result.replace(" \n", "\n")
-    return result
+    # reorder keys within section
+    new_section = {k: tox_section.pop(k) for k in tox_section_cfg.keys() if k in tox_section}
+    new_section.update(sorted(tox_section.items()))  # sort any remaining keys
+    parser["tox"] = new_section
 
 
-def _list_of_env_values(payload):
+def _list_of_env_values(payload: str) -> str:
     """
     Example:
 
@@ -70,5 +59,5 @@ def _list_of_env_values(payload):
     return result
 
 
-def _boolean(payload):
+def _boolean(payload: str) -> str:
     return "true" if payload.lower() == "true" else "false"
