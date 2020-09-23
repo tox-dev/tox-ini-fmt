@@ -1,6 +1,7 @@
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
+from tox_ini_fmt.formatter.tox_section import order_env_list
 
 
 def test_no_tox_section(tox_ini):
@@ -23,9 +24,9 @@ def test_format_envlist_start_newline(tox_ini):
 
 def test_format_envlist_generator(tmp_path):
     path = tmp_path / "tox.ini"
-    path.write_text("[tox]\nenvlist={py37,py36}-django{20,21},{py37,py36}-mango{20,21},py38\n")
+    path.write_text("[tox]\nenvlist={py36,py37}-django{20,21},{py36,py37}-mango{20,21},py38\n")
     outcome = format_tox_ini(path)
-    assert outcome == "[tox]\nenvlist =\n  {py37, py36}-django{20, 21}\n  {py37, py36}-mango{20, 21}\n  py38\n"
+    assert outcome == "[tox]\nenvlist =\n  py38\n  {py37, py36}-django{21, 20}\n  {py37, py36}-mango{21, 20}\n"
 
 
 def test_tox_section_order(tox_ini):
@@ -61,3 +62,21 @@ def test_tox_fmt_boolean(tox_ini, key, value, result):
     outcome = format_tox_ini(tox_ini)
     expected = f"[tox]\n{key} = {result}\n"
     assert outcome == expected
+
+
+@pytest.mark.parametrize(
+    "arg, outcome",
+    [
+        ([], []),
+        (["py38", "py37"], ["py38", "py37"]),
+        (["py37", "py38"], ["py38", "py37"]),
+        (["py", "py37", "pypy3", "py38", "pypy2", "pypy"], ["py38", "py37", "py", "pypy3", "pypy2", "pypy"]),
+        (["py38-dpkg", "py38", "py37-dpkg", "py37"], ["py38-dpkg", "py38", "py37-dpkg", "py37"]),
+        (["py37-dpkg", "py37", "py38-dpkg", "py38"], ["py38-dpkg", "py38", "py37-dpkg", "py37"]),
+        (["py37", "py37-dpkg", "py38", "py38-dpkg"], ["py38", "py38-dpkg", "py37", "py37-dpkg"]),
+        (["Jython", "jython36", "jython", "Jython27", "py38"], ["py38", "jython36", "Jython27", "Jython", "jython"]),
+    ],
+)
+def test_order_env_list(arg, outcome):
+    order_env_list(arg)
+    assert arg == outcome
