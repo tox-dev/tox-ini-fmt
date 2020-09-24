@@ -22,6 +22,11 @@ def test_format_test_env(tox_ini, section):
     deps = \tb\t
       \ta\t
     basepython=\tpython3.8\t
+    passenv=z y x
+    setenv= C=D
+            E =F
+
+            A = B
     """
     ).strip()
     tox_ini.write_text(f"[testenv]\n{content}")
@@ -30,6 +35,14 @@ def test_format_test_env(tox_ini, section):
         """
         [testenv]
         description = desc
+        passenv =
+          x
+          y
+          z
+        setenv =
+          A = B
+          C = D
+          E = F
         basepython = python3.8
         deps =
           a
