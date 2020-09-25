@@ -9,8 +9,8 @@ def test_main(tmp_path, capsys, in_place):
     tox_ini = tmp_path / "tox.ini"
     tox_ini.write_text(start_text)
     args = [str(tox_ini)]
-    if in_place:
-        args.append("--in-place")
+    if not in_place:
+        args.append("--stdout")
 
     result = run(args)
     assert result == 0

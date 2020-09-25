@@ -8,7 +8,7 @@ class ToxIniFmtNamespace(Namespace):
     """Options for tox-ini-fmt tool"""
 
     tox_ini: Path
-    in_place: bool
+    stdout: bool
 
 
 def tox_ini_path_creator(argument: str) -> Path:
@@ -37,7 +37,10 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     """
     parser = ArgumentParser()
     parser.add_argument(
-        "--in-place", action="store_true", help="write the result back to the file (instead of print to stdout)"
+        "-s",
+        "--stdout",
+        action="store_true",
+        help="print the formatted text to the stdout (instead of update in-place)",
     )
     parser.add_argument("tox_ini", type=tox_ini_path_creator, help="tox ini file to format")
     return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)

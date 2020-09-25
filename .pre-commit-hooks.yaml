@@ -1,0 +1,7 @@
+-   id: tox-ini-fmt-fmt
+    name: tox-ini-fmt
+    description: apply a consistent format to `tox.ini` files
+    entry: tox-ini-fmt
+    language: python
+    language_version: python3
+    files: '(^|/)tox\.ini$'
