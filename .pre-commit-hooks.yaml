@@ -1,4 +1,4 @@
--   id: tox-ini-fmt-fmt
+-   id: tox-ini-fmt
     name: tox-ini-fmt
     description: apply a consistent format to `tox.ini` files
     entry: tox-ini-fmt
