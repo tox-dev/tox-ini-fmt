@@ -15,6 +15,7 @@ def test_no_tox_section(tox_ini):
 def test_format_test_env(tox_ini, section):
     content = dedent(
         """
+    skip_install =\tFalse
     commands = \te
       \tf
     extras = \tc,d
@@ -44,6 +45,7 @@ def test_format_test_env(tox_ini, section):
           C = D
           E = F
         basepython = python3.8
+        skip_install = false
         deps =
           a
           b
