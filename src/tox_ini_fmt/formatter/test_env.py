@@ -3,7 +3,7 @@ from configparser import ConfigParser
 from typing import Callable, List, Mapping, Set
 
 from .requires import requires
-from .util import fix_and_reorder, to_multiline
+from .util import fix_and_reorder, to_boolean, to_multiline
 
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
@@ -12,6 +12,7 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "passenv": to_pass_env,
         "setenv": to_set_env,
         "basepython": str,
+        "skip_install": to_boolean,
         "deps": to_deps,
         "extras": to_extras,
         "commands": to_multiline,
