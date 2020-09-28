@@ -1,7 +1,5 @@
 # tox-ini-fmt
 
-![check](https://github.com/tox-dev/tox-ini-fmt/workflows/check/badge.svg?branch=main)
-
 [![PyPI](https://img.shields.io/pypi/v/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
@@ -28,7 +26,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/tox-dev/tox-ini-fmt
-  rev: v0.0.1
+  rev: "0.2.0"
   hooks:
     - id: tox-ini-fmt
 ```
