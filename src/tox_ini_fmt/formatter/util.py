@@ -6,10 +6,6 @@ def to_boolean(payload: str) -> str:
     return "true" if payload.lower() == "true" else "false"
 
 
-def to_multiline(payload: str) -> str:
-    return "\n{}".format("\n".join(v.strip() for v in payload.splitlines() if v.strip()))
-
-
 def fix_and_reorder(parser: ConfigParser, name: str, fix_cfg: Mapping[str, Callable[[str], str]]) -> None:
     section = parser[name]
     for key, fix in fix_cfg.items():
