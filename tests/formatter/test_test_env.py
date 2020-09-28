@@ -15,9 +15,13 @@ def test_no_tox_section(tox_ini):
 def test_format_test_env(tox_ini, section):
     content = dedent(
         """
+    usedevelop = True
     skip_install =\tFalse
+    parallel_show_output = false
     commands = \te
-      \tf
+      \tf  \\
+      \t \\
+      \t g
     extras = \tc,d
     description = \tdesc\t
     deps = \tb\t
@@ -46,15 +50,18 @@ def test_format_test_env(tox_ini, section):
           E = F
         basepython = python3.8
         skip_install = false
+        usedevelop = true
         deps =
           a
           b
         extras =
           c
           d
+        parallel_show_output = false
         commands =
           e
-          f
+          f \\
+            g
         """
     ).lstrip()
     assert outcome == expected
