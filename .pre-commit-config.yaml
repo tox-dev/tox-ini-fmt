@@ -27,6 +27,10 @@ repos:
     rev: v1.11.0
     hooks:
       - id: setup-cfg-fmt
+  - repo: https://github.com/tox-dev/tox-ini-fmt
+    rev: "0.2.0"
+    hooks:
+    - id: tox-ini-fmt
   - repo: https://github.com/PyCQA/flake8
     rev: "3.8.3"
     hooks:
