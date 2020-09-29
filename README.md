@@ -44,7 +44,7 @@ positional arguments:
 
 optional arguments:
   -h, --help    show this help message and exit
-  -s, --stdout  print the formatted text to the stdout (instead of update in-place)```
+  -s, --stdout  print the formatted text to the stdout (instead of update in-place)
 ````
 
 ## what does it do?
