@@ -52,7 +52,7 @@ optional arguments:
 ### General
 
 - `boolean` fields are normalized to `true` or `false`
-- are fields are stripped of white space on both end
+- all fields are stripped of white space on both end
 - values that contain a list are split one value per line (PR/merge friendly)
 - indent multi-line values by two space, and start on new line
 
