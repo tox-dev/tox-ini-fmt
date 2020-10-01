@@ -12,6 +12,7 @@ from tox_ini_fmt.formatter.requires import requires
         ("b\na\n", ["a", "b"]),
         ("a\nb\n", ["a", "b"]),
         ("A\na\n", ["A", "a"]),
+        ("\nA\n\n\nb\n\n", ["A", "b"]),
         (
             'packaging>=20.0;python_version>"3.4"\n'
             "xonsh>=0.9.16;python_version > '3.4' and python_version != '3.9'\n"

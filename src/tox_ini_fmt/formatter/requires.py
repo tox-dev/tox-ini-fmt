@@ -9,7 +9,7 @@ def requires(raw: str) -> List[str]:
     require_group = raw.strip().splitlines()
     if not require_group:
         return []
-    values = (_normalize_req(req) for req in require_group)
+    values = (_normalize_req(req) for req in require_group if req)
     normalized = sorted(values, key=lambda req: (";" in req, _req_base(req), req))
     return normalized
 
