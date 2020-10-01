@@ -38,5 +38,5 @@ def _normalize_lib(lib: str) -> str:
 def _req_base(lib: str) -> str:
     match = re.match(BASE_NAME_REGEX, lib)
     if match is None:
-        raise ValueError(lib)
+        raise ValueError(repr(lib))
     return match.group(0)
