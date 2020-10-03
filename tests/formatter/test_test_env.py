@@ -41,27 +41,27 @@ def test_format_test_env(tox_ini, section):
         [testenv]
         description = desc
         passenv =
-          x
-          y
-          z
+            x
+            y
+            z
         setenv =
-          A = B
-          C = D
-          E = F
+            A = B
+            C = D
+            E = F
         basepython = python3.8
         skip_install = false
         usedevelop = true
         deps =
-          a
-          b
+            a
+            b
         extras =
-          c
-          d
+            c
+            d
         parallel_show_output = false
         commands =
-          e
-          f \\
-            g
+            e
+            f \\
+              g
         """
     ).lstrip()
     assert outcome == expected

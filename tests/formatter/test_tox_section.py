@@ -12,11 +12,11 @@ def test_no_tox_section(tox_ini):
 def test_format_envlist_simple(tox_ini):
     tox_ini.write_text("[tox]\nenvlist=py39,py38\n")
     outcome = format_tox_ini(tox_ini)
-    assert outcome == "[tox]\nenvlist =\n  py39\n  py38\n"
+    assert outcome == "[tox]\nenvlist =\n    py39\n    py38\n"
 
 
 def test_format_envlist_start_newline(tox_ini):
-    ok = "[tox]\nenvlist =\n  py39\n  py38\n"
+    ok = "[tox]\nenvlist =\n    py39\n    py38\n"
     tox_ini.write_text(ok)
     outcome = format_tox_ini(tox_ini)
     assert outcome == ok
@@ -26,7 +26,7 @@ def test_format_envlist_generator(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("[tox]\nenvlist={py36,py37}-django{20,21},{py36,py37}-mango{20,21},py38\n")
     outcome = format_tox_ini(path)
-    assert outcome == "[tox]\nenvlist =\n  py38\n  {py37, py36}-django{21, 20}\n  {py37, py36}-mango{21, 20}\n"
+    assert outcome == "[tox]\nenvlist =\n    py38\n    {py37, py36}-django{21, 20}\n    {py37, py36}-mango{21, 20}\n"
 
 
 def test_tox_section_order(tox_ini):
@@ -35,7 +35,7 @@ def test_tox_section_order(tox_ini):
     )
     outcome = format_tox_ini(tox_ini)
     assert (
-        outcome == "[tox]\nenvlist =\n  py37\nisolated_build = true\nskipsdist = false\n"
+        outcome == "[tox]\nenvlist =\n    py37\nisolated_build = true\nskipsdist = false\n"
         "skip_missing_interpreters = true\nminversion = 3.14\n"
     )
 

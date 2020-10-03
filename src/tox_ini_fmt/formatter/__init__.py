@@ -6,6 +6,8 @@ from .section_order import order_sections
 from .test_env import format_test_env
 from .tox_section import format_tox_section
 
+INDENTATION = "    "
+
 
 def format_tox_ini(tox_ini: Path) -> str:
     parser = ConfigParser()
@@ -26,6 +28,6 @@ def _generate_tox_ini(parser: ConfigParser) -> str:
     output = StringIO()
     parser.write(output)
     result = output.getvalue().strip() + "\n"
-    result = result.replace("\t", "  ")
+    result = result.replace("\t", INDENTATION)
     result = result.replace(" \n", "\n")
     return result
