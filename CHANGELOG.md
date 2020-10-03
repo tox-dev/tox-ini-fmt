@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## 0.3.0 (2020-10-03)
 
 - Changed indentation to four spaces ([#26](https://github.com/tox-dev/tox-ini-fmt/issues/26))
 - Fix `envlist`/`toxenv` ordering not matching description in README
