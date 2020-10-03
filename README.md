@@ -27,15 +27,16 @@ Sample `.pre-commit-config.yaml`:
   rev: "0.2.0"
   hooks:
     - id: tox-ini-fmt
+      args: ["-p", "fix_lint,type"]
 ```
 
 ## cli
 
 Consult the help for the latest usage:
 
-````console
+```console
 $ tox-ini-fmt --help
-usage: tox-ini-fmt [-h] [-s] tox_ini
+usage: tox-ini-fmt [-h] [-s] [-p toxenv] tox_ini
 
 positional arguments:
   tox_ini       tox ini file to format
@@ -43,7 +44,8 @@ positional arguments:
 optional arguments:
   -h, --help    show this help message and exit
   -s, --stdout  print the formatted text to the stdout (instead of update in-place)
-````
+  -p toxenv     tox environments that pin to the start of the envlist (comma separated)
+```
 
 ## what does it do?
 
@@ -61,7 +63,7 @@ Applies the following section order:
 1. `tox`
 2. `testenv`
 3. `testenv:*` - `py`/`pypy` envs are ordered in decreasing order by python version, then apply the order defined within
-   `envlist` part of `tox` section
+   `envlist` part of `tox` section, you can pin tox elements to the start by using the `-p` flag
 4. any other section defined within the file
 
 ### `tox` section

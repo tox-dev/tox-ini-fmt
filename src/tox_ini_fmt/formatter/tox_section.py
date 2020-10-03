@@ -1,15 +1,16 @@
 import re
 from configparser import ConfigParser
+from functools import partial
 from typing import Callable, List, Mapping, Tuple
 
 from .util import fix_and_reorder, to_boolean
 
 
-def format_tox_section(parser: ConfigParser) -> None:
+def format_tox_section(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
     if not parser.has_section("tox"):
         return
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
-        "envlist": to_list_of_env_values,
+        "envlist": partial(to_list_of_env_values, pin_toxenvs),
         "isolated_build": to_boolean,
         "skipsdist": to_boolean,
         "skip_missing_interpreters": to_boolean,
@@ -18,7 +19,7 @@ def format_tox_section(parser: ConfigParser) -> None:
     fix_and_reorder(parser, "tox", tox_section_cfg)
 
 
-def to_list_of_env_values(payload: str) -> str:
+def to_list_of_env_values(pin_toxenvs: List[str], payload: str) -> str:
     """
     Example:
 
@@ -33,7 +34,7 @@ def to_list_of_env_values(payload: str) -> str:
         elif char == "}":
             within_braces = False
             envs = [i.strip() for i in brace_str[1:].split(",")]
-            order_env_list(envs)
+            order_env_list(envs, pin_toxenvs)
             cur_str += f'{{{", ".join(envs)}}}'
             brace_str = ""
             continue
@@ -52,18 +53,24 @@ def to_list_of_env_values(payload: str) -> str:
             cur_str += char
     values.append(cur_str.strip())
     # start with higher python version
-    order_env_list(values)
+
+    order_env_list(values, pin_toxenvs)
     # use newline instead of comma as separator, indent values one per newline (no value on key-row)
     result = "\n{}".format("\n".join(f"{v}" for v in values))
     return result
 
 
-def order_env_list(values: List[str]) -> None:
-    values.sort(key=_get_py_version, reverse=True)
+def order_env_list(values: List[str], pin_toxenvs: List[str]) -> None:
+    values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
 
 
-def _get_py_version(env_list: str) -> Tuple[int, int]:
+_MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
+
+
+def _get_py_version(pin_toxenvs: List[str], env_list: str) -> Tuple[int, int]:
     for element in env_list.split("-"):
+        if element in pin_toxenvs:
+            return len(element) - pin_toxenvs.index(element), 0
         match = _MATCHER.match(element)
         if match is not None:
             name, version = match.groups()
@@ -75,7 +82,4 @@ def _get_py_version(env_list: str) -> Tuple[int, int]:
             else:
                 main = -2
             return main, int(version) if version else 0
-    return 0, 0
-
-
-_MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
+    return -3, 0
