@@ -10,10 +10,11 @@ from tox_ini_fmt.__main__ import run
     [
         (
             "[tox]\nenvlist=py39,py38",
-            "[tox]\nenvlist =\n  py39\n  py38\n",
-            "--- {0}\n\n+++ {0}\n\n@@ -1,2 +1,4 @@\n\n " "[tox]\n-envlist=py39,py38\n+envlist =\n+  py39\n+  py38\n",
+            "[tox]\nenvlist =\n    py39\n    py38\n",
+            "--- {0}\n\n+++ {0}\n\n@@ -1,2 +1,4 @@\n\n "
+            "[tox]\n-envlist=py39,py38\n+envlist =\n+    py39\n+    py38\n",
         ),
-        ("[tox]\nenvlist =\n  py39\n  py38\n", "[tox]\nenvlist =\n  py39\n  py38\n", "no change for {0}\n"),
+        ("[tox]\nenvlist =\n    py39\n    py38\n", "[tox]\nenvlist =\n    py39\n    py38\n", "no change for {0}\n"),
     ],
 )
 def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, cwd):
@@ -28,7 +29,7 @@ def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, c
     result = run(args)
     assert result == (0 if start == outcome else 1)
 
-    outcome = "[tox]\nenvlist =\n  py39\n  py38\n"
+    outcome = "[tox]\nenvlist =\n    py39\n    py38\n"
     out, err = capsys.readouterr()
     assert not err
 

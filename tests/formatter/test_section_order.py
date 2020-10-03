@@ -45,8 +45,8 @@ def test_section_order(tox_ini):
         """
         [tox]
         envlist =
-          py38
-          py37
+            py38
+            py37
         e = f
 
         [testenv]
