@@ -52,7 +52,7 @@ optional arguments:
 - `boolean` fields are normalized to `true` or `false`
 - all fields are stripped of white space on both end
 - values that contain a list are split one value per line (PR/merge friendly)
-- indent multi-line values by two space, and start on new line
+- indent multi-line values by two spaces, and start on new line
 
 ### Ordering of sections
 
