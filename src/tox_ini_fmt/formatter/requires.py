@@ -1,7 +1,7 @@
 import re
 from typing import List
 
-BASE_NAME_REGEX = re.compile(r"[^!=><\s@]+")
+BASE_NAME_REGEX = re.compile(r"[^!=><~\s@]+")
 REQ_REGEX = re.compile(r"(===|==|!=|~=|>=?|<=?|@)\s*([^,]+)")
 
 
@@ -30,7 +30,7 @@ def _normalize_lib(lib: str) -> str:
         key=lambda c: ("<" in c, ">" in "c", c),
     )
     if values:  # strip .0 version
-        while values[0].endswith(".0"):
+        while values[0].endswith(".0") and (values[0].startswith(">=") or values[0].startswith("==")):
             values[0] = values[0][:-2]
     return f"{base}{','.join(values)}"
 

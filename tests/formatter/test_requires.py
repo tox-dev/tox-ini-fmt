@@ -23,6 +23,9 @@ from tox_ini_fmt.formatter.requires import requires
                 "xonsh>=0.9.16;python_version > '3.4' and python_version != '3.9'",
             ],
         ),
+        ("pytest>=6.0.0", ["pytest>=6"]),
+        ("pytest==6.0.0", ["pytest==6"]),
+        ("pytest~=6.0.0", ["pytest~=6.0.0"]),
     ],
 )
 def test_requires_fmt(value, result):
