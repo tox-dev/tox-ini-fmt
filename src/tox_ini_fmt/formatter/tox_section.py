@@ -53,7 +53,7 @@ def to_list_of_env_values(payload: str) -> str:
     values.append(cur_str.strip())
     # start with higher python version
     order_env_list(values)
-    # use newline instead of coma as separator, indent values one per newline (no value on key-row)
+    # use newline instead of comma as separator, indent values one per newline (no value on key-row)
     result = "\n{}".format("\n".join(f"{v}" for v in values))
     return result
 
