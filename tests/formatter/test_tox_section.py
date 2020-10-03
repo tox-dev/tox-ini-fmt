@@ -78,5 +78,5 @@ def test_tox_fmt_boolean(tox_ini, key, value, result):
     ],
 )
 def test_order_env_list(arg, outcome):
-    order_env_list(arg)
+    order_env_list(arg, [])
     assert arg == outcome

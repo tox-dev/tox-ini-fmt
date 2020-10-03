@@ -1,6 +1,9 @@
 from configparser import ConfigParser
 from io import StringIO
 from pathlib import Path
+from typing import Optional
+
+from tox_ini_fmt.cli import ToxIniFmtNamespace
 
 from .section_order import order_sections
 from .test_env import format_test_env
@@ -9,14 +12,15 @@ from .tox_section import format_tox_section
 INDENTATION = "    "
 
 
-def format_tox_ini(tox_ini: Path) -> str:
+def format_tox_ini(tox_ini: Path, opts: Optional[ToxIniFmtNamespace] = None) -> str:
+    if opts is None:
+        opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser()
     with tox_ini.open("rt"):
         parser.read([tox_ini])
 
-    order_sections(parser)
-    format_tox_section(parser)
-
+    order_sections(parser, opts.pin_toxenvs)
+    format_tox_section(parser, opts.pin_toxenvs)
     for section_name in parser.sections():
         if section_name == "testenv" or section_name.startswith("testenv:"):
             format_test_env(parser, section_name)

@@ -1,7 +1,7 @@
 import os
-from argparse import ArgumentParser, ArgumentTypeError, Namespace
+from argparse import Action, ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
-from typing import Sequence
+from typing import Any, List, Optional, Sequence, Union
 
 
 class ToxIniFmtNamespace(Namespace):
@@ -9,6 +9,7 @@ class ToxIniFmtNamespace(Namespace):
 
     tox_ini: Path
     stdout: bool
+    pin_toxenvs: List[str]
 
 
 def tox_ini_path_creator(argument: str) -> Path:
@@ -41,6 +42,26 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         "--stdout",
         action="store_true",
         help="print the formatted text to the stdout (instead of update in-place)",
+    )
+
+    class ComaSeparatedStr(Action):
+        def __call__(
+            self,
+            parser: ArgumentParser,
+            namespace: Namespace,
+            values: Union[str, Sequence[Any], None],
+            option_string: Optional[str] = None,
+        ) -> None:
+            if isinstance(values, str):  # pragma: no cover
+                setattr(namespace, self.dest, list(i.strip() for i in values.split(",")))
+
+    parser.add_argument(
+        "-p",
+        dest="pin_toxenvs",
+        metavar="toxenv",
+        action=ComaSeparatedStr,
+        default=[],
+        help="tox environments that pin to the start of the envlist (comma separated)",
     )
     parser.add_argument("tox_ini", type=tox_ini_path_creator, help="tox ini file to format")
     return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)
