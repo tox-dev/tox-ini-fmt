@@ -1,4 +1,6 @@
+import itertools
 import re
+from collections import defaultdict
 from configparser import ConfigParser
 from typing import Callable, List, Mapping, Optional, Set, Tuple
 
@@ -17,14 +19,34 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "deps": to_deps,
         "extras": to_extras,
         "parallel_show_output": to_boolean,
+        "changedir": str,
         "commands": to_commands,
     }
     fix_and_reorder(parser, name, tox_section_cfg)
 
 
+CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9,]+):(?P<value>.*)")
+
+
 def to_deps(value: str) -> str:
     raw_deps, substitute = collect_multi_line(value, line_split=None)
-    deps = requires(raw_deps) if raw_deps else []
+    groups = defaultdict(list)
+    for dep in raw_deps:
+        if dep.startswith("-r"):
+            groups["-r"].append(dep)
+        else:
+            match = CONDITIONAL_MARKER.match(dep)
+            if match:
+                elements = match.groupdict()
+                groups[",".join(sorted(elements["envs"].split(",")))].append(elements["value"].strip())
+            else:
+                groups[""].append(dep)
+    groups_requires = {key: requires(value) for key, value in groups.items()}
+    deps = list(
+        itertools.chain.from_iterable(
+            (f"{k}: {d}" if k not in ("", "-r") else d for d in v) for k, v in sorted(groups_requires.items())
+        )
+    )
     return fmt_list(deps, substitute)
 
 
