@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
   values), and in case of multiple such the order is kept ([#22](https://github.com/tox-dev/tox-ini-fmt/issues/22))
 - Fixed substitutions not being supported within `deps` and `setenv`
   ([#22](https://github.com/tox-dev/tox-ini-fmt/issues/22))
+- Support `-r` and conditional markers within `deps` ([#21](https://github.com/tox-dev/tox-ini-fmt/issues/21))
 
 ## 0.3.0 (2020-10-03)
 

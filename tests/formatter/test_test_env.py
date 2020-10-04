@@ -3,7 +3,7 @@ from textwrap import dedent
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.test_env import to_extras
+from tox_ini_fmt.formatter.test_env import to_deps, to_extras
 
 
 def test_no_tox_section(tox_ini):
@@ -134,3 +134,16 @@ def test_fail_on_bad_set_env(tox_ini):
     tox_ini.write_text("[testenv]\nsetenv = A")
     with pytest.raises(RuntimeError, match="invalid line A in setenv"):
         format_tox_ini(tox_ini)
+
+
+def test_deps_conditional():
+    result = to_deps(
+        "\ncoverage,codecov: coverage\ncodecov: codecov"
+        "\n-r{toxinidir}/test-requirements.txt\n-r{toxinidir}/dev-requirements.txt"
+        "\nvirtue\nb"
+    )
+    assert (
+        result == "\nb\nvirtue"
+        "\n-r{toxinidir}/dev-requirements.txt\n-r{toxinidir}/test-requirements.txt"
+        "\ncodecov: codecov\ncodecov,coverage: coverage"
+    )
