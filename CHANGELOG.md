@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased (TBD)
+## 0.4.0 (2020-10-04)
 
 - Substitutions for multi-line values go now to the beginning of the configuration (to allow overwriting inherited
   values), and in case of multiple such the order is kept ([#22](https://github.com/tox-dev/tox-ini-fmt/issues/22))
