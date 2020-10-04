@@ -59,6 +59,7 @@ optional arguments:
 - all fields are stripped of white space on both end
 - values that contain a list are split one value per line (PR/merge friendly)
 - indent multi-line values by two spaces, and start on new line
+- substitutions within multi-line (excluding `commands`) are moved to the start of the list (order kept)
 
 ### Ordering of sections
 
@@ -85,8 +86,8 @@ Order by:
 Order by:
 
 1. `description`
-2. `passenv` - one environment name to pass per line, sorted by name
-3. `setenv` - one environment name-value to set per line in format of `key=value`, sorted by key+value
+2. `passenv` - multi-line, one environment name to pass per line, sorted by name
+3. `setenv` - multi-line, one environment name-value to set per line in format of `key=value`, sorted by key+value
 4. `basepython`
 5. `skip_install` - `boolean` field
 6. `usedevelop` - `boolean` field

@@ -29,7 +29,7 @@ from tox_ini_fmt.formatter.requires import requires
     ],
 )
 def test_requires_fmt(value, result):
-    outcome = requires(value)
+    outcome = requires([i.strip() for i in value.splitlines() if i.strip()])
     assert outcome == result
 
 

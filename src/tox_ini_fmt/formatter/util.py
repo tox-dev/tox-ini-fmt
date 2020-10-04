@@ -1,5 +1,6 @@
+import re
 from configparser import ConfigParser
-from typing import Callable, Mapping
+from typing import Callable, Mapping, Optional
 
 
 def to_boolean(payload: str) -> str:
@@ -15,3 +16,23 @@ def fix_and_reorder(parser: ConfigParser, name: str, fix_cfg: Mapping[str, Calla
     new_section = {k: section.pop(k) for k in fix_cfg.keys() if k in section}
     new_section.update(sorted(section.items()))  # sort any remaining keys
     parser[name] = new_section
+
+
+RE_ITEM_REF = re.compile(
+    r"""
+        (?<!\\)[{]
+        (?:(?P<sub_type>[^[:{}]+):)?    # optional sub_type for special rules
+        (?P<substitution_value>(?:\[[^,{}]*\])?[^:,{}]*)  # substitution key
+        (?::(?P<default_value>[^{}]*))?   # default value
+        [}]
+        """,
+    re.VERBOSE,
+)
+
+
+def is_substitute(value: str) -> bool:
+    match = RE_ITEM_REF.match(value)
+    if match:
+        sub_key = match.group("substitution_value")
+        return sub_key.startswith("[") and "]" in sub_key
+    return False

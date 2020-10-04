@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased (TBD)
+
+- Substitutions for multi-line values go now to the beginning of the configuration (to allow overwriting inherited
+  values), and in case of multiple such the order is kept ([#22](https://github.com/tox-dev/tox-ini-fmt/issues/22))
+- Fixed substitutions not being supported within `deps` and `setenv`
+  ([#22](https://github.com/tox-dev/tox-ini-fmt/issues/22))
+
 ## 0.3.0 (2020-10-03)
 
 - Changed indentation to four spaces, instead of two ([#26](https://github.com/tox-dev/tox-ini-fmt/issues/26))
