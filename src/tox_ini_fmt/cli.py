@@ -44,7 +44,7 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         help="print the formatted text to the stdout (instead of update in-place)",
     )
 
-    class ComaSeparatedStr(Action):
+    class CommaSeparatedStr(Action):
         def __call__(
             self,
             parser: ArgumentParser,
@@ -59,7 +59,7 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         "-p",
         dest="pin_toxenvs",
         metavar="toxenv",
-        action=ComaSeparatedStr,
+        action=CommaSeparatedStr,
         default=[],
         help="tox environments that pin to the start of the envlist (comma separated)",
     )
