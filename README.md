@@ -49,6 +49,10 @@ optional arguments:
 
 ## what does it do?
 
+### It does not
+
+- Format any other section beside `tox`/`testenv:*` (other than put this sections to the end of the file)
+
 ### General
 
 - `boolean` fields are normalized to `true` or `false`
