@@ -58,7 +58,7 @@ optional arguments:
 - `boolean` fields are normalized to `true` or `false`
 - all fields are stripped of white space on both end
 - values that contain a list are split one value per line (PR/merge friendly)
-- indent multi-line values by two spaces, and start on new line
+- indent multi-line values by four spaces, and start on new line
 - substitutions within multi-line (excluding `commands`) are moved to the start of the list (order kept)
 
 ### Ordering of sections
@@ -96,4 +96,4 @@ Order by:
 8. `extras` - multi-line, one extra env per line
 9. `parallel_show_output` - `boolean` field
 10. `commands` - one command per line, commands that wrap over multiple lines are indented with line two or later by
-    extra two space
+    extra four spaces
