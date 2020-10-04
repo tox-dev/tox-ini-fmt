@@ -5,11 +5,8 @@ BASE_NAME_REGEX = re.compile(r"[^!=><~\s@]+")
 REQ_REGEX = re.compile(r"(===|==|!=|~=|>=?|<=?|@)\s*([^,]+)")
 
 
-def requires(raw: str) -> List[str]:
-    require_group = raw.strip().splitlines()
-    if not require_group:
-        return []
-    values = (_normalize_req(req) for req in require_group if req)
+def requires(raws: List[str]) -> List[str]:
+    values = (_normalize_req(req) for req in raws if req)
     normalized = sorted(values, key=lambda req: (";" in req, _req_base(req), req))
     return normalized
 
