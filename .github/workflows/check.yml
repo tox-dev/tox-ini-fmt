@@ -43,7 +43,8 @@ jobs:
         run: |
           import subprocess; import json
           major, minor, impl = json.loads(subprocess.check_output(["python", "-c", "import json; import sys; import platform; print(json.dumps([sys.version_info[0], sys.version_info[1], platform.python_implementation()]));"], universal_newlines=True))
-          print('::set-env name=TOXENV::' + ("py" if impl == "CPython" else "pypy") + ("{}{}".format(major, minor) if impl == "CPython" else ("3" if major == 3 else "")))
+          with open('$GITHUB_ENV', 'at') as file_handler:
+                file_handler.write_text('TOXENV=' + ("py" if impl == "CPython" else "pypy") + ("{}{}".format(major, minor) if impl == "CPython" else ("3" if major == 3 else "")) + "\n")
         shell: python
       - name: setup test suite
         run: tox -vv --notest
