@@ -1,7 +1,7 @@
 import difflib
 import sys
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Iterable, Optional, Sequence
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
@@ -11,7 +11,7 @@ RED = "\u001b[31m"
 RESET = "\u001b[0m"
 
 
-def color_diff(diff):
+def color_diff(diff: Iterable[str]) -> Iterable[str]:
     for line in diff:
         if line.startswith("+"):
             yield GREEN + line + RESET
