@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## unreleased
+
+- Fix `tox.ini` formatting when `envlist` ends with a comma
+  ([#41](https://github.com/tox-dev/tox-ini-fmt/issues/41))
+
 ## 0.4.0 (2020-10-04)
 
 - Substitutions for multi-line values go now to the beginning of the configuration (to allow overwriting inherited
