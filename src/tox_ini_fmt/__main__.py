@@ -6,6 +6,20 @@ from typing import Optional, Sequence
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
 
+GREEN = "\u001b[32m"
+RED = "\u001b[31m"
+RESET = "\u001b[0m"
+
+
+def color_diff(diff):
+    for line in diff:
+        if line.startswith("+"):
+            yield GREEN + line + RESET
+        elif line.startswith("-"):
+            yield RED + line + RESET
+        else:
+            yield line
+
 
 def run(args: Optional[Sequence[str]] = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
@@ -26,6 +40,7 @@ def run(args: Optional[Sequence[str]] = None) -> int:
             else []
         )
         if diff:
+            diff = color_diff(diff)
             print("\n".join(diff))  # print diff on change
         else:
             print(f"no change for {name}")

@@ -1,6 +1,48 @@
+import difflib
+
 import pytest
 
-from tox_ini_fmt.__main__ import run
+import tox_ini_fmt.__main__
+from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, run
+
+
+def test_color_diff():
+    # Arrange
+    before = """
+    abc
+    def
+    ghi
+"""
+    after = """
+    abc
+    abc
+    def
+"""
+    diff = difflib.unified_diff(before.splitlines(), after.splitlines())
+    expected_lines = f"""
+{RED}---
+{RESET}
+{GREEN}+++
+{RESET}
+@@ -1,4 +1,4 @@
+
+
+     abc
+{GREEN}+    abc{RESET}
+     def
+{RED}-    ghi{RESET}
+""".strip().splitlines()
+
+    # Act
+    diff = color_diff(diff)
+
+    # Assert
+    output_lines = [line.rstrip() for line in "\n".join(diff).splitlines()]
+    assert output_lines == expected_lines
+
+
+def no_color(diff):
+    return diff
 
 
 @pytest.mark.parametrize("in_place", [True, False])
@@ -18,6 +60,7 @@ from tox_ini_fmt.__main__ import run
     ],
 )
 def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, cwd):
+    monkeypatch.setattr(tox_ini_fmt.__main__, "color_diff", no_color)
     if cwd:
         monkeypatch.chdir(tmp_path)
     tox_ini = tmp_path / "tox.ini"
