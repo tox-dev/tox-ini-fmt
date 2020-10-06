@@ -80,3 +80,13 @@ def test_tox_fmt_boolean(tox_ini, key, value, result):
 def test_order_env_list(arg, outcome):
     order_env_list(arg, [])
     assert arg == outcome
+
+
+def test_format_tox_ini_handles_trailing_comma(tox_ini):
+    """tox.ini gets formatted without adding additional whitespace
+
+    This was previously caused by a trailing comma in the `envlist`.
+    """
+    tox_ini.write_text("[tox]\nenvlist=\n    py38,\n    pkg,\n" "[testenv:pkg]\na=b\n")
+    result = format_tox_ini(tox_ini)
+    assert result == "[tox]\nenvlist =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"

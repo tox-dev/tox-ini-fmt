@@ -1,9 +1,6 @@
-from textwrap import dedent
-
 import pytest
 
 from tox_ini_fmt.__main__ import run
-from tox_ini_fmt.formatter import format_tox_ini
 
 
 @pytest.mark.parametrize("in_place", [True, False])
@@ -43,25 +40,3 @@ def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, c
         assert out == output
     else:
         assert out == outcome
-
-
-def test_format_tox_ini_handles_trailing_comma(tox_ini):
-    """tox.ini gets formatted without adding additional whitespace
-
-    This was caused by a trailing comma in the `envlist`.
-    """
-    tox_ini.write_text("[tox]\nenvlist=\n    py38,\n    pkg,\n" "[testenv:pkg]\na=b\n")
-    result = format_tox_ini(tox_ini)
-
-    expected = dedent(
-        """
-        [tox]
-        envlist =
-            py38
-            pkg
-
-        [testenv:pkg]
-        a = b
-    """
-    ).lstrip()
-    assert result == expected
