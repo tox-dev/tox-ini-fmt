@@ -51,9 +51,11 @@ def to_list_of_env_values(pin_toxenvs: List[str], payload: str) -> str:
             brace_str += char
         else:
             cur_str += char
-    values.append(cur_str.strip())
+    # avoid adding an empty value, caused e.g. by a trailing comma
+    last_entry = cur_str.strip()
+    if last_entry != "":
+        values.append(last_entry)
     # start with higher python version
-
     order_env_list(values, pin_toxenvs)
     # use newline instead of comma as separator, indent values one per newline (no value on key-row)
     result = "\n{}".format("\n".join(f"{v}" for v in values))
