@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.3.0
+    rev: v3.4.0
     hooks:
       - id: check-builtin-literals
       - id: check-docstring-first
@@ -24,7 +24,7 @@ repos:
         args: [--safe]
         language_version: python3.9
   - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v1.15.1
+    rev: v1.16.0
     hooks:
       - id: setup-cfg-fmt
   - repo: https://github.com/tox-dev/tox-ini-fmt
