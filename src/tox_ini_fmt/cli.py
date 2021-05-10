@@ -24,9 +24,9 @@ def tox_ini_path_creator(argument: str) -> Path:
     if not path.is_file():
         raise ArgumentTypeError("path is not a file")
     if not os.access(path, os.R_OK):
-        raise ArgumentTypeError("cannot read path")
+        raise ArgumentTypeError("cannot read path")  # pragma: no cover
     if not os.access(path, os.W_OK):
-        raise ArgumentTypeError("cannot write path")
+        raise ArgumentTypeError("cannot write path")  # pragma: no cover
     return path
 
 
