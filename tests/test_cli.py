@@ -1,3 +1,5 @@
+import os
+import sys
 from stat import S_IREAD, S_IWRITE
 
 import pytest
@@ -37,6 +39,7 @@ def test_cli_tox_ini_not_file(tmp_path, capsys):
         (S_IWRITE, "read"),
     ],
 )
+@pytest.mark.skipif(sys.platform == "win32", reason="On Windows files cannot be read only, only folders")
 def test_cli_tox_ini_permission_fail(tmp_path, capsys, flag, error):
     path = tmp_path / "tox.ini"
     path.write_text("")

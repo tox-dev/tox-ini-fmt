@@ -14,4 +14,4 @@ def test_help_invocation_as_module():
 
 
 def test_help_invocation_as_script():
-    subprocess.check_call([Path(sys.executable).parent / "tox-ini-fmt", "--help"])
+    subprocess.check_call([str(Path(sys.executable).parent / "tox-ini-fmt"), "--help"])
