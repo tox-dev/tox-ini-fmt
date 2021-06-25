@@ -15,7 +15,7 @@ INDENTATION = "    "
 def format_tox_ini(tox_ini: Path, opts: Optional[ToxIniFmtNamespace] = None) -> str:
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
-    parser = ConfigParser()
+    parser = ConfigParser(interpolation=None)
     with tox_ini.open("rt"):
         parser.read([tox_ini])
 

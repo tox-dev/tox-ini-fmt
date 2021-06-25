@@ -57,6 +57,18 @@ def no_color(diff):
             "[tox]\n-envlist=py39,py38\n+envlist =\n+    py39\n+    py38\n",
         ),
         ("[tox]\nenvlist =\n    py39\n    py38\n", "[tox]\nenvlist =\n    py39\n    py38\n", "no change for {0}\n"),
+        (
+            "[testenv]\ncommands=pytest --log-format='%(asctime)s'",
+            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "--- {0}\n\n+++ {0}\n\n@@ -1,2 +1,3 @@\n\n "
+            "[testenv]\n-commands=pytest --log-format='%(asctime)s'\n"
+            "+commands =\n+    pytest --log-format='%(asctime)s'\n",
+        ),
+        (
+            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "no change for {0}\n",
+        ),
     ],
 )
 def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, cwd):
@@ -72,7 +84,6 @@ def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, c
     result = run(args)
     assert result == (0 if start == outcome else 1)
 
-    outcome = "[tox]\nenvlist =\n    py39\n    py38\n"
     out, err = capsys.readouterr()
     assert not err
 
