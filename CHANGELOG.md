@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## unreleased
 
+- Add support for Python 3.10
 - Fix `tox.ini` formatting when `envlist` ends with a comma
   ([#41](https://github.com/tox-dev/tox-ini-fmt/issues/41))
 

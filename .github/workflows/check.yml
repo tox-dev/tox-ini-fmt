@@ -22,11 +22,12 @@ jobs:
         os:
           - Ubuntu
         py:
-          - 3.9
-          - 3.8
-          - 3.7
-          - 3.6
-          - pypy3
+          - "3.10"
+          - "3.9"
+          - "3.8"
+          - "3.7"
+          - "3.6"
+          - "pypy3"
     steps:
       - name: setup python for tox
         uses: actions/setup-python@v2
