@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import itertools
 from configparser import ConfigParser
-from typing import Dict, List, Optional
 
 from .tox_section import order_env_list
 
 
-def order_sections(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
+def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
     """
     Start with tox, then testenv. The testenv elements follow the order within envlist. Then all other testenv elements,
     and end it with any other sections present in the file (e.g. pytest/mypy configuration).
@@ -14,7 +15,7 @@ def order_sections(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
     order.extend(f"testenv:{env}" for env in load_and_order_env_list(parser, pin_toxenvs))
     order.extend(s for s in parser.sections() if s not in order and s.startswith("testenv:"))
     order.extend(s for s in parser.sections() if s not in order and not s.startswith("testenv:"))
-    sections: Dict[str, Dict[str, str]] = {}
+    sections: dict[str, dict[str, str]] = {}
     for section in order:
         if parser.has_section(section):
             sections[section] = dict(parser[section])
@@ -23,7 +24,7 @@ def order_sections(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
         parser[k] = v
 
 
-def load_and_order_env_list(parser: ConfigParser, pin_toxenvs: List[str]) -> List[str]:
+def load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
     if not parser.has_section("tox"):
         return []
     if "envlist" not in parser["tox"]:
@@ -36,8 +37,8 @@ def load_and_order_env_list(parser: ConfigParser, pin_toxenvs: List[str]) -> Lis
     return result
 
 
-def explode_env_list(env_list: str) -> List[str]:
-    result: List[str] = []
+def explode_env_list(env_list: str) -> list[str]:
+    result: list[str] = []
     for entry in env_list.split("\n"):
         entry = entry.strip()
         if entry:

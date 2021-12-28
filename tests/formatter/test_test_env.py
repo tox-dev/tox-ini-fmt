@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from textwrap import dedent
 
 import pytest
@@ -11,8 +13,7 @@ def test_no_tox_section(tox_ini):
     assert format_tox_ini(tox_ini) == "\n"
 
 
-@pytest.mark.parametrize("section", ["testenv", "testenv:py38"])
-def test_format_test_env(tox_ini, section):
+def test_format_test_env(tox_ini):
     content = dedent(
         """
     usedevelop = True
@@ -68,7 +69,7 @@ def test_format_test_env(tox_ini, section):
 
 
 @pytest.mark.parametrize(
-    "arg, output",
+    ("arg", "output"),
     [
         ("", ""),
         ("\t", ""),
@@ -87,7 +88,7 @@ def test_extras(arg, output):
 
 
 @pytest.mark.parametrize(
-    "key, before, pre, post, expected",
+    ("key", "before", "pre", "post", "expected"),
     [
         (
             "setenv",

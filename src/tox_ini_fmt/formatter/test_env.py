@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 import itertools
 import re
 from collections import defaultdict
 from configparser import ConfigParser
-from typing import Callable, List, Mapping, Optional, Set, Tuple
+from typing import Callable, Mapping
 
 from .requires import requires
 from .util import fix_and_reorder, is_substitute, to_boolean
@@ -50,7 +52,7 @@ def to_deps(value: str) -> str:
     return fmt_list(deps, substitute)
 
 
-def collect_multi_line(value: str, line_split: Optional[str] = r",| |\t") -> Tuple[List[str], List[str]]:
+def collect_multi_line(value: str, line_split: str | None = r",| |\t") -> tuple[list[str], list[str]]:
     lines = value.strip().splitlines()
     substitute, elements = [], []
     for line in lines:
@@ -64,7 +66,7 @@ def collect_multi_line(value: str, line_split: Optional[str] = r",| |\t") -> Tup
     return elements, substitute
 
 
-def fmt_list(values: List[str], substitute: List[str]) -> str:
+def fmt_list(values: list[str], substitute: list[str]) -> str:
     return "\n".join([""] + substitute + values)
 
 
@@ -81,7 +83,7 @@ def to_pass_env(value: str) -> str:
 
 def to_set_env(value: str) -> str:
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
-    set_env: List[str] = []
+    set_env: list[str] = []
     for env in raw_set_env:
         at = env.find("=")
         if at == -1:
@@ -94,7 +96,7 @@ _CMD_SEP = "\\"
 
 
 def to_commands(value: str) -> str:
-    result: List[str] = []
+    result: list[str] = []
     ends_with_sep = False
     for val in value.splitlines():
         val = val.strip()

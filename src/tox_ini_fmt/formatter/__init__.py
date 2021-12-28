@@ -1,7 +1,8 @@
+from __future__ import annotations
+
 from configparser import ConfigParser
 from io import StringIO
 from pathlib import Path
-from typing import Optional
 
 from tox_ini_fmt.cli import ToxIniFmtNamespace
 
@@ -12,7 +13,7 @@ from .tox_section import format_tox_section
 INDENTATION = "    "
 
 
-def format_tox_ini(tox_ini: Path, opts: Optional[ToxIniFmtNamespace] = None) -> str:
+def format_tox_ini(tox_ini: Path, opts: ToxIniFmtNamespace | None = None) -> str:
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser(interpolation=None)

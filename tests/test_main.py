@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import difflib
 
 import pytest
@@ -48,7 +50,7 @@ def no_color(diff):
 @pytest.mark.parametrize("in_place", [True, False])
 @pytest.mark.parametrize("cwd", [True, False])
 @pytest.mark.parametrize(
-    "start, outcome, output",
+    ("start", "outcome", "output"),
     [
         (
             "[tox]\nenvlist=py39,py38",

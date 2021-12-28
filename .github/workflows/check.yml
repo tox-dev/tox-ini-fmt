@@ -10,32 +10,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pre-commit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-python@v1
-      - uses: pre-commit/action@v2.0.0
-
   test:
-    name: test ${{ matrix.py }} - ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}-latest
+    name: test ${{ matrix.py }}
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - Ubuntu
         py:
-          - 3.9
-          - 3.8
-          - 3.7
-          - 3.6
-          - pypy3
+          - "3.10"
+          - "3.9"
+          - "3.8"
+          - "3.7"
     steps:
       - name: setup python for tox
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: "3.10"
       - name: install tox
         run: python -m pip install tox
       - uses: actions/checkout@v2
@@ -45,47 +35,31 @@ jobs:
           python-version: ${{ matrix.py }}
       - name: pick environment to run
         run: |
-          import subprocess; import json; import os
-          major, minor, impl = json.loads(subprocess.check_output(["python", "-c", "import json; import sys; import platform; print(json.dumps([sys.version_info[0], sys.version_info[1], platform.python_implementation()]));"], universal_newlines=True))
+          import os
           with open(os.environ['GITHUB_ENV'], 'a') as file_handler:
-                file_handler.write('TOXENV=' + ("py" if impl == "CPython" else "pypy") + ("{}{}".format(major, minor) if impl == "CPython" else ("3" if major == 3 else "")) + "\n")
+                file_handler.write('TOXENV=py${{matrix.py}}'.replace('.', ''))
         shell: python
       - name: setup test suite
         run: tox -vv --notest
       - name: run test suite
         run: tox --skip-pkg-install
-        env:
-          PYTEST_ADDOPTS: "-vv --durations=20"
-          CI_RUN: "yes"
-          DIFF_AGAINST: HEAD
-      - name: rename coverage report file
-        run: |
-          import os; os.rename('.tox/coverage.{}.xml'.format(os.environ['TOXENV']), '.tox/coverage.xml')
-        shell: python
-      - uses: codecov/codecov-action@v1
-        with:
-          file: ./.tox/coverage.xml
-          flags: tests
-          name: ${{ matrix.py }} - ${{ matrix.os }}
 
   check:
-    name: check ${{ matrix.tox_env }} - ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}-latest
+    name: tox env ${{ matrix.tox_env }}
+    runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - Ubuntu
         tox_env:
           - type
           - dev
-          - pkg_check
+          - readme
     steps:
       - uses: actions/checkout@v2
-      - name: setup Python 3.8
+      - name: setup Python 3.10
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
+          python-version: "3.10"
       - name: install tox
         run: python -m pip install tox
       - name: run check for ${{ matrix.tox_env }}
@@ -95,18 +69,18 @@ jobs:
 
   publish:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
-    needs: [check, test, pre-commit]
-    runs-on: ubuntu-latest
+    needs: [check, test]
+    runs-on: ubuntu-20.04
     steps:
       - name: setup python to build package
         uses: actions/setup-python@v2
         with:
-          python-version: 3.8
-      - name: install pep517
-        run: python -m pip install pep517
+          python-version: "3.10"
+      - name: install build
+        run: python -m pip install build
       - uses: actions/checkout@v2
       - name: build package
-        run: python -m pep517.build -s -b . -o dist
+        run: python -m build --sdist --wheel . -o dist
       - name: publish to PyPI
         uses: pypa/gh-action-pypi-publish@master
         with:

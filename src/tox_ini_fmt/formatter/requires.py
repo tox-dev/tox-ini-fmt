@@ -1,11 +1,12 @@
+from __future__ import annotations
+
 import re
-from typing import List
 
 BASE_NAME_REGEX = re.compile(r"[^!=><~\s@]+")
 REQ_REGEX = re.compile(r"(===|==|!=|~=|>=?|<=?|@)\s*([^,]+)")
 
 
-def requires(raws: List[str]) -> List[str]:
+def requires(raws: list[str]) -> list[str]:
     values = (_normalize_req(req) for req in raws if req)
     normalized = sorted(values, key=lambda req: (";" in req, _req_base(req), req))
     return normalized

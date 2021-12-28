@@ -1,12 +1,14 @@
+from __future__ import annotations
+
 import re
 from configparser import ConfigParser
 from functools import partial
-from typing import Callable, List, Mapping, Tuple
+from typing import Callable, Mapping
 
 from .util import fix_and_reorder, to_boolean
 
 
-def format_tox_section(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
+def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
     if not parser.has_section("tox"):
         return
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
@@ -19,7 +21,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: List[str]) -> None:
     fix_and_reorder(parser, "tox", tox_section_cfg)
 
 
-def to_list_of_env_values(pin_toxenvs: List[str], payload: str) -> str:
+def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     """
     Example:
 
@@ -62,14 +64,14 @@ def to_list_of_env_values(pin_toxenvs: List[str], payload: str) -> str:
     return result
 
 
-def order_env_list(values: List[str], pin_toxenvs: List[str]) -> None:
+def order_env_list(values: list[str], pin_toxenvs: list[str]) -> None:
     values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
 
 
 _MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
 
 
-def _get_py_version(pin_toxenvs: List[str], env_list: str) -> Tuple[int, int]:
+def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, int]:
     for element in env_list.split("-"):
         if element in pin_toxenvs:
             return len(element) - pin_toxenvs.index(element), 0

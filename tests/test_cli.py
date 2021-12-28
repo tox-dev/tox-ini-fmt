@@ -1,4 +1,5 @@
-import os
+from __future__ import annotations
+
 import sys
 from stat import S_IREAD, S_IWRITE
 
@@ -33,7 +34,7 @@ def test_cli_tox_ini_not_file(tmp_path, capsys):
 
 
 @pytest.mark.parametrize(
-    "flag, error",
+    ("flag", "error"),
     [
         (S_IREAD, "write"),
         (S_IWRITE, "read"),

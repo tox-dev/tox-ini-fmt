@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
@@ -42,14 +44,14 @@ def test_tox_section_order(tox_ini):
 
 @pytest.mark.parametrize(
     "key",
-    (
+    [
         "isolated_build",
         "skipsdist",
         "skip_missing_interpreters",
-    ),
+    ],
 )
 @pytest.mark.parametrize(
-    "value, result",
+    ("value", "result"),
     [
         ("True", "true"),
         ("False", "false"),
@@ -65,7 +67,7 @@ def test_tox_fmt_boolean(tox_ini, key, value, result):
 
 
 @pytest.mark.parametrize(
-    "arg, outcome",
+    ("arg", "outcome"),
     [
         ([], []),
         (["py38", "py37"], ["py38", "py37"]),

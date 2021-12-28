@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import difflib
 import sys
 from pathlib import Path
-from typing import Iterable, Optional, Sequence
+from typing import Iterable, Sequence
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
@@ -21,7 +23,7 @@ def color_diff(diff: Iterable[str]) -> Iterable[str]:
             yield line
 
 
-def run(args: Optional[Sequence[str]] = None) -> int:
+def run(args: Sequence[str] | None = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
     formatted = format_tox_ini(opts.tox_ini, opts)
     before = opts.tox_ini.read_text()

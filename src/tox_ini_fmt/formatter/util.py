@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import re
 from configparser import ConfigParser
-from typing import Callable, Mapping, Optional
+from typing import Callable, Mapping
 
 
 def to_boolean(payload: str) -> str:

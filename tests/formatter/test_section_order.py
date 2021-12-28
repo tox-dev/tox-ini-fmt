@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from textwrap import dedent
 
 import pytest
@@ -8,7 +10,7 @@ from tox_ini_fmt.formatter.section_order import explode_env_list
 
 
 @pytest.mark.parametrize(
-    "argument, output",
+    ("argument", "output"),
     [
         ("{py38,py37}-{,magic}\npy39-ok\npy37", ["py38", "py38-magic", "py37", "py37-magic", "py39-ok", "py37"]),
         ("py38\npy37", ["py38", "py37"]),

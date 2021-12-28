@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import os
 from argparse import Action, ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
-from typing import Any, List, Optional, Sequence, Union
+from typing import Any, Sequence
 
 
 class ToxIniFmtNamespace(Namespace):
@@ -9,7 +11,7 @@ class ToxIniFmtNamespace(Namespace):
 
     tox_ini: Path
     stdout: bool
-    pin_toxenvs: List[str]
+    pin_toxenvs: list[str]
 
 
 def tox_ini_path_creator(argument: str) -> Path:
@@ -49,11 +51,11 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
             self,
             parser: ArgumentParser,
             namespace: Namespace,
-            values: Union[str, Sequence[Any], None],
-            option_string: Optional[str] = None,
+            values: str | Sequence[Any] | None,
+            option_string: str | None = None,
         ) -> None:
             if isinstance(values, str):  # pragma: no cover
-                setattr(namespace, self.dest, list(i.strip() for i in values.split(",")))
+                setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
 
     parser.add_argument(
         "-p",
