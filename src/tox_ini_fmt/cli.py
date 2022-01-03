@@ -49,10 +49,10 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     class CommaSeparatedStr(Action):
         def __call__(
             self,
-            parser: ArgumentParser,
+            parser: ArgumentParser,  # noqa: U100
             namespace: Namespace,
             values: str | Sequence[Any] | None,
-            option_string: str | None = None,
+            option_string: str | None = None,  # noqa: U100
         ) -> None:
             if isinstance(values, str):  # pragma: no cover
                 setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
