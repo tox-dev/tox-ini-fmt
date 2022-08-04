@@ -24,7 +24,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 - repo: https://github.com/tox-dev/tox-ini-fmt
-  rev: "0.3.0"
+  rev: "0.5.2"
   hooks:
     - id: tox-ini-fmt
       args: ["-p", "fix_lint,type"]
