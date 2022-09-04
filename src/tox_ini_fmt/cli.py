@@ -12,6 +12,7 @@ class ToxIniFmtNamespace(Namespace):
     tox_ini: Path
     stdout: bool
     pin_toxenvs: list[str]
+    line_ending: str
 
 
 def tox_ini_path_creator(argument: str) -> Path:
@@ -57,6 +58,24 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
             if isinstance(values, str):  # pragma: no cover
                 setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
 
+    class LineEndingConverter(Action):
+        def __call__(
+            self,
+            parser: ArgumentParser,  # noqa: U100
+            namespace: Namespace,
+            values: str | Sequence[Any] | None,
+            option_string: str | None = None,  # noqa: U100
+        ) -> None:
+            if isinstance(values, str):  # pragma: no cover
+                if values == "lf":
+                    setattr(namespace, self.dest, "\n")
+                elif values == "crlf":
+                    setattr(namespace, self.dest, "\r\n")
+                elif values == "cr":
+                    setattr(namespace, self.dest, "\r")
+                else:
+                    raise ValueError(f"{values} is not a valid line separator")
+
     parser.add_argument(
         "-p",
         dest="pin_toxenvs",
@@ -64,6 +83,14 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         action=CommaSeparatedStr,
         default=[],
         help="tox environments that pin to the start of the envlist (comma separated)",
+    )
+    parser.add_argument(
+        "-l",
+        dest="line_ending",
+        metavar="line_ending",
+        action=LineEndingConverter,
+        default=os.linesep,
+        help="force the line ending in tox.ini (lf, crlf, cr)",
     )
     parser.add_argument("tox_ini", type=tox_ini_path_creator, help="tox ini file to format")
     return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)

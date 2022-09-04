@@ -62,3 +62,24 @@ def test_tox_ini_resolved(tmp_path, monkeypatch):
     path.write_text("")
     result = cli_args(["tox.ini"])
     assert result.tox_ini == path
+
+
+def test_cli_line_ending_linux(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    result = cli_args([str(path), "-l", "lf"])
+    assert result.line_ending == "\n"
+
+
+def test_cli_line_ending_windows(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    result = cli_args([str(path), "-l", "crlf"])
+    assert result.line_ending == "\r\n"
+
+
+def test_cli_line_ending_old_mac(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    result = cli_args([str(path), "-l", "cr"])
+    assert result.line_ending == "\r"

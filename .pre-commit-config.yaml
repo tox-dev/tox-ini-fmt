@@ -34,7 +34,10 @@ repos:
     rev: "0.5.2"
     hooks:
       - id: tox-ini-fmt
-        args: [ "-p", "fix" ]
+        args: [
+          "-p", "fix",
+          "-l", "lf"
+        ]
   - repo: https://github.com/asottile/setup-cfg-fmt
     rev: v2.0.0
     hooks:

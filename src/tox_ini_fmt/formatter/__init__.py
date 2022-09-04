@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from configparser import ConfigParser
 from io import StringIO
 from pathlib import Path
@@ -15,7 +16,7 @@ INDENTATION = "    "
 
 def format_tox_ini(tox_ini: Path, opts: ToxIniFmtNamespace | None = None) -> str:
     if opts is None:
-        opts = ToxIniFmtNamespace(pin_toxenvs=[])
+        opts = ToxIniFmtNamespace(pin_toxenvs=[], line_ending=os.linesep)
     parser = ConfigParser(interpolation=None)
     with tox_ini.open("rt"):
         parser.read([tox_ini])

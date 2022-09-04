@@ -31,7 +31,7 @@ def run(args: Sequence[str] | None = None) -> int:
     if opts.stdout:  # stdout just prints new format to stdout
         print(formatted, end="")
     else:
-        opts.tox_ini.write_text(formatted)
+        opts.tox_ini.write_text(formatted, newline=opts.line_ending)
         try:
             name = str(opts.tox_ini.relative_to(Path.cwd()))
         except ValueError:
