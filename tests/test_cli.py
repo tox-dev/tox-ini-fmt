@@ -83,3 +83,11 @@ def test_cli_line_ending_old_mac(tmp_path):
     path.write_text("")
     result = cli_args([str(path), "-l", "cr"])
     assert result.line_ending == "\r"
+
+
+def test_cli_line_ending_invalid(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    with pytest.raises(ValueError) as e:  # noqa: PT011
+        cli_args([str(path), "-l", "whathever"])
+    assert str(e.value) == str(ValueError("whathever is not a valid line separator"))
