@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import collections
 import difflib
+import os
 import re
 import sys
 from pathlib import Path
@@ -45,7 +46,7 @@ def detect_line_ending(filename: str) -> str:
                 counts[ending] += 1
                 break
 
-    max_ending = LF
+    max_ending = bytes(os.linesep)
     max_lines = 0
     # ordering is important here such that lf > crlf > cr
     for ending_type in ALL_ENDINGS:
