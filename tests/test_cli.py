@@ -41,7 +41,7 @@ def test_cli_tox_ini_not_file(tmp_path, capsys):
     ],
 )
 @pytest.mark.skipif(sys.platform == "win32", reason="On Windows files cannot be read only, only folders")
-def test_cli_tox_ini_permission_fail(tmp_path, capsys, flag, error):
+def test_cli_tox_ini_permission_fail(tmp_path, capsys, flag, error):  # pragma: no cover
     path = tmp_path / "tox.ini"
     path.write_text("")
     path.chmod(flag)
