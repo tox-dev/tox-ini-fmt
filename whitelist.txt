@@ -13,7 +13,6 @@ tofile
 tox
 toxenvs
 cr
-CR
 lf
 LF
 crlf
