@@ -104,3 +104,72 @@ def test_detect_line_ending_more_lf(tmp_path):
     with open(str(tox_ini), "wb") as f:
         f.write(more_lf_text)
     assert "\n" == detect_line_ending(str(tox_ini))
+
+
+more_lf_tox_ini = "[testenv]\ncommands =\r\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ansi")
+only_lf_tox_ini = "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ansi")
+more_crlf_tox_ini = "[testenv]\r\ncommands =\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ansi")
+only_crlf_tox_ini = "[testenv]\r\ncommands =\r\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ansi")
+
+
+def test_main_auto_line_ending_more_crlf(tmp_path):
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(more_crlf_tox_ini)
+    args = [str(tox_ini)]
+    run(args)
+    with open(str(tox_ini), "rb") as f:
+        content = f.read()
+
+    assert content != more_crlf_tox_ini
+    assert content == only_crlf_tox_ini
+
+
+def test_main_auto_line_ending_more_lf(tmp_path):
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(more_lf_tox_ini)
+    args = [str(tox_ini)]
+    run(args)
+    with open(str(tox_ini), "rb") as f:
+        content = f.read()
+
+    assert content != more_lf_tox_ini
+    assert content == only_lf_tox_ini
+
+
+def test_main_force_lf_line_ending(tmp_path):
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(only_crlf_tox_ini)
+    args = [str(tox_ini), "-l", "lf"]
+    run(args)
+    with open(str(tox_ini), "rb") as f:
+        content = f.read()
+
+    assert content != only_crlf_tox_ini
+    assert content == only_lf_tox_ini
+
+
+def test_main_lf_to_lf_line_ending_no_change(tmp_path):
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(only_lf_tox_ini)
+    args = [str(tox_ini), "-l", "lf"]
+    run(args)
+    with open(str(tox_ini), "rb") as f:
+        content = f.read()
+
+    assert content == only_lf_tox_ini
+
+
+def test_main_crlf_to_crlf_line_ending_no_change(tmp_path):
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(only_crlf_tox_ini)
+    args = [str(tox_ini), "-l", "crlf"]
+    run(args)
+    with open(str(tox_ini), "rb") as f:
+        content = f.read()
+
+    assert content == only_crlf_tox_ini

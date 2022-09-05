@@ -20,7 +20,11 @@ LF = b"\n"
 CR = b"\r"
 # Prefer LF to CRLF to CR, but detect CRLF before LF
 ALL_ENDINGS = (CR, CRLF, LF)
-FIX_TO_LINE_ENDING = {"cr": CR, "crlf": CRLF, "lf": LF}
+FIX_TO_LINE_ENDING = {
+    "cr": CR.decode(encoding="ansi"),
+    "crlf": CRLF.decode(encoding="ansi"),
+    "lf": LF.decode(encoding="ansi"),
+}
 
 
 def color_diff(diff: Iterable[str]) -> Iterable[str]:
