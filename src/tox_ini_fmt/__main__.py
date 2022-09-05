@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import difflib
+import re
 import sys
 from pathlib import Path
 from typing import Iterable, Sequence
+
+from pre_commit_hooks import mixed_line_ending
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
@@ -31,7 +34,12 @@ def run(args: Sequence[str] | None = None) -> int:
     if opts.stdout:  # stdout just prints new format to stdout
         print(formatted, end="")
     else:
-        opts.tox_ini.write_text(formatted, newline=opts.line_ending)
+        newline = None
+        if re.match(r"^(lf|crlf|cr)$", opts.line_ending):
+            newline = mixed_line_ending.FIX_TO_LINE_ENDING[opts.line_ending]
+        opts.tox_ini.write_text(formatted, newline=newline)
+        if opts.line_ending == "auto":
+            mixed_line_ending.fix_filename(str(opts.tox_ini), "auto")
         try:
             name = str(opts.tox_ini.relative_to(Path.cwd()))
         except ValueError:
