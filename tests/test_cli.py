@@ -85,6 +85,13 @@ def test_cli_line_ending_old_mac(tmp_path):
     assert result.line_ending == "cr"
 
 
+def test_cli_line_ending_default(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    result = cli_args([str(path)])
+    assert result.line_ending == "auto"
+
+
 def test_cli_line_ending_invalid(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
