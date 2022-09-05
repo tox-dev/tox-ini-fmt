@@ -5,7 +5,7 @@ import difflib
 import pytest
 
 import tox_ini_fmt.__main__
-from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, run
+from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, detect_line_ending, run
 
 
 def test_color_diff():
@@ -96,3 +96,11 @@ def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, c
         assert out == output
     else:
         assert out == outcome
+
+
+def test_detect_line_ending_more_lf(tmp_path):
+    more_lf_text = "asdf\r\nqwertz\n12345\r\n67890\nyxcvb\nhjkl".encode(encoding="ansi")
+    tox_ini = tmp_path / "tox.ini"
+    with open(str(tox_ini), "wb") as f:
+        f.write(more_lf_text)
+    assert "\n" == detect_line_ending(str(tox_ini))
