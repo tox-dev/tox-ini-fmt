@@ -63,13 +63,15 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         def __call__(
             self,
             parser: ArgumentParser,  # noqa: U100
-            namespace: Namespace,  # noqa: U100
+            namespace: Namespace,
             values: str | Sequence[Any] | None,
             option_string: str | None = None,  # noqa: U100
         ) -> None:
             if isinstance(values, str):  # pragma: no cover
-                if not re.match(r"^(auto,lf,crlf,cr,system)$", values):
+                if not re.match(r"^(auto|lf|crlf|cr|system)$", values):
                     raise ValueError(f"{values} is not a valid line separator")
+                else:
+                    setattr(namespace, self.dest, values)
 
     parser.add_argument(
         "-p",

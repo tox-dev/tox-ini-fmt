@@ -68,21 +68,21 @@ def test_cli_line_ending_linux(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
     result = cli_args([str(path), "-l", "lf"])
-    assert result.line_ending == "\n"
+    assert result.line_ending == "lf"
 
 
 def test_cli_line_ending_windows(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
     result = cli_args([str(path), "-l", "crlf"])
-    assert result.line_ending == "\r\n"
+    assert result.line_ending == "crlf"
 
 
 def test_cli_line_ending_old_mac(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
     result = cli_args([str(path), "-l", "cr"])
-    assert result.line_ending == "\r"
+    assert result.line_ending == "cr"
 
 
 def test_cli_line_ending_invalid(tmp_path):
