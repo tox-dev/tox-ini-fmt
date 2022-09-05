@@ -46,15 +46,15 @@ def detect_line_ending(filename: str) -> str:
                 counts[ending] += 1
                 break
 
-    max_ending = bytes(os.linesep)
-    max_lines = 0
+    max_ending: bytes = os.linesep.encode(encoding="ascii")
+    max_lines: int = 0
     # ordering is important here such that lf > crlf > cr
     for ending_type in ALL_ENDINGS:
         # also important, using >= to find a max that prefers the last
         if counts[ending_type] >= max_lines:
             max_ending = ending_type
             max_lines = counts[ending_type]
-    return str(max_ending)
+    return max_ending.decode(encoding="ascii")
 
 
 def run(args: Sequence[str] | None = None) -> int:
