@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import os
-import re
 from argparse import Action, ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
 from typing import Any, Sequence
@@ -59,20 +58,6 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
             if isinstance(values, str):  # pragma: no cover
                 setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
 
-    class LineEndingChecker(Action):
-        def __call__(
-            self,
-            parser: ArgumentParser,  # noqa: U100
-            namespace: Namespace,
-            values: str | Sequence[Any] | None,
-            option_string: str | None = None,  # noqa: U100
-        ) -> None:
-            if isinstance(values, str):  # pragma: no cover
-                if re.match(r"^(auto|lf|crlf|cr|system)$", values):
-                    setattr(namespace, self.dest, values)
-                else:
-                    raise ValueError(f"{values} is not a valid line separator")
-
     parser.add_argument(
         "-p",
         dest="pin_toxenvs",
@@ -85,7 +70,7 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         "-l",
         dest="line_ending",
         metavar="line_ending",
-        action=LineEndingChecker,
+        choices=["auto", "lf", "crlf", "cr", "system"],
         default="auto",
         help="force the line ending in tox.ini (auto, lf, crlf, cr, system)",
     )

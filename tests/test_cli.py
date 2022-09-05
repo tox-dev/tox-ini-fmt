@@ -95,6 +95,7 @@ def test_cli_line_ending_default(tmp_path):
 def test_cli_line_ending_invalid(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
-    with pytest.raises(ValueError) as e:  # noqa: PT011
+    with pytest.raises(SystemExit) as e:
         cli_args([str(path), "-l", "whathever"])
-    assert str(e.value) == str(ValueError("whathever is not a valid line separator"))
+    assert e.type == SystemExit
+    assert e.value.code == 2
