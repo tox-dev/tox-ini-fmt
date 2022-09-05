@@ -87,7 +87,7 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         metavar="line_ending",
         action=LineEndingChecker,
         default="auto",
-        help="force the line ending in tox.ini (lf, crlf, cr)",
+        help="force the line ending in tox.ini (auto, lf, crlf, cr, system)",
     )
     parser.add_argument("tox_ini", type=tox_ini_path_creator, help="tox ini file to format")
     return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)
