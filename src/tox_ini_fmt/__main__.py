@@ -21,9 +21,9 @@ CR = b"\r"
 # Prefer LF to CRLF to CR, but detect CRLF before LF
 ALL_ENDINGS = (CR, CRLF, LF)
 FIX_TO_LINE_ENDING = {
-    "cr": CR.decode(encoding="ansi"),
-    "crlf": CRLF.decode(encoding="ansi"),
-    "lf": LF.decode(encoding="ansi"),
+    "cr": CR.decode(encoding="ascii"),
+    "crlf": CRLF.decode(encoding="ascii"),
+    "lf": LF.decode(encoding="ascii"),
 }
 
 
