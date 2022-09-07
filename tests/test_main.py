@@ -99,17 +99,17 @@ def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, c
 
 
 def test_detect_line_ending_more_lf(tmp_path):
-    more_lf_text = "asdf\r\nqwertz\n12345\r\n67890\nyxcvb\nhjkl".encode(encoding="ansi")
+    more_lf_text = "asdf\r\nqwertz\n12345\r\n67890\nyxcvb\nhjkl".encode(encoding="ascii")
     tox_ini = tmp_path / "tox.ini"
     with open(str(tox_ini), "wb") as f:
         f.write(more_lf_text)
     assert "\n" == detect_line_ending(str(tox_ini))
 
 
-more_lf_tox_ini = "[testenv]\ncommands =\r\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ansi")
-only_lf_tox_ini = "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ansi")
-more_crlf_tox_ini = "[testenv]\r\ncommands =\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ansi")
-only_crlf_tox_ini = "[testenv]\r\ncommands =\r\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ansi")
+more_lf_tox_ini = "[testenv]\ncommands =\r\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ascii")
+only_lf_tox_ini = "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n".encode(encoding="ascii")
+more_crlf_tox_ini = "[testenv]\r\ncommands =\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ascii")
+only_crlf_tox_ini = "[testenv]\r\ncommands =\r\n    pytest --log-format='%(asctime)s'\r\n".encode(encoding="ascii")
 
 
 def test_main_auto_line_ending_more_crlf(tmp_path):
