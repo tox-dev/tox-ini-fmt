@@ -61,6 +61,11 @@ def detect_line_ending(filename: str) -> str:
     return max_ending.decode(encoding="ascii")
 
 
+def write_file(filename: str, content: str, newline: str):
+    with open(filename, "w", newline=newline) as f:
+        f.write(content)
+
+
 def run(args: Sequence[str] | None = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
     formatted = format_tox_ini(opts.tox_ini, opts)
@@ -74,7 +79,7 @@ def run(args: Sequence[str] | None = None) -> int:
             newline = FIX_TO_LINE_ENDING[opts.line_ending]
         elif opts.line_ending == "auto":
             newline = detect_line_ending(str(opts.tox_ini))
-        opts.tox_ini.write_text(formatted, newline=newline)
+        write_file(str(opts.tox_ini), formatted, newline)
         try:
             name = str(opts.tox_ini.relative_to(Path.cwd()))
         except ValueError:
