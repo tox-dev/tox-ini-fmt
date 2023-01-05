@@ -6,6 +6,7 @@ All notable changes to this project will be documented in this file.
 
 - Fix `tox.ini` formatting when `envlist` ends with a comma
   ([#41](https://github.com/tox-dev/tox-ini-fmt/issues/41))
+- Support processing multiple `tox.ini` files at once ([#119](https://github.com/tox-dev/tox-ini-fmt/pull/119))
 
 ## 0.4.0 (2020-10-04)
 

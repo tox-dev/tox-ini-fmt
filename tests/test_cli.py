@@ -12,7 +12,17 @@ def test_cli_tox_ini_ok(tmp_path):
     path = tmp_path / "tox.ini"
     path.write_text("")
     result = cli_args([str(path)])
-    assert result.tox_ini == path
+    assert result.tox_ini[0] == path
+
+
+def test_cli_multiple_tox_ini_files_ok(tmp_path):
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    path_2 = tmp_path / "tox2.ini"
+    path_2.write_text("")
+    result = cli_args([str(path), str(path_2)])
+    assert result.tox_ini[0] == path
+    assert result.tox_ini[1] == path_2
 
 
 def test_cli_tox_ini_not_exists(tmp_path, capsys):
@@ -61,4 +71,4 @@ def test_tox_ini_resolved(tmp_path, monkeypatch):
     path = tmp_path / "tox.ini"
     path.write_text("")
     result = cli_args(["tox.ini"])
-    assert result.tox_ini == path
+    assert result.tox_ini[0] == path

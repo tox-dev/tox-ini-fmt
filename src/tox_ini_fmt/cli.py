@@ -9,7 +9,7 @@ from typing import Any, Sequence
 class ToxIniFmtNamespace(Namespace):
     """Options for tox-ini-fmt tool"""
 
-    tox_ini: Path
+    tox_ini: list[Path]
     stdout: bool
     pin_toxenvs: list[str]
 
@@ -65,5 +65,5 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         default=[],
         help="tox environments that pin to the start of the envlist (comma separated)",
     )
-    parser.add_argument("tox_ini", type=tox_ini_path_creator, help="tox ini file to format")
+    parser.add_argument("tox_ini", nargs="+", type=tox_ini_path_creator, help="tox ini files to format")
     return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)
