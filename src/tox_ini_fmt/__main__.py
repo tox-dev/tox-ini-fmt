@@ -25,27 +25,29 @@ def color_diff(diff: Iterable[str]) -> Iterable[str]:
 
 def run(args: Sequence[str] | None = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
-    formatted = format_tox_ini(opts.tox_ini, opts)
-    before = opts.tox_ini.read_text()
-    changed = before != formatted
-    if opts.stdout:  # stdout just prints new format to stdout
-        print(formatted, end="")
-    else:
-        opts.tox_ini.write_text(formatted)
-        try:
-            name = str(opts.tox_ini.relative_to(Path.cwd()))
-        except ValueError:
-            name = str(opts.tox_ini)
-        diff = (
-            difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
-            if changed
-            else []
-        )
-        if diff:
-            diff = color_diff(diff)
-            print("\n".join(diff))  # print diff on change
+    changed = False
+    for tox_ini in opts.tox_ini:
+        formatted = format_tox_ini(tox_ini, opts)
+        before = tox_ini.read_text()
+        changed |= before != formatted
+        if opts.stdout:  # stdout just prints new format to stdout
+            print(formatted, end="")
         else:
-            print(f"no change for {name}")
+            tox_ini.write_text(formatted)
+            try:
+                name = str(tox_ini.relative_to(Path.cwd()))
+            except ValueError:
+                name = str(tox_ini)
+            diff = (
+                difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
+                if changed
+                else []
+            )
+            if diff:
+                diff = color_diff(diff)
+                print("\n".join(diff))  # print diff on change
+            else:
+                print(f"no change for {name}")
     # exit with non success on change
     return 1 if changed else 0
 
