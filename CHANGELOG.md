@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## unreleased
+## 0.6.0 (2023-01-05)
 
+- Support processing multiple `tox.ini` files at once ([#119](https://github.com/tox-dev/tox-ini-fmt/pull/119))
 - Fix `tox.ini` formatting when `envlist` ends with a comma
   ([#41](https://github.com/tox-dev/tox-ini-fmt/issues/41))
-- Support processing multiple `tox.ini` files at once ([#119](https://github.com/tox-dev/tox-ini-fmt/pull/119))
+
+## 0.5.2 (2021-12-28)
+
+- Drop Python 3.6 support.
+
+## 0.5.1 (2021-06-25)
+
+- Disable config parser interpolation
+
+## 0.5.0 (2020-10-06)
+
+- Diffs are now colored.
 
 ## 0.4.0 (2020-10-04)
 
