@@ -32,7 +32,7 @@ def run(args: Sequence[str] | None = None) -> int:
             original_newlines = file.newlines
         if isinstance(original_newlines, tuple):
             original_newlines = original_newlines[0]
-        formatted = format_tox_ini(tox_ini, opts)
+        formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:  # stdout just prints new format to stdout
             print(formatted, end="")
