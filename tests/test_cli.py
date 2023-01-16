@@ -47,10 +47,13 @@ def test_cli_tox_ini_not_file(tmp_path, capsys):
     ("flag", "error"),
     [
         (S_IREAD, "write"),
-        (S_IWRITE, "read"),
+        pytest.param(
+            S_IWRITE,
+            "read",
+            marks=pytest.mark.skipif(sys.platform == "win32", reason="On Windows, files cannot be write-only"),
+        ),
     ],
 )
-@pytest.mark.skipif(sys.platform == "win32", reason="On Windows files cannot be read only, only folders")
 def test_cli_tox_ini_permission_fail(tmp_path, capsys, flag, error):
     path = tmp_path / "tox.ini"
     path.write_text("")
