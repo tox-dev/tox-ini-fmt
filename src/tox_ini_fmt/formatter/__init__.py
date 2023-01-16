@@ -13,12 +13,15 @@ from .tox_section import format_tox_section
 INDENTATION = "    "
 
 
-def format_tox_ini(tox_ini: Path, opts: ToxIniFmtNamespace | None = None) -> str:
+def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) -> str:
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser(interpolation=None)
-    with tox_ini.open("rt"):
-        parser.read([tox_ini])
+    if isinstance(tox_ini, Path):
+        text = tox_ini.read_text()
+    else:
+        text = tox_ini
+    parser.read_string(text)
 
     order_sections(parser, opts.pin_toxenvs)
     format_tox_section(parser, opts.pin_toxenvs)

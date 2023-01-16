@@ -27,13 +27,19 @@ def run(args: Sequence[str] | None = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
     changed = False
     for tox_ini in opts.tox_ini:
-        formatted = format_tox_ini(tox_ini, opts)
-        before = tox_ini.read_text()
+        with tox_ini.open("rt") as file:
+            before = file.read()
+            original_newlines = file.newlines
+        if isinstance(original_newlines, tuple):
+            original_newlines = original_newlines[0]
+        formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:  # stdout just prints new format to stdout
             print(formatted, end="")
         else:
-            tox_ini.write_text(formatted)
+            if before != formatted:
+                with tox_ini.open("wt", newline=original_newlines) as file:
+                    file.write(formatted)
             try:
                 name = str(tox_ini.relative_to(Path.cwd()))
             except ValueError:
