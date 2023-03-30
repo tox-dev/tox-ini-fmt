@@ -27,9 +27,10 @@ def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 def load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
     if not parser.has_section("tox"):
         return []
-    if "envlist" not in parser["tox"]:
-        return []
-    result = explode_env_list(parser["tox"]["envlist"])
+    result: list[str] = next(
+        (explode_env_list(parser["tox"][i]) for i in ("envlist", "env_list") if i in parser["tox"]),
+        [],
+    )
     missing = [e for e in pin_toxenvs if e not in result]
     if missing:
         raise RuntimeError(f"missing tox environment(s) to pin {', '.join(missing)}")

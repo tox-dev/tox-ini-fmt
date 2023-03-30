@@ -2,8 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
-## 0.7.0 (2023-03-30)
+## 1.0.0 (2023-03-30)
 
+- Extend support for additional keys, support tox v4 aliases, and move pass_env/set_env just before commands.
 - Use hatchling instead of setuptools.
 
 ## 0.6.0 (2023-01-05)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from textwrap import dedent
 
 import pytest
 
@@ -34,14 +35,33 @@ def test_format_envlist_generator(tmp_path: Path) -> None:
 
 
 def test_tox_section_order(tox_ini: Path) -> None:
-    tox_ini.write_text(
-        "[tox]\nskip_missing_interpreters=true\nisolated_build=true\nminversion=3.14\nskipsdist=false\nenvlist=py37",
-    )
+    text = """
+    [tox]
+    skip_missing_interpreters=true
+    isolated_build=true
+    requires=
+     tox-magic >= 0.2
+     tox-abc >= 0.1
+    minversion=3.14
+    skipsdist=false
+    envlist=py37
+    """
+    tox_ini.write_text(dedent(text))
     outcome = format_tox_ini(tox_ini)
-    assert (
-        outcome == "[tox]\nenvlist =\n    py37\nisolated_build = true\nskipsdist = false\n"
-        "skip_missing_interpreters = true\nminversion = 3.14\n"
-    )
+    result = """\
+    [tox]
+    minversion = 3.14
+    requires =
+        tox-abc>=0.1
+        tox-magic>=0.2
+    envlist =
+        py37
+    isolated_build = true
+    skipsdist = false
+    skip_missing_interpreters = true
+    """
+    result = dedent(result)
+    assert outcome == result
 
 
 @pytest.mark.parametrize(
