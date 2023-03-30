@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import difflib
+from pathlib import Path
 
 import pytest
 
@@ -8,7 +9,7 @@ import tox_ini_fmt.__main__
 from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, run
 
 
-def test_color_diff():
+def test_color_diff() -> None:
     # Arrange
     before = """
     abc
@@ -36,14 +37,14 @@ def test_color_diff():
 """.strip().splitlines()
 
     # Act
-    diff = color_diff(diff)
+    diff_color = color_diff(diff)
 
     # Assert
-    output_lines = [line.rstrip() for line in "\n".join(diff).splitlines()]
+    output_lines = [line.rstrip() for line in "\n".join(diff_color).splitlines()]
     assert output_lines == expected_lines
 
 
-def no_color(diff):
+def no_color(diff: str) -> str:
     return diff
 
 
@@ -73,7 +74,16 @@ def no_color(diff):
         ),
     ],
 )
-def test_main(tmp_path, capsys, in_place, start, outcome, output, monkeypatch, cwd):
+def test_main(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    in_place: bool,
+    cwd: bool,
+    start: str,
+    outcome: str,
+    output: str,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     monkeypatch.setattr(tox_ini_fmt.__main__, "color_diff", no_color)
     if cwd:
         monkeypatch.chdir(tmp_path)

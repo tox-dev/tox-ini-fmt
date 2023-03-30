@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import os
+from pathlib import Path
 
 import pytest
 
 from tox_ini_fmt.__main__ import run
 
 
-def test_platform_default(tox_ini):
+def test_platform_default(tox_ini: Path) -> None:
     """If the ini file has no newlines, the platform default may be inserted."""
 
     tox_ini.write_bytes(b"[tox]")
@@ -16,7 +17,7 @@ def test_platform_default(tox_ini):
 
 
 @pytest.mark.parametrize("newline", ["\r\n", "\n", "\r"])
-def test_line_endings(tox_ini, newline):
+def test_line_endings(tox_ini: Path, newline: str) -> None:
     """The ini file's existing newlines must be respected when reformatting."""
 
     original_text = f"[tox]{newline}envlist=py39"
@@ -26,7 +27,7 @@ def test_line_endings(tox_ini, newline):
     assert tox_ini.read_bytes() == expected_text.encode("utf8")
 
 
-def test_mixed_line_endings(tox_ini):
+def test_mixed_line_endings(tox_ini: Path) -> None:
     """If mixed line endings are found, the first one in the tuple should be used.
 
     Note that this does not mean the first newline in the file will be used!
@@ -38,6 +39,8 @@ def test_mixed_line_endings(tox_ini):
     tox_ini.write_bytes(original_text.encode("utf8"))
     with tox_ini.open("rt") as file:
         file.read()
+        assert not isinstance(file.newlines, str)
+        assert file.newlines is not None
         assert set(file.newlines) == {"\r", "\n", "\r\n"}
         first_newline = file.newlines[0]
 

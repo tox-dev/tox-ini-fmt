@@ -30,7 +30,7 @@ from tox_ini_fmt.formatter.requires import requires
         ("pytest~=6.0.0", ["pytest~=6.0.0"]),
     ],
 )
-def test_requires_fmt(value, result):
+def test_requires_fmt(value: str, result: list[str]) -> None:
     outcome = requires([i.strip() for i in value.splitlines() if i.strip()])
     assert outcome == result
 
@@ -47,6 +47,6 @@ def test_requires_fmt(value, result):
         "@",
     ],
 )
-def test_bad_syntax_requires(char):
+def test_bad_syntax_requires(char: str) -> None:
     with pytest.raises(ValueError, match=f"[{char}]" if char.strip() else None):
-        requires(f"{char};")
+        requires([f"{char};"])
