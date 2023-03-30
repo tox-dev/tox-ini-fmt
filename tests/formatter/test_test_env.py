@@ -6,7 +6,7 @@ from textwrap import dedent
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.test_env import to_deps, to_extras
+from tox_ini_fmt.formatter.test_env import to_deps, to_ordered_list
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
@@ -42,14 +42,6 @@ def test_format_test_env(tox_ini: Path) -> None:
         """
         [testenv]
         description = desc
-        passenv =
-            x
-            y
-            z
-        setenv =
-            A = B
-            C = D
-            E = F
         basepython = python3.8
         skip_install = false
         usedevelop = true
@@ -60,6 +52,14 @@ def test_format_test_env(tox_ini: Path) -> None:
             c
             d
         parallel_show_output = false
+        passenv =
+            x
+            y
+            z
+        setenv =
+            A = B
+            C = D
+            E = F
         commands =
             e
             f \\
@@ -84,7 +84,7 @@ def test_format_test_env(tox_ini: Path) -> None:
     ],
 )
 def test_extras(arg: str, output: str) -> None:
-    result = to_extras(arg)
+    result = to_ordered_list(arg)
     assert result == output
 
 

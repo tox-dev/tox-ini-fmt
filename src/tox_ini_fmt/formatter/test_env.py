@@ -12,17 +12,47 @@ from .util import fix_and_reorder, is_substitute, to_boolean
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
+        "runner": str,
         "description": str,
-        "passenv": to_pass_env,
-        "setenv": to_set_env,
+        "base_python": str,
         "basepython": str,
+        "system_site_packages": to_boolean,
+        "sitepackages": to_boolean,
+        "always_copy": to_boolean,
+        "alwayscopy": to_boolean,
+        "download": to_boolean,
+        "package": str,
+        "package_env": str,
+        "wheel_build_env": str,
+        "package_tox_env_type": str,
+        "package_root": str,
         "skip_install": to_boolean,
+        "use_develop": to_boolean,
         "usedevelop": to_boolean,
+        "meta_dir": str,
+        "pkg_dir": str,
+        "pip_pre": to_boolean,
         "deps": to_deps,
-        "extras": to_extras,
+        "extras": to_ordered_list,
+        "recreate": to_boolean,
         "parallel_show_output": to_boolean,
+        "pass_env": to_pass_env,
+        "passenv": to_pass_env,
+        "set_env": to_set_env,
+        "setenv": to_set_env,
+        "change_dir": str,
         "changedir": str,
+        "args_are_paths": to_boolean,
+        "ignore_errors": to_boolean,
+        "ignore_outcome": to_boolean,
+        "commands_pre": to_commands,
         "commands": to_commands,
+        "commands_post": to_commands,
+        "allowlist_externals": to_ordered_list,
+        "suicide_timeout": str,
+        "interrupt_timeout": str,
+        "terminate_timeout": str,
+        "depends": to_ordered_list,
     }
     fix_and_reorder(parser, name, tox_section_cfg)
 
@@ -70,7 +100,7 @@ def fmt_list(values: list[str], substitute: list[str]) -> str:
     return "\n".join([""] + substitute + values)
 
 
-def to_extras(value: str) -> str:
+def to_ordered_list(value: str) -> str:
     """Must be a line separated list - fix comma separated format"""
     extras, substitute = collect_multi_line(value)
     return fmt_list(sorted(extras), substitute)
