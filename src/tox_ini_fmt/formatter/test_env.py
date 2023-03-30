@@ -47,7 +47,7 @@ def to_deps(value: str) -> str:
     deps = list(
         itertools.chain.from_iterable(
             (f"{k}: {d}" if k not in ("", "-r") else d for d in v) for k, v in sorted(groups_requires.items())
-        )
+        ),
     )
     return fmt_list(deps, substitute)
 

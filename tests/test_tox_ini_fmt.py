@@ -5,15 +5,15 @@ import sys
 from pathlib import Path
 
 
-def test_version():
+def test_version() -> None:
     import tox_ini_fmt
 
     assert tox_ini_fmt.__version__
 
 
-def test_help_invocation_as_module():
+def test_help_invocation_as_module() -> None:
     subprocess.check_call([sys.executable, "-m", "tox_ini_fmt", "--help"])
 
 
-def test_help_invocation_as_script():
+def test_help_invocation_as_script() -> None:
     subprocess.check_call([str(Path(sys.executable).parent / "tox-ini-fmt"), "--help"])

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from textwrap import dedent
 
 import pytest
@@ -17,12 +18,12 @@ from tox_ini_fmt.formatter.section_order import explode_env_list
         ("py37\npy38", ["py37", "py38"]),
     ],
 )
-def test_envlist_explode(argument, output):
+def test_env_list_explode(argument: str, output: list[str]) -> None:
     result = explode_env_list(argument)
     assert result == output
 
 
-def test_section_order(tox_ini):
+def test_section_order(tox_ini: Path) -> None:
     tox_ini.write_text(
         dedent(
             """
@@ -39,8 +40,8 @@ def test_section_order(tox_ini):
         envlist = py38,py37
         e = f
 
-        """
-        )
+        """,
+        ),
     )
     result = format_tox_ini(tox_ini)
 
@@ -63,19 +64,19 @@ def test_section_order(tox_ini):
 
         [magic]
         i = j
-    """
+    """,
     ).lstrip()
     assert result == expected
 
 
-def test_pin_missing(tox_ini):
+def test_pin_missing(tox_ini: Path) -> None:
     tox_ini.write_text("[tox]\nenvlist=py")
 
     with pytest.raises(RuntimeError, match=r"missing tox environment\(s\) to pin missing_1, missing_2"):
         format_tox_ini(tox_ini, ToxIniFmtNamespace(pin_toxenvs=["missing_1", "missing_2"]))
 
 
-def test_pin(tox_ini):
+def test_pin(tox_ini: Path) -> None:
     tox_ini.write_text(
         "[tox]\nenvlist=py38,pkg,py,py39,pypy3,pypy,pin,extra\n"
         "[testenv:py38]\ne=f\n"
@@ -85,7 +86,7 @@ def test_pin(tox_ini):
         "[testenv:pypy3]\nk=l\n"
         "[testenv:pypy]\nm=n\n"
         "[testenv:pin]\na=b\n"
-        "[testenv:extra]\no=p\n"
+        "[testenv:extra]\no=p\n",
     )
     result = format_tox_ini(tox_ini, ToxIniFmtNamespace(pin_toxenvs=["pin", "pkg"]))
 
@@ -125,6 +126,6 @@ def test_pin(tox_ini):
 
         [testenv:extra]
         o = p
-    """
+    """,
     ).lstrip()
     assert result == expected

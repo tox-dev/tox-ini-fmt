@@ -1,39 +1,41 @@
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.tox_section import order_env_list
 
 
-def test_no_tox_section(tox_ini):
+def test_no_tox_section(tox_ini: Path) -> None:
     tox_ini.write_text("")
     assert format_tox_ini(tox_ini) == "\n"
 
 
-def test_format_envlist_simple(tox_ini):
+def test_format_envlist_simple(tox_ini: Path) -> None:
     tox_ini.write_text("[tox]\nenvlist=py39,py38\n")
     outcome = format_tox_ini(tox_ini)
     assert outcome == "[tox]\nenvlist =\n    py39\n    py38\n"
 
 
-def test_format_envlist_start_newline(tox_ini):
+def test_format_envlist_start_newline(tox_ini: Path) -> None:
     ok = "[tox]\nenvlist =\n    py39\n    py38\n"
     tox_ini.write_text(ok)
     outcome = format_tox_ini(tox_ini)
     assert outcome == ok
 
 
-def test_format_envlist_generator(tmp_path):
+def test_format_envlist_generator(tmp_path: Path) -> None:
     path = tmp_path / "tox.ini"
     path.write_text("[tox]\nenvlist={py36,py37}-django{20,21},{py36,py37}-mango{20,21},py38\n")
     outcome = format_tox_ini(path)
     assert outcome == "[tox]\nenvlist =\n    py38\n    {py37, py36}-django{21, 20}\n    {py37, py36}-mango{21, 20}\n"
 
 
-def test_tox_section_order(tox_ini):
+def test_tox_section_order(tox_ini: Path) -> None:
     tox_ini.write_text(
-        "[tox]\nskip_missing_interpreters=true\nisolated_build=true\nminversion=3.14\nskipsdist=false\nenvlist=py37"
+        "[tox]\nskip_missing_interpreters=true\nisolated_build=true\nminversion=3.14\nskipsdist=false\nenvlist=py37",
     )
     outcome = format_tox_ini(tox_ini)
     assert (
@@ -59,7 +61,7 @@ def test_tox_section_order(tox_ini):
         ("FALSE", "false"),
     ],
 )
-def test_tox_fmt_boolean(tox_ini, key, value, result):
+def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> None:
     tox_ini.write_text(f"[tox]\n{key}={value}")
     outcome = format_tox_ini(tox_ini)
     expected = f"[tox]\n{key} = {result}\n"
@@ -79,12 +81,12 @@ def test_tox_fmt_boolean(tox_ini, key, value, result):
         (["Jython", "jython36", "jython", "Jython27", "py38"], ["py38", "jython36", "Jython27", "Jython", "jython"]),
     ],
 )
-def test_order_env_list(arg, outcome):
+def test_order_env_list(arg: list[str], outcome: list[str]) -> None:
     order_env_list(arg, [])
     assert arg == outcome
 
 
-def test_format_tox_ini_handles_trailing_comma(tox_ini):
+def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:
     """tox.ini gets formatted without adding additional whitespace
 
     This was previously caused by a trailing comma in the `envlist`.

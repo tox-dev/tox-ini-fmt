@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pathlib import Path
 from textwrap import dedent
 
 import pytest
@@ -8,12 +9,12 @@ from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.test_env import to_deps, to_extras
 
 
-def test_no_tox_section(tox_ini):
+def test_no_tox_section(tox_ini: Path) -> None:
     tox_ini.write_text("")
     assert format_tox_ini(tox_ini) == "\n"
 
 
-def test_format_test_env(tox_ini):
+def test_format_test_env(tox_ini: Path) -> None:
     content = dedent(
         """
     usedevelop = True
@@ -33,7 +34,7 @@ def test_format_test_env(tox_ini):
             E =F
 
             A = B
-    """
+    """,
     ).strip()
     tox_ini.write_text(f"[testenv]\n{content}")
     outcome = format_tox_ini(tox_ini)
@@ -63,7 +64,7 @@ def test_format_test_env(tox_ini):
             e
             f \\
               g
-        """
+        """,
     ).lstrip()
     assert outcome == expected
 
@@ -82,7 +83,7 @@ def test_format_test_env(tox_ini):
         ("c\n  c,c", "\nc"),
     ],
 )
-def test_extras(arg, output):
+def test_extras(arg: str, output: str) -> None:
     result = to_extras(arg)
     assert result == output
 
@@ -120,7 +121,7 @@ def test_extras(arg, output):
         ),
     ],
 )
-def test_format_test_env_ref(tox_ini, key, before, pre, post, expected):
+def test_format_test_env_ref(tox_ini: Path, key: str, before: str, pre: str, post: str, expected: str) -> None:
     text = (
         f"[testenv]\n{key}={before}\n[testenv:py]"
         f"\n{key}=\n {pre}\n {{[testenv:x]X}}\n {{[testenv]{key}}}\n {post}\n"
@@ -131,17 +132,17 @@ def test_format_test_env_ref(tox_ini, key, before, pre, post, expected):
     assert outcome == expected
 
 
-def test_fail_on_bad_set_env(tox_ini):
+def test_fail_on_bad_set_env(tox_ini: Path) -> None:
     tox_ini.write_text("[testenv]\nsetenv = A")
     with pytest.raises(RuntimeError, match="invalid line A in setenv"):
         format_tox_ini(tox_ini)
 
 
-def test_deps_conditional():
+def test_deps_conditional() -> None:
     result = to_deps(
         "\ncoverage,codecov: coverage\ncodecov: codecov"
         "\n-r{toxinidir}/test-requirements.txt\n-r{toxinidir}/dev-requirements.txt"
-        "\nvirtue\nb"
+        "\nvirtue\nb",
     )
     assert (
         result == "\nb\nvirtue"
