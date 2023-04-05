@@ -57,53 +57,57 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
     fix_and_reorder(parser, name, tox_section_cfg)
 
 
-CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9,]+):(?P<value>.*)")
+CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?P<value>.*)")
 
 
 def to_deps(value: str) -> str:
-    raw_deps, substitute = collect_multi_line(value, line_split=None)
-    groups = defaultdict(list)
-    for dep in raw_deps:
-        if dep.startswith("-r"):
-            groups["-r"].append(dep)
+    raw_deps, substitute = collect_multi_line(
+        value,
+        line_split=None,
+        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
+    )
+    return fmt_list(raw_deps, substitute)
+
+
+def collect_multi_line(
+    value: str,
+    line_split: str | None = r",| |\t",
+    normalize: Callable[[dict[str, list[str]]], dict[str, list[str]]] | None = None,
+) -> tuple[list[str], list[str]]:
+    groups: defaultdict[str, list[str]] = defaultdict(list)
+    substitute: list[str] = []
+    for line in value.strip().splitlines():
+        match = CONDITIONAL_MARKER.match(line)
+        if match:
+            elements = match.groupdict()
+            normalized_key = ", ".join(sorted(i.strip() for i in elements["envs"].split(",")))
+            groups[normalized_key].append(elements["value"].strip())
         else:
-            match = CONDITIONAL_MARKER.match(dep)
-            if match:
-                elements = match.groupdict()
-                groups[",".join(sorted(elements["envs"].split(",")))].append(elements["value"].strip())
-            else:
-                groups[""].append(dep)
-    groups_requires = {key: requires(value) for key, value in groups.items()}
-    deps = list(
+            for part in re.split(line_split, line.strip()) if line_split else [line.strip()]:
+                if part:  # remove empty lines
+                    if is_substitute(part):
+                        substitute.append(part)
+                    else:
+                        if part not in groups[""]:  # remove duplicates
+                            groups[""].append(part)
+    normalized_group = normalize(groups) if normalize else groups
+    result = list(
         itertools.chain.from_iterable(
-            (f"{k}: {d}" if k not in ("", "-r") else d for d in v) for k, v in sorted(groups_requires.items())
+            sorted(f"{k}: {d}" if k != "" else d for d in v)
+            for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
         ),
     )
-    return fmt_list(deps, substitute)
-
-
-def collect_multi_line(value: str, line_split: str | None = r",| |\t") -> tuple[list[str], list[str]]:
-    lines = value.strip().splitlines()
-    substitute, elements = [], []
-    for line in lines:
-        for part in re.split(line_split, line.strip()) if line_split else [line.strip()]:
-            if part:  # remove empty lines
-                if is_substitute(part):
-                    substitute.append(part)
-                else:
-                    if part not in elements:  # remove duplicates
-                        elements.append(part)
-    return elements, substitute
+    return result, substitute
 
 
 def fmt_list(values: list[str], substitute: list[str]) -> str:
-    return "\n".join([""] + substitute + values)
+    return "\n".join([""] + sorted(substitute) + values)
 
 
 def to_ordered_list(value: str) -> str:
     """Must be a line separated list - fix comma separated format"""
     extras, substitute = collect_multi_line(value)
-    return fmt_list(sorted(extras), substitute)
+    return fmt_list(extras, substitute)
 
 
 def to_pass_env(value: str) -> str:
