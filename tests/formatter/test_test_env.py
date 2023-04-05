@@ -81,6 +81,7 @@ def test_format_test_env(tox_ini: Path) -> None:
         ("a,b", "\na\nb"),
         ("b\n  a,c", "\na\nb\nc"),
         ("c\n  c,c", "\nc"),
+        ("\n b\n a\n a: b\n b: c\n a,b: g\n b, a: h\n ", "\na\nb\na: b\nb: c\na, b: g\na, b: h"),
     ],
 )
 def test_extras(arg: str, output: str) -> None:
@@ -145,7 +146,7 @@ def test_deps_conditional() -> None:
         "\nvirtue\nb",
     )
     assert (
-        result == "\nb\nvirtue"
-        "\n-r{toxinidir}/dev-requirements.txt\n-r{toxinidir}/test-requirements.txt"
-        "\ncodecov: codecov\ncodecov,coverage: coverage"
+        result == "\n-r{toxinidir}/dev-requirements.txt\n-r{toxinidir}/test-requirements.txt"
+        "\nb\nvirtue"
+        "\ncodecov: codecov\ncodecov, coverage: coverage"
     )
