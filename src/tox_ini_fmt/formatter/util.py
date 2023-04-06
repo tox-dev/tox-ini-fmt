@@ -14,8 +14,20 @@ def to_boolean(payload: str) -> str:
     return "true" if payload.lower() == "true" else "false"
 
 
-def fix_and_reorder(parser: ConfigParser, name: str, fix_cfg: Mapping[str, Callable[[str], str]]) -> None:
+def fix_and_reorder(
+    parser: ConfigParser,
+    name: str,
+    fix_cfg: Mapping[str, Callable[[str], str]],
+    upgrade: dict[str, str],
+) -> None:
     section = parser[name]
+    # upgrade
+    for key, to in upgrade.items():
+        if key in section:
+            if to in section:
+                raise RuntimeError(f"upgrade alias {to} also present for {key}")
+            section[to] = section.pop(key)
+    # normalize
     for key, fix in fix_cfg.items():
         if key in section:
             section[key] = fix(section[key])
