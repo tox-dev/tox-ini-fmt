@@ -1,13 +1,10 @@
 from __future__ import annotations
 
-import itertools
-import re
-from collections import defaultdict
 from configparser import ConfigParser
+from functools import partial
 from typing import Callable, Mapping
 
-from .requires import requires
-from .util import fix_and_reorder, is_substitute, to_boolean
+from .util import collect_multi_line, fix_and_reorder, fmt_list, to_boolean, to_list_of_env_values, to_py_dependencies
 
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
@@ -52,48 +49,9 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "suicide_timeout": str,
         "interrupt_timeout": str,
         "terminate_timeout": str,
-        "depends": to_ordered_list,
+        "depends": partial(to_list_of_env_values, []),
     }
     fix_and_reorder(parser, name, tox_section_cfg)
-
-
-CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?P<value>.*)")
-
-
-def collect_multi_line(
-    value: str,
-    line_split: str | None = r",| |\t",
-    normalize: Callable[[dict[str, list[str]]], dict[str, list[str]]] | None = None,
-    sort_key: Callable[[str], str] | None = None,
-) -> tuple[list[str], list[str]]:
-    groups: defaultdict[str, list[str]] = defaultdict(list)
-    substitute: list[str] = []
-    for line in value.strip().splitlines():
-        match = CONDITIONAL_MARKER.match(line)
-        if match:
-            elements = match.groupdict()
-            normalized_key = ", ".join(sorted(i.strip() for i in elements["envs"].split(",")))
-            groups[normalized_key].append(elements["value"].strip())
-        else:
-            for part in re.split(line_split, line.strip()) if line_split else [line.strip()]:
-                if part:  # remove empty lines
-                    if is_substitute(part):
-                        substitute.append(part)
-                    else:
-                        if part not in groups[""]:  # remove duplicates
-                            groups[""].append(part)
-    normalized_group = normalize(groups) if normalize else groups
-    result = list(
-        itertools.chain.from_iterable(
-            (f"{k}: {d}" if k != "" else d for d in sorted(v, key=sort_key))
-            for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
-        ),
-    )
-    return result, substitute
-
-
-def fmt_list(values: list[str], substitute: list[str]) -> str:
-    return "\n".join([""] + sorted(substitute) + values)
 
 
 def to_ordered_list(value: str) -> str:
@@ -135,13 +93,3 @@ def to_commands(value: str) -> str:
             result.append(f"{prepend}{val}{ending}")
             ends_with_sep = cur_ends_with_sep
     return fmt_list(result, [])
-
-
-def to_py_dependencies(value: str) -> str:
-    raw_deps, substitute = collect_multi_line(
-        value,
-        line_split=None,
-        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
-        sort_key=lambda _: "",  # noqa: U101 # we already sorted as we wanted in normalize, keep it as is
-    )
-    return fmt_list(raw_deps, substitute)

@@ -3,7 +3,7 @@ from __future__ import annotations
 import itertools
 from configparser import ConfigParser
 
-from .tox_section import order_env_list
+from .util import order_env_list
 
 
 def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:

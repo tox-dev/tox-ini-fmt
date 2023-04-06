@@ -6,7 +6,8 @@ from textwrap import dedent
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.test_env import to_ordered_list, to_py_dependencies
+from tox_ini_fmt.formatter.test_env import to_ordered_list
+from tox_ini_fmt.formatter.util import to_py_dependencies
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
@@ -155,3 +156,9 @@ def test_deps_conditional() -> None:
 def test_python_req_sort_by_name() -> None:
     result = to_py_dependencies("pytest-cov\npytest\npytest-magic>=1\npytest>=1")
     assert result == "\npytest\npytest>=1\npytest-cov\npytest-magic>=1"
+
+
+def test_depends_ordering(tox_ini: Path) -> None:
+    tox_ini.write_text("[testenv]\ndepends =\n py311\n py312\n py39\n p310")
+    outcome = format_tox_ini(tox_ini)
+    assert outcome == "[testenv]\ndepends =\n    py312\n    py311\n    py39\n    p310\n"
