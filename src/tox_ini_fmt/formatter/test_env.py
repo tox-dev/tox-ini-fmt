@@ -12,11 +12,8 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "runner": str,
         "description": str,
         "base_python": str,
-        "basepython": str,
         "system_site_packages": to_boolean,
-        "sitepackages": to_boolean,
         "always_copy": to_boolean,
-        "alwayscopy": to_boolean,
         "download": to_boolean,
         "package": str,
         "package_env": str,
@@ -24,8 +21,6 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "package_tox_env_type": str,
         "package_root": str,
         "skip_install": to_boolean,
-        "use_develop": to_boolean,
-        "usedevelop": to_boolean,
         "meta_dir": str,
         "pkg_dir": str,
         "pip_pre": to_boolean,
@@ -34,11 +29,9 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "recreate": to_boolean,
         "parallel_show_output": to_boolean,
         "pass_env": to_pass_env,
-        "passenv": to_pass_env,
         "set_env": to_set_env,
         "setenv": to_set_env,
         "change_dir": str,
-        "changedir": str,
         "args_are_paths": to_boolean,
         "ignore_errors": to_boolean,
         "ignore_outcome": to_boolean,
@@ -51,7 +44,25 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "terminate_timeout": str,
         "depends": partial(to_list_of_env_values, []),
     }
-    fix_and_reorder(parser, name, tox_section_cfg)
+    upgrade = {
+        "envdir": "env_dir",
+        "envtmpdir": "env_tmp_dir",
+        "envlogdir": "env_log_dir",
+        "passenv": "pass_env",
+        "setenv": "set_env",
+        "changedir": "change_dir",
+        "basepython": "base_python",
+        "setupdir": "package_root",
+        "sitepackages": "system_site_packages",
+        "alwayscopy": "always_copy",
+    }
+    if name in parser:
+        section = parser[name]
+        use_develop = next((section.pop(i) for i in ("usedevelop", "use_develop") if i in section), "false")
+        if to_boolean(use_develop) == "true":
+            parser[name]["package"] = "editable"
+
+    fix_and_reorder(parser, name, tox_section_cfg, upgrade)
 
 
 def to_ordered_list(value: str) -> str:

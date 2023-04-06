@@ -43,6 +43,9 @@ classifiers = [
 dynamic = [
   "version",
 ]
+dependencies = [
+  "packaging>=23",
+]
 optional-dependencies.test = [
   "covdefaults>=2.3",
   "pytest>=7.2.2",

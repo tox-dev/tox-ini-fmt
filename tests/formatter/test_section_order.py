@@ -37,7 +37,7 @@ def test_section_order(tox_ini: Path) -> None:
         [magic]
         i = j
         [tox]
-        envlist = py38,py37
+        env_list = py38,py37
         e = f
 
         """,
@@ -48,7 +48,9 @@ def test_section_order(tox_ini: Path) -> None:
     expected = dedent(
         """
         [tox]
-        envlist =
+        requires =
+            tox>=4.2
+        env_list =
             py38
             py37
         e = f
@@ -70,7 +72,7 @@ def test_section_order(tox_ini: Path) -> None:
 
 
 def test_pin_missing(tox_ini: Path) -> None:
-    tox_ini.write_text("[tox]\nenvlist=py")
+    tox_ini.write_text("[tox]\nenv_list=py")
 
     with pytest.raises(RuntimeError, match=r"missing tox environment\(s\) to pin missing_1, missing_2"):
         format_tox_ini(tox_ini, ToxIniFmtNamespace(pin_toxenvs=["missing_1", "missing_2"]))
@@ -78,7 +80,7 @@ def test_pin_missing(tox_ini: Path) -> None:
 
 def test_pin(tox_ini: Path) -> None:
     tox_ini.write_text(
-        "[tox]\nenvlist=py38,pkg,py,py39,pypy3,pypy,pin,extra\n"
+        "[tox]\nenv_list=py38,pkg,py,py39,pypy3,pypy,pin,extra\n"
         "[testenv:py38]\ne=f\n"
         "[testenv:pkg]\nc=d\n"
         "[testenv:py]\ng=h\n"
@@ -93,7 +95,9 @@ def test_pin(tox_ini: Path) -> None:
     expected = dedent(
         """
         [tox]
-        envlist =
+        requires =
+            tox>=4.2
+        env_list =
             pin
             pkg
             py39

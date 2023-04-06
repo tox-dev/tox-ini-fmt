@@ -50,8 +50,8 @@ def run(args: Sequence[str] | None = None) -> int:
                 else []
             )
             if diff:
-                diff = color_diff(diff)
-                print("\n".join(diff))  # print diff on change
+                diff_text = "\n".join(color_diff(diff))
+                print(diff_text)  # print diff on change
             else:
                 print(f"no change for {name}")
     # exit with non success on change

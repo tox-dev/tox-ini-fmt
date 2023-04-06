@@ -23,11 +23,11 @@ def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) 
         text = tox_ini
     parser.read_string(text)
 
-    order_sections(parser, opts.pin_toxenvs)
     format_tox_section(parser, opts.pin_toxenvs)
     for section_name in parser.sections():
         if section_name == "testenv" or section_name.startswith("testenv:"):
             format_test_env(parser, section_name)
+    order_sections(parser, opts.pin_toxenvs)
 
     return _generate_tox_ini(parser)
 
