@@ -32,7 +32,7 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "meta_dir": str,
         "pkg_dir": str,
         "pip_pre": to_boolean,
-        "deps": to_deps,
+        "deps": to_py_dependencies,
         "extras": to_ordered_list,
         "recreate": to_boolean,
         "parallel_show_output": to_boolean,
@@ -60,19 +60,11 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
 CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?P<value>.*)")
 
 
-def to_deps(value: str) -> str:
-    raw_deps, substitute = collect_multi_line(
-        value,
-        line_split=None,
-        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
-    )
-    return fmt_list(raw_deps, substitute)
-
-
 def collect_multi_line(
     value: str,
     line_split: str | None = r",| |\t",
     normalize: Callable[[dict[str, list[str]]], dict[str, list[str]]] | None = None,
+    sort_key: Callable[[str], str] | None = None,
 ) -> tuple[list[str], list[str]]:
     groups: defaultdict[str, list[str]] = defaultdict(list)
     substitute: list[str] = []
@@ -93,7 +85,7 @@ def collect_multi_line(
     normalized_group = normalize(groups) if normalize else groups
     result = list(
         itertools.chain.from_iterable(
-            sorted(f"{k}: {d}" if k != "" else d for d in v)
+            (f"{k}: {d}" if k != "" else d for d in sorted(v, key=sort_key))
             for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
         ),
     )
@@ -143,3 +135,13 @@ def to_commands(value: str) -> str:
             result.append(f"{prepend}{val}{ending}")
             ends_with_sep = cur_ends_with_sep
     return fmt_list(result, [])
+
+
+def to_py_dependencies(value: str) -> str:
+    raw_deps, substitute = collect_multi_line(
+        value,
+        line_split=None,
+        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
+        sort_key=lambda _: "",  # noqa: U101 # we already sorted as we wanted in normalize, keep it as is
+    )
+    return fmt_list(raw_deps, substitute)

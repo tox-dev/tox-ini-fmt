@@ -5,8 +5,7 @@ from configparser import ConfigParser
 from functools import partial
 from typing import Callable, Mapping
 
-from .requires import requires
-from .test_env import collect_multi_line, fmt_list
+from .test_env import to_py_dependencies
 from .util import fix_and_reorder, to_boolean
 
 
@@ -16,7 +15,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
         "minversion": str,
         "min_version": str,
-        "requires": to_requires,
+        "requires": to_py_dependencies,
         "provision_tox_env": str,
         "env_list": partial(to_list_of_env_values, pin_toxenvs),
         "envlist": partial(to_list_of_env_values, pin_toxenvs),
@@ -30,11 +29,6 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
         "ignore_basepython_conflict": to_boolean,
     }
     fix_and_reorder(parser, "tox", tox_section_cfg)
-
-
-def to_requires(value: str) -> str:
-    raw_deps, substitute = collect_multi_line(value, line_split=None)
-    return fmt_list(requires(raw_deps), substitute)
 
 
 def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
