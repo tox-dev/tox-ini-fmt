@@ -6,7 +6,7 @@ from textwrap import dedent
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.test_env import to_deps, to_ordered_list
+from tox_ini_fmt.formatter.test_env import to_ordered_list, to_py_dependencies
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
@@ -140,7 +140,7 @@ def test_fail_on_bad_set_env(tox_ini: Path) -> None:
 
 
 def test_deps_conditional() -> None:
-    result = to_deps(
+    result = to_py_dependencies(
         "\ncoverage,codecov: coverage\ncodecov: codecov"
         "\n-r{toxinidir}/test-requirements.txt\n-r{toxinidir}/dev-requirements.txt"
         "\nvirtue\nb",
@@ -150,3 +150,8 @@ def test_deps_conditional() -> None:
         "\nb\nvirtue"
         "\ncodecov: codecov\ncodecov, coverage: coverage"
     )
+
+
+def test_python_req_sort_by_name() -> None:
+    result = to_py_dependencies("pytest-cov\npytest\npytest-magic>=1\npytest>=1")
+    assert result == "\npytest\npytest>=1\npytest-cov\npytest-magic>=1"
