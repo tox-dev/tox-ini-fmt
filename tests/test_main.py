@@ -53,24 +53,32 @@ def no_color(diff: str) -> str:
 @pytest.mark.parametrize(
     ("start", "outcome", "output"),
     [
-        (
-            "[tox]\nenvlist=py39,py38",
-            "[tox]\nenvlist =\n    py39\n    py38\n",
-            "--- {0}\n\n+++ {0}\n\n@@ -1,2 +1,4 @@\n\n "
-            "[tox]\n-envlist=py39,py38\n+envlist =\n+    py39\n+    py38\n",
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list=py311,py310",
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n",
+            "--- {0}\n\n+++ {0}\n\n@@ -1,4 +1,6 @@\n\n "
+            "[tox]\n requires =\n     tox>=4.2\n-env_list=py311,py310\n+env_list =\n+    py311\n+    py310\n",
+            id="change-core",
         ),
-        ("[tox]\nenvlist =\n    py39\n    py38\n", "[tox]\nenvlist =\n    py39\n    py38\n", "no change for {0}\n"),
-        (
-            "[testenv]\ncommands=pytest --log-format='%(asctime)s'",
-            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
-            "--- {0}\n\n+++ {0}\n\n@@ -1,2 +1,3 @@\n\n "
-            "[testenv]\n-commands=pytest --log-format='%(asctime)s'\n"
-            "+commands =\n+    pytest --log-format='%(asctime)s'\n",
-        ),
-        (
-            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
-            "[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n",
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n",
             "no change for {0}\n",
+            id="no-change-core",
+        ),
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\n[testenv]\ncommands=pytest --log-format='%(asctime)s'",
+            "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "--- {0}\n\n+++ {0}\n\n@@ -1,5 +1,7 @@\n\n "
+            "[tox]\n requires =\n     tox>=4.2\n+\n [testenv]\n-commands=pytest --log-format='%(asctime)s'\n"
+            "+commands =\n+    pytest --log-format='%(asctime)s'\n",
+            id="change-testenv",
+        ),
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ncommands =\n    pytest --log-format='%(asctime)s'\n",
+            "no change for {0}\n",
+            id="no-change-testenv",
         ),
     ],
 )

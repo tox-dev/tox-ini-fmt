@@ -12,13 +12,13 @@ from tox_ini_fmt.formatter.util import to_py_dependencies
 
 def test_no_tox_section(tox_ini: Path) -> None:
     tox_ini.write_text("")
-    assert format_tox_ini(tox_ini) == "\n"
+    assert format_tox_ini(tox_ini) == "[tox]\nrequires =\n    tox>=4.2\n"
 
 
 def test_format_test_env(tox_ini: Path) -> None:
     content = dedent(
         """
-    usedevelop = True
+    package = editable
     skip_install =\tFalse
     parallel_show_output = false
     commands = \te
@@ -29,8 +29,8 @@ def test_format_test_env(tox_ini: Path) -> None:
     description = \tdesc\t
     deps = \tb\t
       \ta\t
-    basepython=\tpython3.8\t
-    passenv=z y x
+    base_python=\tpython3.8\t
+    pass_env=z y x
     setenv= C=D
             E =F
 
@@ -41,11 +41,15 @@ def test_format_test_env(tox_ini: Path) -> None:
     outcome = format_tox_ini(tox_ini)
     expected = dedent(
         """
+        [tox]
+        requires =
+            tox>=4.2
+
         [testenv]
         description = desc
-        basepython = python3.8
+        base_python = python3.8
+        package = editable
         skip_install = false
-        usedevelop = true
         deps =
             a
             b
@@ -53,11 +57,11 @@ def test_format_test_env(tox_ini: Path) -> None:
             c
             d
         parallel_show_output = false
-        passenv =
+        pass_env =
             x
             y
             z
-        setenv =
+        set_env =
             A = B
             C = D
             E = F
@@ -93,33 +97,37 @@ def test_extras(arg: str, output: str) -> None:
 @pytest.mark.parametrize(
     ("key", "before", "pre", "post", "expected"),
     [
-        (
-            "setenv",
+        pytest.param(
+            "set_env",
             "\n    A = B",
             "C=D",
             "E=F",
-            "\n    {[testenv:x]X}\n    {[testenv]setenv}\n    C = D\n    E = F",
+            "\n    {[testenv:x]X}\n    {[testenv]set_env}\n    C = D\n    E = F",
+            id="setenv",
         ),
-        (
-            "passenv",
+        pytest.param(
+            "pass_env",
             "\n    A",
             "C",
             "E",
-            "\n    {[testenv:x]X}\n    {[testenv]passenv}\n    C\n    E",
+            "\n    {[testenv:x]X}\n    {[testenv]pass_env}\n    C\n    E",
+            id="pass_env",
         ),
-        (
+        pytest.param(
             "deps",
             "\n    A",
             "C",
             "B",
             "\n    {[testenv:x]X}\n    {[testenv]deps}\n    B\n    C",
+            id="deps",
         ),
-        (
+        pytest.param(
             "extras",
             "\n    A",
             "B",
             "C",
             "\n    {[testenv:x]X}\n    {[testenv]extras}\n    B\n    C",
+            id="extras",
         ),
     ],
 )
@@ -130,7 +138,7 @@ def test_format_test_env_ref(tox_ini: Path, key: str, before: str, pre: str, pos
     )
     tox_ini.write_text(text)
     outcome = format_tox_ini(tox_ini)
-    expected = f"[testenv]\n{key} ={before}\n\n[testenv:py]\n{key} ={expected}\n"
+    expected = f"[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\n{key} ={before}\n\n[testenv:py]\n{key} ={expected}\n"
     assert outcome == expected
 
 
@@ -161,4 +169,5 @@ def test_python_req_sort_by_name() -> None:
 def test_depends_ordering(tox_ini: Path) -> None:
     tox_ini.write_text("[testenv]\ndepends =\n py311\n py312\n py39\n p310")
     outcome = format_tox_ini(tox_ini)
-    assert outcome == "[testenv]\ndepends =\n    py312\n    py311\n    py39\n    p310\n"
+    msg = "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ndepends =\n    py312\n    py311\n    py39\n    p310\n"
+    assert outcome == msg

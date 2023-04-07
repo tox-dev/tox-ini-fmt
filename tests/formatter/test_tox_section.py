@@ -11,27 +11,36 @@ from tox_ini_fmt.formatter.util import order_env_list
 
 def test_no_tox_section(tox_ini: Path) -> None:
     tox_ini.write_text("")
-    assert format_tox_ini(tox_ini) == "\n"
+    assert format_tox_ini(tox_ini) == "[tox]\nrequires =\n    tox>=4.2\n"
 
 
-def test_format_envlist_simple(tox_ini: Path) -> None:
-    tox_ini.write_text("[tox]\nenvlist=py39,py38\n")
+def test_format_env_list_simple(tox_ini: Path) -> None:
+    tox_ini.write_text("[tox]\nenv_list=py39,py38\n")
     outcome = format_tox_ini(tox_ini)
-    assert outcome == "[tox]\nenvlist =\n    py39\n    py38\n"
+    assert outcome == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
 
 
-def test_format_envlist_start_newline(tox_ini: Path) -> None:
-    ok = "[tox]\nenvlist =\n    py39\n    py38\n"
+def test_format_env_list_start_newline(tox_ini: Path) -> None:
+    ok = "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
     tox_ini.write_text(ok)
     outcome = format_tox_ini(tox_ini)
     assert outcome == ok
 
 
-def test_format_envlist_generator(tmp_path: Path) -> None:
+def test_format_env_list_generator(tmp_path: Path) -> None:
     path = tmp_path / "tox.ini"
-    path.write_text("[tox]\nenvlist={py36,py37}-django{20,21},{py36,py37}-mango{20,21},py38\n")
+    path.write_text("[tox]\nenv_list={py36,py37}-django{20,21},{py36,py37}-mango{20,21},py38\n")
     outcome = format_tox_ini(path)
-    assert outcome == "[tox]\nenvlist =\n    py38\n    {py37, py36}-django{21, 20}\n    {py37, py36}-mango{21, 20}\n"
+    msg = """\
+    [tox]
+    requires =
+        tox>=4.2
+    env_list =
+        py38
+        {py37, py36}-django{21, 20}
+        {py37, py36}-mango{21, 20}
+    """
+    assert outcome == dedent(msg)
 
 
 def test_tox_section_order(tox_ini: Path) -> None:
@@ -43,21 +52,20 @@ def test_tox_section_order(tox_ini: Path) -> None:
      tox-magic >= 0.2
      tox-abc >= 0.1
     minversion=3.14
-    skipsdist=false
-    envlist=py37
+    skipsdist=true
+    env_list=py37
     """
     tox_ini.write_text(dedent(text))
     outcome = format_tox_ini(tox_ini)
     result = """\
     [tox]
-    minversion = 3.14
     requires =
+        tox>=4.2
         tox-abc>=0.1
         tox-magic>=0.2
-    envlist =
+    env_list =
         py37
-    isolated_build = true
-    skipsdist = false
+    no_package = true
     skip_missing_interpreters = true
     """
     result = dedent(result)
@@ -67,8 +75,6 @@ def test_tox_section_order(tox_ini: Path) -> None:
 @pytest.mark.parametrize(
     "key",
     [
-        "isolated_build",
-        "skipsdist",
         "skip_missing_interpreters",
     ],
 )
@@ -84,7 +90,7 @@ def test_tox_section_order(tox_ini: Path) -> None:
 def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> None:
     tox_ini.write_text(f"[tox]\n{key}={value}")
     outcome = format_tox_ini(tox_ini)
-    expected = f"[tox]\n{key} = {result}\n"
+    expected = f"[tox]\nrequires =\n    tox>=4.2\n{key} = {result}\n"
     assert outcome == expected
 
 
@@ -109,8 +115,8 @@ def test_order_env_list(arg: list[str], outcome: list[str]) -> None:
 def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:
     """tox.ini gets formatted without adding additional whitespace
 
-    This was previously caused by a trailing comma in the `envlist`.
+    This was previously caused by a trailing comma in the `env_list`.
     """
-    tox_ini.write_text("[tox]\nenvlist=\n    py38,\n    pkg,\n" "[testenv:pkg]\na=b\n")
+    tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n" "[testenv:pkg]\na=b\n")
     result = format_tox_ini(tox_ini)
-    assert result == "[tox]\nenvlist =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"
+    assert result == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"

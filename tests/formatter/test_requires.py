@@ -21,8 +21,8 @@ from tox_ini_fmt.formatter.requires import requires
             "pytest-xdist>=1.31.0\n",
             [
                 "pytest-xdist>=1.31",
-                'packaging>=20;python_version>"3.4"',
-                "xonsh>=0.9.16;python_version > '3.4' and python_version != '3.9'",
+                'packaging>=20; python_version > "3.4"',
+                'xonsh>=0.9.16; python_version > "3.4" and python_version != "3.9"',
             ],
         ),
         ("pytest>=6.0.0", ["pytest>=6"]),
@@ -33,20 +33,3 @@ from tox_ini_fmt.formatter.requires import requires
 def test_requires_fmt(value: str, result: list[str]) -> None:
     outcome = requires([i.strip() for i in value.splitlines() if i.strip()])
     assert outcome == result
-
-
-@pytest.mark.parametrize(
-    "char",
-    [
-        "!",
-        "=",
-        ">",
-        "<",
-        " ",
-        "\t",
-        "@",
-    ],
-)
-def test_bad_syntax_requires(char: str) -> None:
-    with pytest.raises(ValueError, match=f"[{char}]" if char.strip() else None):
-        requires([f"{char};"])
