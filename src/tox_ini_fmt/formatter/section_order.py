@@ -25,8 +25,6 @@ def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 
 def load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
-    if not parser.has_section("tox"):
-        return []
     result: list[str] = next(
         (explode_env_list(parser["tox"][i]) for i in ("envlist", "env_list") if i in parser["tox"]),
         [],

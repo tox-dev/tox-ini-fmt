@@ -13,15 +13,15 @@ def test_platform_default(tox_ini: Path) -> None:
 
     tox_ini.write_bytes(b"[tox]")
     run([str(tox_ini)])
-    assert tox_ini.read_bytes() == f"[tox]{os.linesep}".encode()
+    assert tox_ini.read_bytes() == f"[tox]{os.linesep}requires ={os.linesep}    tox>=4.2{os.linesep}".encode()
 
 
 @pytest.mark.parametrize("newline", ["\r\n", "\n", "\r"])
 def test_line_endings(tox_ini: Path, newline: str) -> None:
     """The ini file's existing newlines must be respected when reformatting."""
 
-    original_text = f"[tox]{newline}envlist=py39"
-    expected_text = f"[tox]{newline}envlist ={newline}    py39{newline}"
+    original_text = f"[tox]{newline}requires ={newline}    tox>=4.2{newline}env_list=py39"
+    expected_text = f"[tox]{newline}requires ={newline}    tox>=4.2{newline}env_list ={newline}    py39{newline}"
     tox_ini.write_bytes(original_text.encode("utf8"))
     run([str(tox_ini)])
     assert tox_ini.read_bytes() == expected_text.encode("utf8")
@@ -34,8 +34,8 @@ def test_mixed_line_endings(tox_ini: Path) -> None:
     Python does not report the newlines in the order they're encountered.
     """
 
-    original_text = "[tox]\r\n \r \nenvlist=py39"
-    expected_text = "[tox]!!envlist =!!    py39!!"
+    original_text = "[tox]\r\n \r \nenv_list=py39"
+    expected_text = "[tox]!!requires =!!    tox>=4.2!!env_list =!!    py39!!"
     tox_ini.write_bytes(original_text.encode("utf8"))
     with tox_ini.open("rt") as file:
         file.read()
