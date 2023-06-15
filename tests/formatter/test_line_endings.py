@@ -1,11 +1,14 @@
 from __future__ import annotations
 
 import os
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.__main__ import run
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_platform_default(tox_ini: Path) -> None:

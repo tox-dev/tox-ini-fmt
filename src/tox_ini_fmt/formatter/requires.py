@@ -1,3 +1,4 @@
+"""Normalize requires values."""
 from __future__ import annotations
 
 from packaging.requirements import InvalidRequirement, Requirement
@@ -14,7 +15,7 @@ def normalize_req(req: str) -> str:
             version = spec.version
             while version.endswith(".0"):
                 version = version[:-2]
-                spec._spec = (spec._spec[0], version)
+                spec._spec = (spec._spec[0], version)  # noqa: SLF001
     return str(parsed)
 
 
@@ -26,9 +27,14 @@ def _req_name(req: str) -> str:
 
 
 def requires(raws: list[str]) -> list[str]:
+    """
+    Normalize a list of requires.
+
+    :param raws: the raw values
+    :return: the formatted values
+    """
     values = (normalize_req(req) for req in raws if req)
-    normalized = sorted(values, key=lambda req: (";" in req, _req_name(req), req))
-    return normalized
+    return sorted(values, key=lambda req: (";" in req, _req_name(req), req))
 
 
 __all__ = [

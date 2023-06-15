@@ -1,3 +1,4 @@
+"""Logic related to formatting the file."""
 from __future__ import annotations
 
 from configparser import ConfigParser
@@ -14,13 +15,17 @@ INDENTATION = "    "
 
 
 def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) -> str:
+    """
+    Format a tox ini file.
+
+    :param tox_ini:
+    :param opts:
+    :return:
+    """
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser(interpolation=None)
-    if isinstance(tox_ini, Path):
-        text = tox_ini.read_text()
-    else:
-        text = tox_ini
+    text = tox_ini.read_text() if isinstance(tox_ini, Path) else tox_ini
     parser.read_string(text)
 
     format_tox_section(parser, opts.pin_toxenvs)

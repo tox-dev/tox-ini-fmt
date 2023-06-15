@@ -1,13 +1,22 @@
+"""Formatting the test environment sections."""
 from __future__ import annotations
 
-from configparser import ConfigParser
 from functools import partial
-from typing import Callable, Mapping
+from typing import TYPE_CHECKING, Callable, Mapping
 
 from .util import collect_multi_line, fix_and_reorder, fmt_list, to_boolean, to_list_of_env_values, to_py_dependencies
 
+if TYPE_CHECKING:
+    from configparser import ConfigParser
+
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
+    """
+    Format a tox test environment.
+
+    :param parser: the INI parser
+    :param name:  name of the test env
+    """
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
         "runner": str,
         "description": str,
@@ -66,23 +75,36 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
 
 
 def to_ordered_list(value: str) -> str:
-    """Must be a line separated list - fix comma separated format"""
+    """Must be a line separated list - fix comma separated format."""
     extras, substitute = collect_multi_line(value)
     return fmt_list(extras, substitute)
 
 
 def to_pass_env(value: str) -> str:
+    """
+    Format the pass env sections.
+
+    :param value:
+    :return:
+    """
     pass_env, substitute = collect_multi_line(value)
     return fmt_list(sorted(pass_env), substitute)
 
 
 def to_set_env(value: str) -> str:
+    """
+    Format the set env.
+
+    :param value:
+    :return:
+    """
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
     set_env: list[str] = []
     for env in raw_set_env:
         at = env.find("=")
         if at == -1:
-            raise RuntimeError(f"invalid line {env} in setenv")
+            msg = f"invalid line {env} in setenv"
+            raise RuntimeError(msg)
         set_env.append(f"{env[:at].strip()} = {env[at+1:].strip()}")
     return fmt_list(sorted(set_env), substitute)
 
@@ -91,10 +113,16 @@ _CMD_SEP = "\\"
 
 
 def to_commands(value: str) -> str:
+    """
+    Format the tox commands.
+
+    :param value: the raw value
+    :return: the formatted value
+    """
     result: list[str] = []
     ends_with_sep = False
-    for val in value.splitlines():
-        val = val.strip()
+    for raw_val in value.splitlines():
+        val = raw_val.strip()
         cur_ends_with_sep = val.endswith(_CMD_SEP)
         if cur_ends_with_sep:
             val = val[:-1].strip()

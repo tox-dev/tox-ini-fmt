@@ -1,12 +1,15 @@
 from __future__ import annotations
 
-from pathlib import Path
 from textwrap import dedent
+from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.util import order_env_list
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
@@ -117,7 +120,7 @@ def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:
 
     This was previously caused by a trailing comma in the `env_list`.
     """
-    tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n" "[testenv:pkg]\na=b\n")
+    tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n[testenv:pkg]\na=b\n")
     result = format_tox_ini(tox_ini)
     assert result == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"
 

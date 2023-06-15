@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from pathlib import Path
 from textwrap import dedent
+from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.cli import ToxIniFmtNamespace
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.section_order import explode_env_list
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 @pytest.mark.parametrize(
