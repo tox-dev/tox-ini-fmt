@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 from stat import S_IREAD, S_IWRITE
+from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.cli import cli_args
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_cli_tox_ini_ok(tmp_path: Path) -> None:

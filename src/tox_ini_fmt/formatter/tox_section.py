@@ -1,8 +1,8 @@
+"""Formatting the core tox section."""
 from __future__ import annotations
 
-from configparser import ConfigParser, SectionProxy
 from functools import partial
-from typing import Callable, Mapping
+from typing import TYPE_CHECKING, Callable, Mapping
 
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -10,8 +10,17 @@ from packaging.version import Version
 from .requires import requires
 from .util import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
 
+if TYPE_CHECKING:
+    from configparser import ConfigParser, SectionProxy
+
 
 def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
+    """
+    Format the core tox section.
+
+    :param parser: the INI parser
+    :param pin_toxenvs: environments to pin at start
+    """
     if not parser.has_section("tox"):
         parser.add_section("tox")
     tox = parser["tox"]
@@ -43,7 +52,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 def _handle_min_version(tox: SectionProxy) -> None:
     min_version = next((tox.pop(i) for i in ("minversion", "min_version") if i in tox), None)
-    if min_version is None or int(min_version.split(".")[0]) < 4:
+    if min_version is None or int(min_version.split(".")[0]) < 4:  # noqa: PLR2004
         min_version = "4.2"
     tox_requires = [
         Requirement(i)

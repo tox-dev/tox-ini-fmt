@@ -1,3 +1,4 @@
+"""Main entry point."""
 from __future__ import annotations
 
 import difflib
@@ -14,6 +15,11 @@ RESET = "\u001b[0m"
 
 
 def color_diff(diff: Iterable[str]) -> Iterable[str]:
+    """
+    Display diff in colored mode.
+
+    :param diff: the diff lines
+    """
     for line in diff:
         if line.startswith("+"):
             yield GREEN + line + RESET
@@ -24,6 +30,12 @@ def color_diff(diff: Iterable[str]) -> Iterable[str]:
 
 
 def run(args: Sequence[str] | None = None) -> int:
+    """
+    Run the formatter.
+
+    :param args: CLI arguments
+    :return: exit code
+    """
     opts = cli_args(sys.argv[1:] if args is None else args)
     changed = False
     for tox_ini in opts.tox_ini:
@@ -35,7 +47,7 @@ def run(args: Sequence[str] | None = None) -> int:
         formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:  # stdout just prints new format to stdout
-            print(formatted, end="")
+            print(formatted, end="")  # noqa: T201
         else:
             if before != formatted:
                 with tox_ini.open("wt", newline=original_newlines) as file:
@@ -51,12 +63,12 @@ def run(args: Sequence[str] | None = None) -> int:
             )
             if diff:
                 diff_text = "\n".join(color_diff(diff))
-                print(diff_text)  # print diff on change
+                print(diff_text)  # print diff on change  # noqa: T201
             else:
-                print(f"no change for {name}")
+                print(f"no change for {name}")  # noqa: T201
     # exit with non success on change
     return 1 if changed else 0
 
 
 if __name__ == "__main__":
-    sys.exit(run())
+    raise SystemExit(run())

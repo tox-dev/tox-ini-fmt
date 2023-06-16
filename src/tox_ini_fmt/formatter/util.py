@@ -1,16 +1,25 @@
+"""Utility methods."""
 from __future__ import annotations
 
 import itertools
 import re
 from collections import defaultdict
-from configparser import ConfigParser
 from functools import partial
-from typing import Callable, Mapping
+from typing import TYPE_CHECKING, Callable, Mapping
 
 from .requires import requires
 
+if TYPE_CHECKING:
+    from configparser import ConfigParser
+
 
 def to_boolean(payload: str) -> str:
+    """
+    Convert value to boolean.
+
+    :param payload: the raw value
+    :return: converted value
+    """
     return "true" if payload.lower() == "true" else "false"
 
 
@@ -20,19 +29,28 @@ def fix_and_reorder(
     fix_cfg: Mapping[str, Callable[[str], str]],
     upgrade: dict[str, str],
 ) -> None:
+    """
+    Fix and reorder values.
+
+    :param parser: the INI parser
+    :param name:  name
+    :param fix_cfg: values to fix
+    :param upgrade: values to upgrade
+    """
     section = parser[name]
     # upgrade
     for key, to in upgrade.items():
         if key in section:
             if to in section:
-                raise RuntimeError(f"upgrade alias {to} also present for {key}")
+                msg = f"upgrade alias {to} also present for {key}"
+                raise RuntimeError(msg)
             section[to] = section.pop(key)
     # normalize
     for key, fix in fix_cfg.items():
         if key in section:
             section[key] = fix(section[key])
     # reorder keys within section
-    new_section = {k: section.pop(k) for k in fix_cfg.keys() if k in section}
+    new_section = {k: section.pop(k) for k in fix_cfg if k in section}
     new_section.update(sorted(section.items()))  # sort any remaining keys
     parser[name] = new_section
 
@@ -50,6 +68,11 @@ RE_ITEM_REF = re.compile(
 
 
 def is_substitute(value: str) -> bool:
+    """
+    Check if has substitute value.
+
+    :param value: the raw value
+    """
     match = RE_ITEM_REF.match(value)
     if match:
         sub_key = match.group("substitution_value")
@@ -62,10 +85,16 @@ _MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
 
 def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     """
-    Example:
+    Expand list of tox envs.
 
+    :param pin_toxenvs: envs to pin at top.
+    :param payload: the tox envs list
+    :return: the expanded tox env list
+
+    Example:
+    -------
     envlist = py39,py38
-    envlist = {py37,py36}-django{20,21},{py37,py36}-mango{20,21},py38
+    envlist = {py37,py36}-django{20,21},{py37,py36}-mango{20,21},py38.
     """
     within_braces, values = False, []
     cur_str, brace_str = "", ""
@@ -94,13 +123,12 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
             cur_str += char
     # avoid adding an empty value, caused e.g. by a trailing comma
     last_entry = cur_str.strip()
-    if last_entry != "":
+    if last_entry:
         values.append(last_entry)
     # start with higher python version
     order_env_list(values, pin_toxenvs)
     # use newline instead of comma as separator, indent values one per newline (no value on key-row)
-    result = "\n{}".format("\n".join(f"{v}" for v in values))
-    return result
+    return "\n{}".format("\n".join(f"{v}" for v in values))
 
 
 def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, int]:
@@ -122,6 +150,12 @@ def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, int]:
 
 
 def order_env_list(values: list[str], pin_toxenvs: list[str]) -> None:
+    """
+    Order environment list.
+
+    :param values: list of environments
+    :param pin_toxenvs: values to pin at top
+    """
     values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
 
 
@@ -134,6 +168,15 @@ def collect_multi_line(
     normalize: Callable[[dict[str, list[str]]], dict[str, list[str]]] | None = None,
     sort_key: Callable[[str], str] | None = None,
 ) -> tuple[list[str], list[str]]:
+    """
+    Collect multiline values.
+
+    :param value:
+    :param line_split:
+    :param normalize:
+    :param sort_key:
+    :return:
+    """
     groups: defaultdict[str, list[str]] = defaultdict(list)
     substitute: list[str] = []
     for line in value.strip().splitlines():
@@ -147,13 +190,12 @@ def collect_multi_line(
                 if part:  # remove empty lines
                     if is_substitute(part):
                         substitute.append(part)
-                    else:
-                        if part not in groups[""]:  # remove duplicates
-                            groups[""].append(part)
+                    elif part not in groups[""]:  # remove duplicates
+                        groups[""].append(part)
     normalized_group = normalize(groups) if normalize else groups
     result = list(
         itertools.chain.from_iterable(
-            (f"{k}: {d}" if k != "" else d for d in sorted(v, key=sort_key))
+            (f"{k}: {d}" if k else d for d in sorted(v, key=sort_key))
             for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
         ),
     )
@@ -161,14 +203,27 @@ def collect_multi_line(
 
 
 def to_py_dependencies(value: str) -> str:
+    """
+    Format to list Python dependencies.
+
+    :param value: the raw value
+    :return: the formatted value
+    """
     raw_deps, substitute = collect_multi_line(
         value,
         line_split=None,
         normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
-        sort_key=lambda _: "",  # noqa: U101 # we already sorted as we wanted in normalize, keep it as is
+        sort_key=lambda _: "",  # we already sorted as we wanted in normalize, keep it as is
     )
     return fmt_list(raw_deps, substitute)
 
 
 def fmt_list(values: list[str], substitute: list[str]) -> str:
-    return "\n".join([""] + sorted(substitute) + values)
+    """
+    Format a list of values.
+
+    :param values: the raw values
+    :param substitute: substitution
+    :return: formatted list
+    """
+    return "\n".join(["", *sorted(substitute), *values])

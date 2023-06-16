@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from pathlib import Path
 from textwrap import dedent
+from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.test_env import to_ordered_list
 from tox_ini_fmt.formatter.util import to_py_dependencies
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
@@ -131,7 +134,14 @@ def test_extras(arg: str, output: str) -> None:
         ),
     ],
 )
-def test_format_test_env_ref(tox_ini: Path, key: str, before: str, pre: str, post: str, expected: str) -> None:
+def test_format_test_env_ref(  # noqa: PLR0913
+    tox_ini: Path,
+    key: str,
+    before: str,
+    pre: str,
+    post: str,
+    expected: str,
+) -> None:
     text = (
         f"[testenv]\n{key}={before}\n[testenv:py]"
         f"\n{key}=\n {pre}\n {{[testenv:x]X}}\n {{[testenv]{key}}}\n {post}\n"

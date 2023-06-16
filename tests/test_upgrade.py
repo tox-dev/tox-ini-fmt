@@ -1,8 +1,11 @@
 from __future__ import annotations
 
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from tox_ini_fmt.formatter import format_tox_ini
+
+if TYPE_CHECKING:
+    from pathlib import Path
 
 
 def test_upgrade_tox_section(tox_ini: Path) -> None:
