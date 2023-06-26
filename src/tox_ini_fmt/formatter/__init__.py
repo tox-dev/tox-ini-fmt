@@ -42,5 +42,4 @@ def _generate_tox_ini(parser: ConfigParser) -> str:
     parser.write(output)
     result = output.getvalue().strip() + "\n"
     result = result.replace("\t", INDENTATION)
-    result = result.replace(" \n", "\n")
-    return result
+    return result.replace(" \n", "\n")
