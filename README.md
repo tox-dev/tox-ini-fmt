@@ -3,7 +3,7 @@
 [![PyPI](https://img.shields.io/pypi/v/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/tox-ini-fmt?style=flat-square)](https://pypistats.org/packages/tox-ini-fmt)
+[![Downloads](https://static.pepy.tech/badge/tox-ini-fmt/month)](https://pepy.tech/project/tox-ini-fmt)
 [![PyPI - License](https://img.shields.io/pypi/l/tox-ini-fmt?style=flat-square)](https://opensource.org/licenses/MIT)
 ![check](https://github.com/tox-dev/tox-ini-fmt/workflows/check/badge.svg?branch=main)
 [![codecov](https://codecov.io/gh/tox-dev/tox-ini-fmt/branch/main/graph/badge.svg)](https://codecov.io/gh/pypa/virtualenv)
