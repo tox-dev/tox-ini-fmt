@@ -2,7 +2,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs>=0.3",
-  "hatchling>=1.17.1",
+  "hatchling>=1.18",
 ]
 
 [project]
@@ -48,7 +48,7 @@ dependencies = [
 ]
 optional-dependencies.test = [
   "covdefaults>=2.3",
-  "pytest>=7.3.2",
+  "pytest>=7.4.2",
   "pytest-cov>=4.1",
 ]
 urls.Documentation = "https://tox.wiki"
