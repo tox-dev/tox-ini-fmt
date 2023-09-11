@@ -73,4 +73,6 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         help="tox environments that pin to the start of the envlist (comma separated)",
     )
     parser.add_argument("tox_ini", nargs="+", type=tox_ini_path_creator, help="tox ini files to format")
-    return parser.parse_args(namespace=ToxIniFmtNamespace(), args=args)
+    ns = ToxIniFmtNamespace()
+    parser.parse_args(namespace=ns, args=args)
+    return ns
