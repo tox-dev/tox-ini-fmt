@@ -1,4 +1,5 @@
 """Main entry point."""
+
 from __future__ import annotations
 
 import difflib

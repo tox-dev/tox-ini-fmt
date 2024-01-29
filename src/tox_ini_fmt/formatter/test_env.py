@@ -1,4 +1,5 @@
 """Formatting the test environment sections."""
+
 from __future__ import annotations
 
 from functools import partial

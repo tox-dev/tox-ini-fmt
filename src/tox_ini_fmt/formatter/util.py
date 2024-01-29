@@ -1,4 +1,5 @@
 """Utility methods."""
+
 from __future__ import annotations
 
 import itertools
