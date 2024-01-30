@@ -1,4 +1,5 @@
 """Logic related to formatting the file."""
+
 from __future__ import annotations
 
 from configparser import ConfigParser

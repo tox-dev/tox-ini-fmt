@@ -1,4 +1,5 @@
 """Normalize requires values."""
+
 from __future__ import annotations
 
 from packaging.requirements import InvalidRequirement, Requirement
