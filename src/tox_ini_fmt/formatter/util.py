@@ -96,6 +96,7 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     -------
     envlist = py39,py38
     envlist = {py37,py36}-django{20,21},{py37,py36}-mango{20,21},py38.
+
     """
     within_braces, values = False, []
     cur_str, brace_str = "", ""
