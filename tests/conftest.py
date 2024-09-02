@@ -8,6 +8,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 
-@pytest.fixture()
+@pytest.fixture
 def tox_ini(tmp_path: Path) -> Path:
     return tmp_path / "tox.ini"
