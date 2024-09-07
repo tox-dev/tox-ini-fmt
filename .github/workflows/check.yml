@@ -20,12 +20,12 @@ jobs:
       fail-fast: false
       matrix:
         py:
+          - "3.13"
           - "3.12"
           - "3.11"
           - "3.10"
           - "3.9"
           - "3.8"
-          - "3.7"
     steps:
       - name: setup python for tox
         uses: actions/setup-python@v5
@@ -38,6 +38,7 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.py }}
+          allow-prereleases: true
       - name: setup test suite
         run: tox run -vv --notest --skip-missing-interpreters false -e ${{ matrix.py }}
       - name: run test suite

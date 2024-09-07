@@ -20,7 +20,7 @@ license = "MIT"
 maintainers = [
   { name = "Bernát Gábor", email = "gaborjbernat@gmail.com" },
 ]
-requires-python = ">=3.7"
+requires-python = ">=3.8"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: tox",
@@ -30,12 +30,12 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.7",
   "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
   "Topic :: Software Development :: Libraries",
   "Topic :: Software Development :: Testing",
   "Topic :: Utilities",
@@ -110,6 +110,9 @@ lint.preview = true
 builtin = "clear,usage,en-GB_to_en-US"
 write-changes = true
 count = true
+
+[tool.pyproject-fmt]
+max_supported_python = "3.13"
 
 [tool.coverage]
 html.show_contexts = true
