@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import pytest
-
 from tox_ini_fmt.formatter.requires import requires
 
 

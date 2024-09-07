@@ -12,7 +12,7 @@ def normalize_req(req: str) -> str:
         return req
 
     for spec in parsed.specifier:
-        if spec.operator in (">=", "=="):
+        if spec.operator in {">=", "=="}:
             version = spec.version
             while version.endswith(".0"):
                 version = version[:-2]

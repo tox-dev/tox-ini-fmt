@@ -4,7 +4,6 @@ import os
 from typing import TYPE_CHECKING
 
 import pytest
-
 from tox_ini_fmt.__main__ import run
 
 if TYPE_CHECKING:

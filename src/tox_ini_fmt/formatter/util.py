@@ -110,7 +110,7 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
             cur_str += f'{{{", ".join(envs)}}}'
             brace_str = ""
             continue
-        elif char in (",", "\n"):
+        elif char in {",", "\n"}:
             if within_braces:
                 pass
             else:

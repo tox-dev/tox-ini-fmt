@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def test_version() -> None:
-    import tox_ini_fmt
+    import tox_ini_fmt  # noqa: PLC0415
 
     assert tox_ini_fmt.__version__
 

@@ -106,7 +106,7 @@ def to_set_env(value: str) -> str:
         if at == -1:
             msg = f"invalid line {env} in setenv"
             raise RuntimeError(msg)
-        set_env.append(f"{env[:at].strip()} = {env[at+1:].strip()}")
+        set_env.append(f"{env[:at].strip()} = {env[at + 1 :].strip()}")
     return fmt_list(sorted(set_env), substitute)
 
 
