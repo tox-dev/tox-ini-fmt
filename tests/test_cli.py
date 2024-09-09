@@ -5,6 +5,7 @@ from stat import S_IREAD, S_IWRITE
 from typing import TYPE_CHECKING
 
 import pytest
+
 from tox_ini_fmt.cli import cli_args
 
 if TYPE_CHECKING:

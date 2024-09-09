@@ -4,6 +4,7 @@ import difflib
 from typing import TYPE_CHECKING
 
 import pytest
+
 import tox_ini_fmt.__main__
 from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, run
 
