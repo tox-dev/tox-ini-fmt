@@ -4,6 +4,7 @@ from textwrap import dedent
 from typing import TYPE_CHECKING
 
 import pytest
+
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.test_env import to_ordered_list
 from tox_ini_fmt.formatter.util import to_py_dependencies

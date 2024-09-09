@@ -4,6 +4,7 @@ from textwrap import dedent
 from typing import TYPE_CHECKING
 
 import pytest
+
 from tox_ini_fmt.cli import ToxIniFmtNamespace
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.section_order import explode_env_list
