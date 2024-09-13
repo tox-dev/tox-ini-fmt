@@ -27,12 +27,17 @@ jobs:
           - "3.9"
           - "3.8"
     steps:
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          enable-cache: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: setup python for tox
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: install tox
-        run: python -m pip install tox-uv
+        run: uv pip install --system tox-uv
       - uses: actions/checkout@v4
       - name: setup python for test ${{ matrix.py }}
         uses: actions/setup-python@v5
@@ -56,13 +61,18 @@ jobs:
           - readme
     steps:
       - uses: actions/checkout@v4
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@v2
+        with:
+          enable-cache: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: setup Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: install tox
-        run: python -m pip install tox-uv
-      - name: run check for ${{ matrix.tox_env }}
-        run: python -m tox -e ${{ matrix.tox_env }}
-        env:
-          UPGRADE_ADVISORY: "yes"
+        run: uv pip install --system tox-uv
+      - name: setup test suite
+        run: tox run -vv --notest --skip-missing-interpreters false -e ${{ matrix.tox_env }}
+      - name: run test suite
+        run: tox run  --skip-pkg-install -e ${{ matrix.tox_env }}

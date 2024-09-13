@@ -6,7 +6,7 @@ import itertools
 import re
 from collections import defaultdict
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Mapping
+from typing import TYPE_CHECKING, Callable, Mapping, TypedDict, cast
 
 from .requires import requires
 
@@ -81,9 +81,6 @@ def is_substitute(value: str) -> bool:
     return False
 
 
-_MATCHER = re.compile(r"^([a-zA-Z]*)(\d*)$")
-
-
 def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     """
     Expand list of tox envs.
@@ -133,21 +130,25 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     return "\n{}".format("\n".join(f"{v}" for v in values))
 
 
-def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, int]:
+_TOX_ENV_MATCHER = re.compile(r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)")
+
+
+class _ToxMatch(TypedDict):
+    name: str
+    version: int
+    major: int
+    minor: int
+
+
+def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
     for element in env_list.split("-"):
         if element in pin_toxenvs:
             return len(element) - pin_toxenvs.index(element), 0
-        match = _MATCHER.match(element)
-        if match is not None:
-            name, version = match.groups()
-            name = name.lower()
-            if name == "py":
-                main = 0
-            elif name == "pypy":
-                main = -1
-            else:
-                main = -2
-            return main, int(version) if version else 0
+        if match := _TOX_ENV_MATCHER.fullmatch(element):
+            got = cast(_ToxMatch, {k: (v if k == "name" else int(v or 0)) for k, v in match.groupdict().items()})
+            main = {"py": 0, "pypy": -1}.get(got.get("name") or "", -2)
+            version: list[int] = [got["major"], got["minor"]] if got["major"] else [got["version"]]
+            return main, *version
     return -3, 0
 
 

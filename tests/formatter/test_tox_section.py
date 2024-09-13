@@ -23,6 +23,12 @@ def test_format_env_list_simple(tox_ini: Path) -> None:
     assert outcome == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
 
 
+def test_format_env_list_dot_version(tox_ini: Path) -> None:
+    tox_ini.write_text("[tox]\nenv_list=3,3.13,3.9\n")
+    outcome = format_tox_ini(tox_ini)
+    assert outcome == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    3.13\n    3.9\n    3\n"
+
+
 def test_format_env_list_start_newline(tox_ini: Path) -> None:
     ok = "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
     tox_ini.write_text(ok)
