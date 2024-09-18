@@ -46,7 +46,7 @@ dynamic = [
 dependencies = [
   "packaging>=24.1",
 ]
-optional-dependencies.test = [
+optional-dependencies.testing = [
   "covdefaults>=2.3",
   "pytest>=8.3.2",
   "pytest-cov>=5",

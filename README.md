@@ -5,10 +5,7 @@
 [![PyPI - Python Version](https://img.shields.io/pypi/pyversions/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![Downloads](https://static.pepy.tech/badge/tox-ini-fmt/month)](https://pepy.tech/project/tox-ini-fmt)
 [![PyPI - License](https://img.shields.io/pypi/l/tox-ini-fmt?style=flat-square)](https://opensource.org/licenses/MIT)
-![check](https://github.com/tox-dev/tox-ini-fmt/workflows/check/badge.svg?branch=main)
-[![codecov](https://codecov.io/gh/tox-dev/tox-ini-fmt/branch/main/graph/badge.svg)](https://codecov.io/gh/pypa/virtualenv)
-[![Code style:
-black](https://img.shields.io/badge/code%20style-black-000000.svg?style=flat-square)](https://github.com/psf/black)
+[![check](https://github.com/tox-dev/tox-ini-fmt/actions/workflows/check.yaml/badge.svg)](https://github.com/tox-dev/tox-ini-fmt/actions/workflows/check.yaml)
 
 apply a consistent format to `tox.ini` files
 
