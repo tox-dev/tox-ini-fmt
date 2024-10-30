@@ -104,7 +104,7 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
             within_braces = False
             envs = [i.strip() for i in brace_str[1:].split(",")]
             order_env_list(envs, pin_toxenvs)
-            cur_str += f'{{{", ".join(envs)}}}'
+            cur_str += f"{{{', '.join(envs)}}}"
             brace_str = ""
             continue
         elif char in {",", "\n"}:

@@ -142,10 +142,7 @@ def test_format_test_env_ref(  # noqa: PLR0913
     post: str,
     expected: str,
 ) -> None:
-    text = (
-        f"[testenv]\n{key}={before}\n[testenv:py]"
-        f"\n{key}=\n {pre}\n {{[testenv:x]X}}\n {{[testenv]{key}}}\n {post}\n"
-    )
+    text = f"[testenv]\n{key}={before}\n[testenv:py]\n{key}=\n {pre}\n {{[testenv:x]X}}\n {{[testenv]{key}}}\n {post}\n"
     tox_ini.write_text(text)
     outcome = format_tox_ini(tox_ini)
     expected = f"[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\n{key} ={before}\n\n[testenv:py]\n{key} ={expected}\n"
