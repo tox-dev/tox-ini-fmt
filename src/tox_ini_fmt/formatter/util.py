@@ -145,7 +145,7 @@ def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
         if element in pin_toxenvs:
             return len(element) - pin_toxenvs.index(element), 0
         if match := _TOX_ENV_MATCHER.fullmatch(element):
-            got = cast(_ToxMatch, {k: (v if k == "name" else int(v or 0)) for k, v in match.groupdict().items()})
+            got = cast("_ToxMatch", {k: (v if k == "name" else int(v or 0)) for k, v in match.groupdict().items()})
             main = {"py": 0, "pypy": -1}.get(got.get("name") or "", -2)
             version: list[int] = [got["major"], got["minor"]] if got["major"] else [got["version"]]
             return main, *version
