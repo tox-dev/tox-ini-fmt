@@ -5,10 +5,13 @@ from __future__ import annotations
 import difflib
 import sys
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import TYPE_CHECKING
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
+
+if TYPE_CHECKING:
+    from collections.abc import Iterable, Sequence
 
 GREEN = "\u001b[32m"
 RED = "\u001b[31m"

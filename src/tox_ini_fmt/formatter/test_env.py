@@ -3,11 +3,12 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Mapping
+from typing import TYPE_CHECKING, Callable
 
 from .util import collect_multi_line, fix_and_reorder, fmt_list, to_boolean, to_list_of_env_values, to_py_dependencies
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from configparser import ConfigParser
 
 

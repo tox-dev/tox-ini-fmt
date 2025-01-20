@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Mapping
+from typing import TYPE_CHECKING, Callable
 
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -12,6 +12,7 @@ from .requires import requires
 from .util import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from configparser import ConfigParser, SectionProxy
 
 
@@ -63,15 +64,15 @@ def _handle_min_version(tox: SectionProxy) -> None:
             normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
         )[0]
     ]
-    for _at, entry in enumerate(tox_requires):
+    for at, entry in enumerate(tox_requires):  # noqa: B007 # false positive
         if entry.name == "tox":
             break
     else:
-        _at = -1
-    if _at == -1:
+        at = -1
+    if at == -1:
         tox_requires.append(Requirement(f"tox>={min_version}"))
     else:
-        specifiers = list(tox_requires[_at].specifier)
+        specifiers = list(tox_requires[at].specifier)
         if len(specifiers) == 0 or Version(specifiers[0].version) < Version(min_version):
-            tox_requires[_at] = Requirement(f"tox>={min_version}")
+            tox_requires[at] = Requirement(f"tox>={min_version}")
     tox["requires"] = "\n".join(str(i) for i in tox_requires)

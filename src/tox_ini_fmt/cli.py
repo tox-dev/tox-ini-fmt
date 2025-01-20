@@ -5,7 +5,10 @@ from __future__ import annotations
 import os
 from argparse import Action, ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
-from typing import Any, Sequence
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
 
 
 class ToxIniFmtNamespace(Namespace):
