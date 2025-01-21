@@ -6,11 +6,12 @@ import itertools
 import re
 from collections import defaultdict
 from functools import partial
-from typing import TYPE_CHECKING, Callable, Mapping, TypedDict, cast
+from typing import TYPE_CHECKING, Callable, TypedDict, cast
 
 from .requires import requires
 
 if TYPE_CHECKING:
+    from collections.abc import Mapping
     from configparser import ConfigParser
 
 
