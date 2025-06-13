@@ -5,7 +5,14 @@ from __future__ import annotations
 from functools import partial
 from typing import TYPE_CHECKING, Callable
 
-from .util import collect_multi_line, fix_and_reorder, fmt_list, to_boolean, to_list_of_env_values, to_py_dependencies
+from .util import (
+    collect_multi_line,
+    fix_and_reorder,
+    fmt_list,
+    to_boolean,
+    to_list_of_env_values,
+    to_py_dependencies,
+)
 
 if TYPE_CHECKING:
     from collections.abc import Mapping
@@ -56,16 +63,22 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "depends": partial(to_list_of_env_values, []),
     }
     upgrade = {
+        "alwayscopy": "always_copy",
+        "basepython": "base_python",
+        "changedir": "change_dir",
+        "envbindir": "env_bin_dir",
         "envdir": "env_dir",
-        "envtmpdir": "env_tmp_dir",
         "envlogdir": "env_log_dir",
+        "envname": "env_name",
+        "envsitepackagesdir": "env_site_packages_dir",
+        "envtmpdir": "env_tmp_dir",
+        "ignore_basepython_conflict": "ignore_base_python_conflict",
+        "isolated_build_env": "package_env",
         "passenv": "pass_env",
         "setenv": "set_env",
-        "changedir": "change_dir",
-        "basepython": "base_python",
         "setupdir": "package_root",
         "sitepackages": "system_site_packages",
-        "alwayscopy": "always_copy",
+        "skipsdist": "no_package",
     }
 
     section = parser[name]
