@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
-    tox_ini.write_text("")
+    tox_ini.write_text("", encoding="utf-8")
     assert format_tox_ini(tox_ini) == "[tox]\nrequires =\n    tox>=4.2\n"
 
 
@@ -40,7 +40,7 @@ def test_format_test_env(tox_ini: Path) -> None:
             A = B
     """,
     ).strip()
-    tox_ini.write_text(f"[testenv]\n{content}")
+    tox_ini.write_text(f"[testenv]\n{content}", encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     expected = dedent(
         """
@@ -143,14 +143,14 @@ def test_format_test_env_ref(  # noqa: PLR0913
     expected: str,
 ) -> None:
     text = f"[testenv]\n{key}={before}\n[testenv:py]\n{key}=\n {pre}\n {{[testenv:x]X}}\n {{[testenv]{key}}}\n {post}\n"
-    tox_ini.write_text(text)
+    tox_ini.write_text(text, encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     expected = f"[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\n{key} ={before}\n\n[testenv:py]\n{key} ={expected}\n"
     assert outcome == expected
 
 
 def test_fail_on_bad_set_env(tox_ini: Path) -> None:
-    tox_ini.write_text("[testenv]\nsetenv = A")
+    tox_ini.write_text("[testenv]\nsetenv = A", encoding="utf-8")
     with pytest.raises(RuntimeError, match="invalid line A in setenv"):
         format_tox_ini(tox_ini)
 
@@ -174,7 +174,7 @@ def test_python_req_sort_by_name() -> None:
 
 
 def test_depends_ordering(tox_ini: Path) -> None:
-    tox_ini.write_text("[testenv]\ndepends =\n py311\n py312\n py39\n p310")
+    tox_ini.write_text("[testenv]\ndepends =\n py311\n py312\n py39\n p310", encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     msg = "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ndepends =\n    py312\n    py311\n    py39\n    p310\n"
     assert outcome == msg
@@ -189,7 +189,7 @@ def test_use_develop_upgrade(tox_ini: Path, key: str) -> None:
     [testenv]
     {key} = true
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     expected = """\
     [tox]

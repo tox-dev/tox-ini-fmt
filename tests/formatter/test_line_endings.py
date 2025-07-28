@@ -40,7 +40,7 @@ def test_mixed_line_endings(tox_ini: Path) -> None:
     original_text = "[tox]\r\n \r \nenv_list=py39"
     expected_text = "[tox]!!requires =!!    tox>=4.2!!env_list =!!    py39!!"
     tox_ini.write_bytes(original_text.encode("utf8"))
-    with tox_ini.open("rt") as file:
+    with tox_ini.open("rt", encoding="utf-8") as file:
         file.read()
         assert not isinstance(file.newlines, str)
         assert file.newlines is not None
