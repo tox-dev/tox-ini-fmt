@@ -45,6 +45,7 @@ def test_section_order(tox_ini: Path) -> None:
 
         """,
         ),
+        encoding="utf-8",
     )
     result = format_tox_ini(tox_ini)
 
@@ -75,7 +76,7 @@ def test_section_order(tox_ini: Path) -> None:
 
 
 def test_pin_missing(tox_ini: Path) -> None:
-    tox_ini.write_text("[tox]\nenv_list=py")
+    tox_ini.write_text("[tox]\nenv_list=py", encoding="utf-8")
 
     with pytest.raises(RuntimeError, match=r"missing tox environment\(s\) to pin missing_1, missing_2"):
         format_tox_ini(tox_ini, ToxIniFmtNamespace(pin_toxenvs=["missing_1", "missing_2"]))
@@ -92,6 +93,7 @@ def test_pin(tox_ini: Path) -> None:
         "[testenv:pypy]\nm=n\n"
         "[testenv:pin]\na=b\n"
         "[testenv:extra]\no=p\n",
+        encoding="utf-8",
     )
     result = format_tox_ini(tox_ini, ToxIniFmtNamespace(pin_toxenvs=["pin", "pkg"]))
 

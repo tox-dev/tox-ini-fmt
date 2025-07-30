@@ -13,25 +13,25 @@ if TYPE_CHECKING:
 
 
 def test_no_tox_section(tox_ini: Path) -> None:
-    tox_ini.write_text("")
+    tox_ini.write_text("", encoding="utf-8")
     assert format_tox_ini(tox_ini) == "[tox]\nrequires =\n    tox>=4.2\n"
 
 
 def test_format_env_list_simple(tox_ini: Path) -> None:
-    tox_ini.write_text("[tox]\nenv_list=py39,py38\n")
+    tox_ini.write_text("[tox]\nenv_list=py39,py38\n", encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     assert outcome == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
 
 
 def test_format_env_list_dot_version(tox_ini: Path) -> None:
-    tox_ini.write_text("[tox]\nenv_list=3,3.13,3.9\n")
+    tox_ini.write_text("[tox]\nenv_list=3,3.13,3.9\n", encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     assert outcome == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    3.13\n    3.9\n    3\n"
 
 
 def test_format_env_list_start_newline(tox_ini: Path) -> None:
     ok = "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py39\n    py38\n"
-    tox_ini.write_text(ok)
+    tox_ini.write_text(ok, encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     assert outcome == ok
 
@@ -64,7 +64,7 @@ def test_tox_section_order(tox_ini: Path) -> None:
     skipsdist=true
     env_list=py37
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     result = """\
     [tox]
@@ -97,7 +97,7 @@ def test_tox_section_order(tox_ini: Path) -> None:
     ],
 )
 def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> None:
-    tox_ini.write_text(f"[tox]\n{key}={value}")
+    tox_ini.write_text(f"[tox]\n{key}={value}", encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     expected = f"[tox]\nrequires =\n    tox>=4.2\n{key} = {result}\n"
     assert outcome == expected
@@ -126,7 +126,7 @@ def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:
 
     This was previously caused by a trailing comma in the `env_list`.
     """
-    tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n[testenv:pkg]\na=b\n")
+    tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n[testenv:pkg]\na=b\n", encoding="utf-8")
     result = format_tox_ini(tox_ini)
     assert result == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"
 
@@ -138,7 +138,7 @@ def test_min_version_less_requires(tox_ini: Path) -> None:
      tox >= 4.2
     min_version=3.14
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     result = """\
     [tox]
@@ -156,7 +156,7 @@ def test_min_version_greater_requires(tox_ini: Path) -> None:
      tox >= 4.2
     min_version=4.3
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     result = """\
     [tox]
@@ -174,7 +174,7 @@ def test_min_version_tox_no_spec(tox_ini: Path) -> None:
      tox
     min_version=4.3
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     outcome = format_tox_ini(tox_ini)
     result = """\
     [tox]
@@ -191,6 +191,6 @@ def test_upgrade_conflict(tox_ini: Path) -> None:
     env_list=py312
     envlist=py311
     """
-    tox_ini.write_text(dedent(text))
+    tox_ini.write_text(dedent(text), encoding="utf-8")
     with pytest.raises(RuntimeError, match="upgrade alias env_list also present for envlist"):
         format_tox_ini(tox_ini)
