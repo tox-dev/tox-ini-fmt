@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import partial
-from typing import TYPE_CHECKING, Callable
+from typing import TYPE_CHECKING
 
 from packaging.requirements import Requirement
 from packaging.version import Version
@@ -12,7 +12,7 @@ from .requires import requires
 from .util import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
 
 if TYPE_CHECKING:
-    from collections.abc import Mapping
+    from collections.abc import Callable, Mapping
     from configparser import ConfigParser, SectionProxy
 
 

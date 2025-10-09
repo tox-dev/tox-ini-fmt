@@ -1,7 +1,7 @@
 [build-system]
 build-backend = "hatchling.build"
 requires = [
-  "hatch-vcs>=0.4",
+  "hatch-vcs>=0.5",
   "hatchling>=1.27",
 ]
 
@@ -20,7 +20,7 @@ license = "MIT"
 maintainers = [
   { name = "Bernát Gábor", email = "gaborjbernat@gmail.com" },
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: tox",
@@ -30,7 +30,6 @@ classifiers = [
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX",
   "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
@@ -44,12 +43,12 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "packaging>=24.2",
+  "packaging>=25",
 ]
 optional-dependencies.testing = [
   "covdefaults>=2.3",
-  "pytest>=8.3.4",
-  "pytest-cov>=6",
+  "pytest>=8.4.2",
+  "pytest-cov>=7",
 ]
 urls.Documentation = "https://tox.wiki"
 urls.Homepage = "https://github.com/tox-dev/tox-ini-fmt/blob/main/README.md#tox-ini-fmt"
@@ -108,9 +107,6 @@ lint.preview = true
 builtin = "clear,usage,en-GB_to_en-US"
 write-changes = true
 count = true
-
-[tool.pyproject-fmt]
-max_supported_python = "3.14"
 
 [tool.coverage]
 html.show_contexts = true
