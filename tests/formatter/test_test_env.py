@@ -37,6 +37,7 @@ def test_format_test_env(tox_ini: Path) -> None:
     setenv= C=D
             E =F
 
+            file|path/to/envfile
             A = B
     """,
     ).strip()
@@ -68,6 +69,7 @@ def test_format_test_env(tox_ini: Path) -> None:
             A = B
             C = D
             E = F
+            file|path/to/envfile
         commands =
             e
             f \\
