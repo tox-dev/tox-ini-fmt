@@ -116,6 +116,10 @@ def to_set_env(value: str) -> str:
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
     set_env: list[str] = []
     for env in raw_set_env:
+        if env.strip().startswith("file|"):
+            set_env.append(env.strip())
+            continue
+
         at = env.find("=")
         if at == -1:
             msg = f"invalid line {env} in setenv"
