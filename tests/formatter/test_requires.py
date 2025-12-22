@@ -16,9 +16,9 @@ from tox_ini_fmt.formatter.requires import requires
         ("A\na\n", ["A", "a"]),
         ("\nA\n\n\nb\n\n", ["A", "b"]),
         (
-            'packaging>=20.0;python_version>"3.4"\n'
+            ('packaging>=20.0;python_version>"3.4"\n'
             "xonsh>=0.9.16;python_version > '3.4' and python_version != '3.9'\n"
-            "pytest-xdist>=1.31.0\n",
+            "pytest-xdist>=1.31.0\n"),
             [
                 "pytest-xdist>=1.31",
                 'packaging>=20; python_version > "3.4"',
