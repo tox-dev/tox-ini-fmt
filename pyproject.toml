@@ -84,6 +84,7 @@ lint.ignore = [
   "D212",   # `multi-line-summary-first-line` (D212) and `multi-line-summary-second-line` (D213) are incompatible
   "DOC",    # no support for sphinx
   "ISC001", # Conflict with formatter
+  "RUF067", # `__init__` module should only contain docstrings and re-exports
 ]
 lint.per-file-ignores."tests/**/*.py" = [
   "D",       # don't care about documentation in tests
