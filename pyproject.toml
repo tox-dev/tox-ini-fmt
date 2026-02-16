@@ -50,9 +50,9 @@ optional-dependencies.testing = [
   "pytest>=8.4.2",
   "pytest-cov>=7",
 ]
+urls."Release Notes" = "https://github.com/tox-dev/tox-ini-fmt/blob/main/CHANGELOG.md"
 urls.Documentation = "https://tox.wiki"
 urls.Homepage = "https://github.com/tox-dev/tox-ini-fmt/blob/main/README.md#tox-ini-fmt"
-urls."Release Notes" = "https://github.com/tox-dev/tox-ini-fmt/blob/main/CHANGELOG.md"
 urls.Source = "https://github.com/tox-dev/tox-ini-fmt"
 urls.Tracker = "https://github.com/tox-dev/tox-ini-fmt/issues"
 scripts.tox-ini-fmt = "tox_ini_fmt.__main__:run"
@@ -110,8 +110,10 @@ write-changes = true
 count = true
 
 [tool.coverage]
-html.show_contexts = true
-html.skip_covered = false
+run.parallel = true
+run.plugins = [
+  "covdefaults",
+]
 paths.source = [
   "src",
   ".tox*/*/lib/python*/site-packages",
@@ -121,10 +123,8 @@ paths.source = [
   "*\\src",
 ]
 report.fail_under = 100
-run.parallel = true
-run.plugins = [
-  "covdefaults",
-]
+html.show_contexts = true
+html.skip_covered = false
 
 [tool.mypy]
 python_version = "3.11"
