@@ -63,34 +63,34 @@ optional arguments:
 Applies the following section order:
 
 1. `tox`
-2. `testenv`
-3. `testenv:*` - `py`/`pypy` envs are ordered in decreasing order by python version, then apply the order defined within
+1. `testenv`
+1. `testenv:*` - `py`/`pypy` envs are ordered in decreasing order by python version, then apply the order defined within
    `envlist` part of `tox` section, you can pin tox elements to the start by using the `-p` flag
-4. any other section defined within the file
+1. any other section defined within the file
 
 ### `tox` section
 
 Order by:
 
 1. `envlist` - multi-line, start with `py` envs in decreasing python order, then same with `pypy`, then everything else
-2. `isolated_build` - `boolean` field
-3. `skipsdist` - `boolean` field
-4. `skip_missing_interpreters` - `boolean` field
-5. `minversion`
+1. `isolated_build` - `boolean` field
+1. `skipsdist` - `boolean` field
+1. `skip_missing_interpreters` - `boolean` field
+1. `minversion`
 
 ### `testenv` section
 
 Order by:
 
 1. `description`
-2. `passenv` - multi-line, one environment name to pass per line, sorted by name
-3. `setenv` - multi-line, one environment name-value to set per line in format of `key=value`, sorted by key+value
-4. `basepython`
-5. `skip_install` - `boolean` field
-6. `usedevelop` - `boolean` field
-7. `deps` - multi-line, order by package name (but keep dependencies with package names separate at end), normalize
+1. `passenv` - multi-line, one environment name to pass per line, sorted by name
+1. `setenv` - multi-line, one environment name-value to set per line in format of `key=value`, sorted by key+value
+1. `basepython`
+1. `skip_install` - `boolean` field
+1. `usedevelop` - `boolean` field
+1. `deps` - multi-line, order by package name (but keep dependencies with package names separate at end), normalize
    format to remove extra spaces
-8. `extras` - multi-line, one extra env per line
-9. `parallel_show_output` - `boolean` field
-10. `commands` - one command per line, commands that wrap over multiple lines are indented with line two or later by
-    extra four spaces
+1. `extras` - multi-line, one extra env per line
+1. `parallel_show_output` - `boolean` field
+1. `commands` - one command per line, commands that wrap over multiple lines are indented with line two or later by
+   extra four spaces
