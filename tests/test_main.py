@@ -85,7 +85,7 @@ def no_color(diff: str) -> str:
         ),
     ],
 )
-def test_main(  # noqa: PLR0913
+def test_main(  # ruff:ignore[too-many-arguments]
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
     in_place: bool,

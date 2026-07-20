@@ -54,7 +54,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 def _handle_min_version(tox: SectionProxy) -> None:
     min_version = next((tox.pop(i) for i in ("minversion", "min_version") if i in tox), None)
-    if min_version is None or int(min_version.split(".")[0]) < 4:  # noqa: PLR2004
+    if min_version is None or int(min_version.split(".")[0]) < 4:  # ruff:ignore[magic-value-comparison]
         min_version = "4.2"
     tox_requires = [
         Requirement(i)
@@ -64,7 +64,7 @@ def _handle_min_version(tox: SectionProxy) -> None:
             normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
         )[0]
     ]
-    for at, entry in enumerate(tox_requires):  # noqa: B007 # false positive
+    for at, entry in enumerate(tox_requires):  # ruff:ignore[unused-loop-control-variable] # false positive
         if entry.name == "tox":
             break
     else:
