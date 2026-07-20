@@ -16,7 +16,7 @@ def normalize_req(req: str) -> str:
             version = spec.version
             while version.endswith(".0"):
                 version = version[:-2]
-                spec._spec = (spec._spec[0], version)  # noqa: SLF001
+                spec._spec = (spec._spec[0], version)  # ruff:ignore[private-member-access]
     return str(parsed)
 
 

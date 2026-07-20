@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def test_version() -> None:
-    import tox_ini_fmt  # noqa: PLC0415
+    import tox_ini_fmt  # ruff:ignore[import-outside-top-level]
 
     assert tox_ini_fmt.__version__
 

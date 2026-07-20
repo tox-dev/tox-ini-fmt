@@ -51,7 +51,7 @@ def run(args: Sequence[str] | None = None) -> int:
         formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:  # stdout just prints new format to stdout
-            print(formatted, end="")  # noqa: T201
+            print(formatted, end="")  # ruff:ignore[print]
         else:
             if before != formatted:
                 with tox_ini.open("wt", newline=original_newlines) as file:
@@ -67,9 +67,9 @@ def run(args: Sequence[str] | None = None) -> int:
             )
             if diff:
                 diff_text = "\n".join(color_diff(diff))
-                print(diff_text)  # print diff on change  # noqa: T201
+                print(diff_text)  # print diff on change  # ruff:ignore[print]
             else:
-                print(f"no change for {name}")  # noqa: T201
+                print(f"no change for {name}")  # ruff:ignore[print]
     # exit with non success on change
     return 1 if changed else 0
 

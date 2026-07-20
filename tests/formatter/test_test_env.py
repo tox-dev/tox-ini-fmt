@@ -136,7 +136,7 @@ def test_extras(arg: str, output: str) -> None:
         ),
     ],
 )
-def test_format_test_env_ref(  # noqa: PLR0913
+def test_format_test_env_ref(  # ruff:ignore[too-many-arguments]
     tox_ini: Path,
     key: str,
     before: str,
