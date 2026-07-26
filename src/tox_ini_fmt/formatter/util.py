@@ -163,7 +163,9 @@ def order_env_list(values: list[str], pin_toxenvs: list[str]) -> None:
     values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
 
 
-CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?P<value>.*)")
+# A factor-conditional prefix such as ``py311: pytest``. The ``(?!//)`` guard keeps a URL scheme
+# (``https://...``) from being mistaken for a factor marker, which would split it into ``https: //...``.
+CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
 
 
 def collect_multi_line(
