@@ -170,6 +170,14 @@ def test_deps_conditional() -> None:
     )
 
 
+def test_deps_url_not_split_as_conditional() -> None:
+    # A URL scheme must not be mistaken for a factor-conditional marker (``https://`` -> ``https: //``).
+    result = to_py_dependencies(
+        "\nhttps://releases.wagtail.org/nightly/dist/latest.whl\ngit+https://github.com/x/y.git\npytest>=7",
+    )
+    assert result == "\ngit+https://github.com/x/y.git\nhttps://releases.wagtail.org/nightly/dist/latest.whl\npytest>=7"
+
+
 def test_python_req_sort_by_name() -> None:
     result = to_py_dependencies("pytest-cov\npytest\npytest-magic>=1\npytest>=1")
     assert result == "\npytest\npytest>=1\npytest-cov\npytest-magic>=1"
