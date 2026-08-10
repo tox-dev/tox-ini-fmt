@@ -79,3 +79,27 @@ def test_tox_ini_resolved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> No
     path.write_text("")
     result = cli_args(["tox.ini"])
     assert result.tox_ini[0] == path
+
+
+def test_cli_check_defaults_off(tmp_path: Path) -> None:
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    assert cli_args([str(path)]).check is False
+
+
+def test_cli_check_set(tmp_path: Path) -> None:
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    assert cli_args([str(path), "--check"]).check is True
+
+
+def test_cli_check_and_stdout_are_exclusive(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    """Both suppress the write, so together they say nothing coherent about the file."""
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    with pytest.raises(SystemExit) as context:
+        cli_args([str(path), "--check", "--stdout"])
+    assert context.value.code != 0
+    out, err = capsys.readouterr()
+    assert not out
+    assert "not allowed with argument" in err

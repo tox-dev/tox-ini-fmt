@@ -16,6 +16,7 @@ class ToxIniFmtNamespace(Namespace):
 
     tox_ini: list[Path]
     stdout: bool
+    check: bool
     pin_toxenvs: list[str]
 
 
@@ -50,11 +51,19 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     :return: the parsed options
     """
     parser = ArgumentParser()
-    parser.add_argument(
+    # Both suppress the in-place write, so asking for both says nothing coherent about
+    # what should end up on disk.
+    output_mode = parser.add_mutually_exclusive_group()
+    output_mode.add_argument(
         "-s",
         "--stdout",
         action="store_true",
         help="print the formatted text to the stdout (instead of update in-place)",
+    )
+    output_mode.add_argument(
+        "--check",
+        action="store_true",
+        help="report whether the file is formatted without writing it back (exit 1 if it would change)",
     )
 
     class CommaSeparatedStr(Action):

@@ -33,14 +33,15 @@ Consult the help for the latest usage:
 
 ```console
 $ tox-ini-fmt --help
-usage: tox-ini-fmt [-h] [-s] [-p toxenv] tox_ini
+usage: tox-ini-fmt [-h] [-s | --check] [-p toxenv] tox_ini [tox_ini ...]
 
 positional arguments:
-  tox_ini       tox ini file to format
+  tox_ini       tox ini files to format
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
   -s, --stdout  print the formatted text to the stdout (instead of update in-place)
+  --check       report whether the file is formatted without writing it back (exit 1 if it would change)
   -p toxenv     tox environments that pin to the start of the envlist (comma separated)
 ```
 
