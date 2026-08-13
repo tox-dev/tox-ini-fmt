@@ -41,7 +41,7 @@ positional arguments:
 options:
   -h, --help    show this help message and exit
   -s, --stdout  print the formatted text to the stdout (instead of update in-place)
-  --check       report whether the file is formatted without writing it back (exit 1 if it would change)
+  --check       check files are formatted without writing them back (exit code 1 on change)
   -p toxenv     tox environments that pin to the start of the envlist (comma separated)
 ```
 

@@ -51,8 +51,6 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     :return: the parsed options
     """
     parser = ArgumentParser()
-    # Both suppress the in-place write, so asking for both says nothing coherent about
-    # what should end up on disk.
     output_mode = parser.add_mutually_exclusive_group()
     output_mode.add_argument(
         "-s",
@@ -63,7 +61,7 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     output_mode.add_argument(
         "--check",
         action="store_true",
-        help="report whether the file is formatted without writing it back (exit 1 if it would change)",
+        help="check files are formatted without writing them back (exit code 1 on change)",
     )
 
     class CommaSeparatedStr(Action):

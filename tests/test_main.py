@@ -154,49 +154,41 @@ def test_non_ascii_ignores_locale_encoding(tmp_path: Path) -> None:
     ])
 
 
-def test_main_check_does_not_write_and_reports_change(
+@pytest.mark.parametrize(
+    ("start", "code", "output"),
+    [
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list=py311,py310",
+            1,
+            "--- tox.ini\n\n+++ tox.ini\n\n@@ -1,4 +1,6 @@\n\n "
+            "[tox]\n requires =\n     tox>=4.2\n-env_list=py311,py310\n+env_list =\n+    py311\n+    py310\n",
+            id="change",
+        ),
+        pytest.param(
+            "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n",
+            0,
+            "no change for tox.ini\n",
+            id="no-change",
+        ),
+    ],
+)
+def test_main_check(  # ruff:ignore[too-many-arguments]
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
     monkeypatch: pytest.MonkeyPatch,
     mocker: MockerFixture,
+    start: str,
+    code: int,
+    output: str,
 ) -> None:
-    """--check is the in-place run without the write: same diff, same exit code, file untouched."""
     mocker.patch("tox_ini_fmt.__main__.color_diff", no_color)
     monkeypatch.chdir(tmp_path)
     tox_ini = tmp_path / "tox.ini"
-    start = "[tox]\nenvlist=py39,py38\n"
     tox_ini.write_text(start)
 
-    result = run([str(tox_ini), "--check"])
+    assert run([str(tox_ini), "--check"]) == code
 
-    assert result == 1
     assert tox_ini.read_text() == start
     out, err = capsys.readouterr()
     assert not err
-    assert "--- tox.ini" in out
-
-
-def test_main_check_is_quiet_and_zero_when_already_formatted(
-    tmp_path: Path,
-    capsys: pytest.CaptureFixture[str],
-    monkeypatch: pytest.MonkeyPatch,
-    mocker: MockerFixture,
-) -> None:
-    mocker.patch("tox_ini_fmt.__main__.color_diff", no_color)
-    monkeypatch.chdir(tmp_path)
-    scratch = tmp_path / "scratch.ini"
-    scratch.write_text("[tox]\nenvlist=py39,py38\n")
-    run([str(scratch)])  # format once with the tool itself, so the fixture cannot drift
-    formatted = scratch.read_text()
-    capsys.readouterr()
-
-    tox_ini = tmp_path / "tox.ini"
-    tox_ini.write_text(formatted)
-
-    result = run([str(tox_ini), "--check"])
-
-    assert result == 0
-    assert tox_ini.read_text() == formatted
-    out, err = capsys.readouterr()
-    assert not err
-    assert out == "no change for tox.ini\n"
+    assert out == output
