@@ -26,7 +26,7 @@ def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) 
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser(interpolation=None)
-    text = tox_ini.read_text() if isinstance(tox_ini, Path) else tox_ini
+    text = tox_ini.read_text(encoding="utf-8") if isinstance(tox_ini, Path) else tox_ini
     parser.read_string(text)
 
     format_tox_section(parser, opts.pin_toxenvs)
