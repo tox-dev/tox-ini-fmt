@@ -43,7 +43,7 @@ def run(args: Sequence[str] | None = None) -> int:
     opts = cli_args(sys.argv[1:] if args is None else args)
     changed = False
     for tox_ini in opts.tox_ini:
-        with tox_ini.open("rt") as file:
+        with tox_ini.open("rt", encoding="utf-8") as file:
             before = file.read()
             original_newlines = file.newlines
         if isinstance(original_newlines, tuple):
@@ -54,7 +54,7 @@ def run(args: Sequence[str] | None = None) -> int:
             print(formatted, end="")  # ruff:ignore[print]
         else:
             if before != formatted:
-                with tox_ini.open("wt", newline=original_newlines) as file:
+                with tox_ini.open("wt", encoding="utf-8", newline=original_newlines) as file:
                     file.write(formatted)
             try:
                 name = str(tox_ini.relative_to(Path.cwd()))
