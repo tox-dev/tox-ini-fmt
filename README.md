@@ -20,11 +20,11 @@ See [pre-commit](https://github.com/pre-commit/pre-commit) for instructions
 Sample `.pre-commit-config.yaml`:
 
 ```yaml
-- repo: https://github.com/tox-dev/tox-ini-fmt
-  rev: "1.3.1"
-  hooks:
-    - id: tox-ini-fmt
-      args: ["-p", "fix_lint,type"]
+  - repo: https://github.com/tox-dev/tox-ini-fmt
+    rev: 1.3.1
+    hooks:
+      - id: tox-ini-fmt
+        args: [-p, 'fix_lint,type']
 ```
 
 ## cli
@@ -33,14 +33,15 @@ Consult the help for the latest usage:
 
 ```console
 $ tox-ini-fmt --help
-usage: tox-ini-fmt [-h] [-s] [-p toxenv] tox_ini
+usage: tox-ini-fmt [-h] [-s | --check] [-p toxenv] tox_ini [tox_ini ...]
 
 positional arguments:
-  tox_ini       tox ini file to format
+  tox_ini       tox ini files to format
 
-optional arguments:
+options:
   -h, --help    show this help message and exit
   -s, --stdout  print the formatted text to the stdout (instead of update in-place)
+  --check       check files are formatted without writing them back (exit code 1 on change)
   -p toxenv     tox environments that pin to the start of the envlist (comma separated)
 ```
 

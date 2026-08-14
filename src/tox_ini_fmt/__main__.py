@@ -53,7 +53,7 @@ def run(args: Sequence[str] | None = None) -> int:
         if opts.stdout:  # stdout just prints new format to stdout
             print(formatted, end="")  # ruff:ignore[print]
         else:
-            if before != formatted:
+            if before != formatted and not opts.check:
                 with tox_ini.open("wt", encoding="utf-8", newline=original_newlines) as file:
                     file.write(formatted)
             try:
