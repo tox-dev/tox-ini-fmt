@@ -61,7 +61,7 @@ def run(args: Sequence[str] | None = None) -> int:
             except ValueError:
                 name = str(tox_ini)
             diff = (
-                difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
+                list(difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name))
                 if changed
                 else []
             )
