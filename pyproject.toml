@@ -2,7 +2,7 @@
 build-backend = "hatchling.build"
 requires = [
   "hatch-vcs>=0.5",
-  "hatchling>=1.28",
+  "hatchling>=1.32.4",
 ]
 
 [project]
@@ -44,7 +44,7 @@ dynamic = [
   "version",
 ]
 dependencies = [
-  "packaging>=25",
+  "packaging>=26.3",
 ]
 urls."Release Notes" = "https://github.com/tox-dev/tox-ini-fmt/blob/main/CHANGELOG.md"
 urls.Documentation = "https://tox.wiki"
@@ -62,21 +62,21 @@ dev = [
 ]
 test = [
   "covdefaults>=2.3",
-  "pytest>=8.4.2",
-  "pytest-cov>=7",
-  "pytest-mock>=3.15.1",
+  "pytest>=9.1.1",
+  "pytest-cov>=7.1",
+  "pytest-mock>=3.16",
 ]
 type = [
-  "ty>=0.0.17",
+  "ty>=0.0.84",
   { include-group = "test" },
 ]
 lint = [
-  "pre-commit-uv>=4.2",
+  "pre-commit-uv>=4.3",
 ]
 pkg-meta = [
   "check-wheel-contents>=0.6.3",
-  "twine>=6.2",
-  "uv>=0.10.2",
+  "twine>=7",
+  "uv>=0.12.22",
 ]
 
 [tool.hatch]
