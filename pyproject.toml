@@ -8,12 +8,12 @@ requires = [
 
 [project]
 name = "tox-ini-fmt"
-description = "tox is a generic virtualenv management and test command line tool"
+import-names = [ "tox_ini_fmt" ]
+description = "Format tox.ini files consistently"
 keywords = [
-  "environments",
-  "isolated",
-  "testing",
-  "virtual",
+  "formatter",
+  "ini",
+  "tox",
 ]
 license = "MIT"
 maintainers = [
@@ -24,7 +24,6 @@ classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Framework :: tox",
   "Intended Audience :: Developers",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: MacOS :: MacOS X",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: POSIX",
@@ -45,11 +44,10 @@ dynamic = [
 dependencies = [
   "packaging>=26.3",
 ]
-urls."Release Notes" = "https://github.com/tox-dev/tox-ini-fmt/blob/main/CHANGELOG.md"
-urls.Documentation = "https://tox.wiki"
-urls.Homepage = "https://github.com/tox-dev/tox-ini-fmt/blob/main/README.md#tox-ini-fmt"
+urls.Changelog = "https://github.com/tox-dev/tox-ini-fmt/blob/main/CHANGELOG.md"
+urls.Homepage = "https://github.com/tox-dev/tox-ini-fmt"
+urls.Issues = "https://github.com/tox-dev/tox-ini-fmt/issues"
 urls.Source = "https://github.com/tox-dev/tox-ini-fmt"
-urls.Tracker = "https://github.com/tox-dev/tox-ini-fmt/issues"
 scripts.tox-ini-fmt = "tox_ini_fmt.__main__:run"
 
 [dependency-groups]
