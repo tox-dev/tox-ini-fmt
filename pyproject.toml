@@ -95,6 +95,9 @@ build.targets.sdist.include = [
   "/tox.ini",
 ]
 
+[tool.uv]
+dependency-groups.release = { requires-python = ">=3.15" }
+
 [tool.ruff]
 line-length = 120
 format.preview = true
