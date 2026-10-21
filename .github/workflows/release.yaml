@@ -80,7 +80,7 @@ jobs:
           name: generated-notes
           path: ${{ runner.temp }}/generated-notes.md
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 30
   render-notes:
     needs: contributor-metadata
     runs-on: ubuntu-26.04
@@ -122,7 +122,7 @@ jobs:
           name: release-notes
           path: ${{ runner.temp }}/release-notes.md
           if-no-files-found: error
-          retention-days: 1
+          retention-days: 30
   github-release:
     needs: release
     runs-on: ubuntu-26.04
