@@ -77,7 +77,7 @@ pkg-meta = [
 ]
 release = [
   "prek>=0.5",
-  "release-creator @ git+https://github.com/tox-dev/release-creator@b710d0913a8da770551efaf93c763432c01bec3d",
+  "release-creator @ git+https://github.com/tox-dev/release-creator@cf1d89453fc88887e5cf924f6bc1b83157d3a6ac",
   "towncrier>=26.9",
 ]
 
@@ -97,9 +97,11 @@ build.dev-mode-dirs = [
 ]
 build.hooks.vcs.version-file = "src/tox_ini_fmt/version.py"
 build.targets.sdist.include = [
+  "/CHANGELOG.md",
+  "/README.md",
   "/src",
   "/tests",
-  "/tox.ini",
+  "/tox.toml",
 ]
 
 [tool.uv]
@@ -133,7 +135,7 @@ lint.per-file-ignores."tests/**/*.py" = [
   "too-many-positional-arguments", # Too many positional argument
 ]
 lint.isort = { known-first-party = [
-  "tox_uv",
+  "tox_ini_fmt",
   "tests",
 ], required-imports = [
   "from __future__ import annotations",

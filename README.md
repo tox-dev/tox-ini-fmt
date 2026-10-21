@@ -6,8 +6,8 @@ request number and credits its human authors. Use the `skip news` label for main
 fragment only when the pull request supplies one.
 
 Choose `feature` for added or removed Python support and new capabilities, `change` for changed behavior, `bugfix` for
-fixes, and `doc` for user documentation. The other categories are `security`, `performance`, `deprecation`, `removal`,
-and `packaging`. Keep each fragment about one user-visible change.
+fixes, and `doc` for user documentation. The other categories are `breaking`, `security`, `performance`, `deprecation`,
+`removal`, and `packaging`. Keep each fragment about one user-visible change.
 
 [![PyPI](https://img.shields.io/pypi/v/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
@@ -30,7 +30,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
   - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 1.3.1
+    rev: 1.10.0
     hooks:
       - id: tox-ini-fmt
         args: [-p, 'fix_lint,type']
