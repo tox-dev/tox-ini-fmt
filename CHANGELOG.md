@@ -15,13 +15,6 @@ All notable changes to this project will be documented in this file.
 - End support for Python 3.10 ([#377](https://github.com/tox-dev/tox-ini-fmt/pull/377)) by
   [@gaborbernat](https://github.com/gaborbernat).
 
-<a name="release-1-10-0-changes"></a>
-
-### Changes
-
-- Use Python 3.15 by default ([#377](https://github.com/tox-dev/tox-ini-fmt/pull/377)) by
-  [@gaborbernat](https://github.com/gaborbernat).
-
 <a name="release-1-9-0"></a>
 
 ## 1.9.0 (2026-08-14)
@@ -103,8 +96,8 @@ All notable changes to this project will be documented in this file.
 
 ### Changes
 
-- Rename obsolete tox configuration keys when formatting ([#263](https://github.com/tox-dev/tox-ini-fmt/pull/263)) by
-  [@ssbarnea](https://github.com/ssbarnea).
+- Rename more legacy tox keys, including `skipsdist` and `envbindir`
+  ([#263](https://github.com/tox-dev/tox-ini-fmt/pull/263)) by [@ssbarnea](https://github.com/ssbarnea).
 
 <a name="release-1-5-0"></a>
 
