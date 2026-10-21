@@ -15,21 +15,3 @@ updates:
           - "*"
     cooldown:
       default-days: 7
-  - package-ecosystem: "pre-commit"
-    directory: "/"
-    allow:
-      - dependency-name: "mdformat-gfm"
-      - dependency-name: "mdformat-ruff"
-    labels:
-      - dependencies
-      - skip news
-    schedule:
-      interval: "weekly"
-      day: "tuesday"
-    groups:
-      mdformat-plugins:
-        patterns:
-          - "mdformat-gfm"
-          - "mdformat-ruff"
-    cooldown:
-      default-days: 7
