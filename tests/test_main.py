@@ -192,3 +192,23 @@ def test_main_check(  # ruff:ignore[too-many-arguments]
     out, err = capsys.readouterr()
     assert not err
     assert out == output
+
+
+def test_main_reports_unchanged_file_after_changed_file(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+    mocker: MockerFixture,
+) -> None:
+    mocker.patch("tox_ini_fmt.__main__.color_diff", no_color)
+    monkeypatch.chdir(tmp_path)
+    changed = tmp_path / "first.ini"
+    changed.write_text("[tox]\nrequires =\n    tox>=4.2\nenv_list=py311,py310")
+    unchanged = tmp_path / "second.ini"
+    unchanged.write_text("[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n")
+
+    assert run([str(changed), str(unchanged)]) == 1
+
+    out, err = capsys.readouterr()
+    assert not err
+    assert out.endswith("no change for second.ini\n")
