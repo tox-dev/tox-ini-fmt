@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-10-0"></a>
 
-## [1.10.0] - 2026-10-10
+## 1.10.0 (2026-10-10)
 
 <a name="release-1-10-0-added"></a>
 
@@ -24,7 +24,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-9-0"></a>
 
-## [1.9.0] - 2026-08-14
+## 1.9.0 (2026-08-14)
 
 <a name="release-1-9-0-added"></a>
 
@@ -42,7 +42,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-8-1"></a>
 
-## [1.8.1] - 2026-07-26
+## 1.8.1 (2026-07-26)
 
 <a name="release-1-8-1-fixed"></a>
 
@@ -53,7 +53,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-8-0"></a>
 
-## [1.8.0] - 2026-07-21
+## 1.8.0 (2026-07-21)
 
 <a name="release-1-8-0-added"></a>
 
@@ -64,11 +64,11 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-7-2"></a>
 
-## [1.7.2] - 2026-07-07
+## 1.7.2 (2026-07-07)
 
 <a name="release-1-7-1"></a>
 
-## [1.7.1] - 2025-12-12
+## 1.7.1 (2025-12-12)
 
 <a name="release-1-7-1-fixed"></a>
 
@@ -79,7 +79,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-7-0"></a>
 
-## [1.7.0] - 2025-10-09
+## 1.7.0 (2025-10-09)
 
 <a name="release-1-7-0-added"></a>
 
@@ -90,7 +90,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-6-0"></a>
 
-## [1.6.0] - 2025-07-30
+## 1.6.0 (2025-07-30)
 
 <a name="release-1-6-0-added"></a>
 
@@ -108,15 +108,15 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-5-0"></a>
 
-## [1.5.0] - 2025-01-21
+## 1.5.0 (2025-01-21)
 
 <a name="release-1-4-1"></a>
 
-## [1.4.1] - 2024-09-18
+## 1.4.1 (2024-09-18)
 
 <a name="release-1-4-0"></a>
 
-## [1.4.0] - 2024-09-13
+## 1.4.0 (2024-09-13)
 
 <a name="release-1-4-0-fixed"></a>
 
@@ -127,7 +127,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-3-2"></a>
 
-## [1.3.2] - 2024-09-07
+## 1.3.2 (2024-09-07)
 
 <a name="release-1-3-2-added"></a>
 
@@ -138,7 +138,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-3-1"></a>
 
-## [1.3.1] - 2023-06-16
+## 1.3.1 (2023-06-16)
 
 <a name="release-1-3-1-added"></a>
 
@@ -149,7 +149,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-3-0"></a>
 
-## [1.3.0] - 2023-04-07
+## 1.3.0 (2023-04-07)
 
 <a name="release-1-3-0-changes"></a>
 
@@ -160,7 +160,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-2-0"></a>
 
-## [1.2.0] - 2023-04-06
+## 1.2.0 (2023-04-06)
 
 <a name="release-1-2-0-changes"></a>
 
@@ -171,7 +171,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-1-0"></a>
 
-## [1.1.0] - 2023-04-05
+## 1.1.0 (2023-04-05)
 
 <a name="release-1-1-0-added"></a>
 
@@ -182,7 +182,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-1-0-0"></a>
 
-## [1.0.0] - 2023-03-30
+## 1.0.0 (2023-03-30)
 
 <a name="release-1-0-0-added"></a>
 
@@ -193,7 +193,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-6-1"></a>
 
-## [0.6.1] - 2023-01-16
+## 0.6.1 (2023-01-16)
 
 <a name="release-0-6-1-fixed"></a>
 
@@ -204,7 +204,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-6-0"></a>
 
-## [0.6.0] - 2023-01-05
+## 0.6.0 (2023-01-05)
 
 <a name="release-0-6-0-added"></a>
 
@@ -215,7 +215,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-5-2"></a>
 
-## [0.5.2] - 2021-12-28
+## 0.5.2 (2021-12-28)
 
 <a name="release-0-5-2-added"></a>
 
@@ -225,7 +225,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-5-1"></a>
 
-## [0.5.1] - 2021-06-25
+## 0.5.1 (2021-06-25)
 
 <a name="release-0-5-1-added"></a>
 
@@ -242,7 +242,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-5-0"></a>
 
-## [0.5.0] - 2020-10-06
+## 0.5.0 (2020-10-06)
 
 <a name="release-0-5-0-added"></a>
 
@@ -260,7 +260,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-4-0"></a>
 
-## [0.4.0] - 2020-10-04
+## 0.4.0 (2020-10-04)
 
 <a name="release-0-4-0-added"></a>
 
@@ -285,7 +285,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-3-0"></a>
 
-## [0.3.0] - 2020-10-03
+## 0.3.0 (2020-10-03)
 
 <a name="release-0-3-0-added"></a>
 
@@ -314,7 +314,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-2-0"></a>
 
-## [0.2.0] - 2020-09-28
+## 0.2.0 (2020-09-28)
 
 <a name="release-0-2-0-added"></a>
 
@@ -332,7 +332,7 @@ All notable changes to this project will be documented in this file.
 
 <a name="release-0-1-0"></a>
 
-## [0.1.0] - 2020-09-25
+## 0.1.0 (2020-09-25)
 
 <a name="release-0-1-0-added"></a>
 
@@ -342,30 +342,3 @@ All notable changes to this project will be documented in this file.
   [@gaborbernat](https://github.com/gaborbernat).
 - Run the formatter as a pre-commit hook or print its output with `--stdout`
   ([#9](https://github.com/tox-dev/tox-ini-fmt/pull/9)) by [@gaborbernat](https://github.com/gaborbernat).
-
-[0.1.0]: https://github.com/tox-dev/tox-ini-fmt/commits/0.1.0
-[0.2.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.1.0...0.2.0
-[0.3.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.2.0...0.3.0
-[0.4.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.3.0...0.4.0
-[0.5.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.4.0...0.5.0
-[0.5.1]: https://github.com/tox-dev/tox-ini-fmt/compare/0.5.0...0.5.1
-[0.5.2]: https://github.com/tox-dev/tox-ini-fmt/compare/0.5.1...0.5.2
-[0.6.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.5.2...0.6.0
-[0.6.1]: https://github.com/tox-dev/tox-ini-fmt/compare/0.6.0...0.6.1
-[1.0.0]: https://github.com/tox-dev/tox-ini-fmt/compare/0.6.1...1.0.0
-[1.1.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.0.0...1.1.0
-[1.10.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.9.0...1.10.0
-[1.2.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.1.0...1.2.0
-[1.3.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.2.0...1.3.0
-[1.3.1]: https://github.com/tox-dev/tox-ini-fmt/compare/1.3.0...1.3.1
-[1.3.2]: https://github.com/tox-dev/tox-ini-fmt/compare/1.3.1...1.3.2
-[1.4.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.3.2...1.4.0
-[1.4.1]: https://github.com/tox-dev/tox-ini-fmt/compare/1.4.0...1.4.1
-[1.5.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.4.1...1.5.0
-[1.6.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.5.0...1.6.0
-[1.7.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.6.0...1.7.0
-[1.7.1]: https://github.com/tox-dev/tox-ini-fmt/compare/1.7.0...1.7.1
-[1.7.2]: https://github.com/tox-dev/tox-ini-fmt/compare/1.7.1...1.7.2
-[1.8.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.7.2...1.8.0
-[1.8.1]: https://github.com/tox-dev/tox-ini-fmt/compare/1.8.0...1.8.1
-[1.9.0]: https://github.com/tox-dev/tox-ini-fmt/compare/1.8.1...1.9.0
