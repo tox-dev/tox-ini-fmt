@@ -20,6 +20,7 @@ jobs:
   release:
     needs:
       - build
+      - render-notes
     runs-on: ubuntu-26.04
     environment:
       name: release
@@ -122,7 +123,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
   github-release:
-    needs: [release, render-notes]
+    needs: release
     runs-on: ubuntu-26.04
     permissions:
       contents: write
