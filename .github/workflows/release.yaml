@@ -40,6 +40,7 @@ jobs:
   contributor-metadata:
     needs: build
     runs-on: ubuntu-26.04
+    environment: release
     permissions:
       contents: write
     steps:
@@ -125,6 +126,7 @@ jobs:
   github-release:
     needs: release
     runs-on: ubuntu-26.04
+    environment: release
     permissions:
       contents: write
     steps:
