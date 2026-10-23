@@ -91,6 +91,8 @@ jobs:
     environment: release
     permissions:
       contents: write
+    outputs:
+      previous: ${{ steps.previous.outputs.previous }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -158,6 +160,7 @@ jobs:
       - uses: tox-dev/github-workflows/render-release-notes@1b7d58c3e744b505215e1cb11697a80737b0e94d
         with:
           tag: ${{ github.ref_name }}
+          previous: ${{ needs.contributor-metadata.outputs.previous }}
           changelog: CHANGELOG.md
           artifact-url: https://pypi.org/project/tox-ini-fmt/${{ github.ref_name }}/
           generated-notes: ${{ runner.temp }}/generated-notes/generated-notes.md
