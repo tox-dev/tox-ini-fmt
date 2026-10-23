@@ -78,27 +78,27 @@ pkg-meta = [
 ]
 release = [
   "prek>=0.5",
-  "release-creator>=0.6",
+  "release-creator>=0.6.5",
   "towncrier>=26.9",
 ]
 release-check = [
   "prek>=0.5",
 ]
 release-news = [
-  "release-creator>=0.6",
+  "release-creator>=0.6.5",
   "towncrier>=26.9",
 ]
 release-notes = [
-  "release-creator>=0.6",
+  "release-creator>=0.6.5",
 ]
 release-prepare = [
   "prek>=0.5",
-  "release-creator>=0.6",
+  "release-creator>=0.6.5",
   "towncrier>=26.9",
 ]
 release-validate = [
   "prek>=0.5",
-  "release-creator>=0.6",
+  "release-creator>=0.6.5",
 ]
 
 [tool.hatch]
