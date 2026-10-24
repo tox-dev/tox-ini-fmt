@@ -12,11 +12,8 @@ from tox_ini_fmt.__main__ import GREEN, RED, RESET, color_diff, run
 if TYPE_CHECKING:
     from pathlib import Path
 
-    from pytest_mock import MockerFixture
-
 
 def test_color_diff() -> None:
-    # Arrange
     before = """
     abc
     def
@@ -42,16 +39,10 @@ def test_color_diff() -> None:
 {RED}-    ghi{RESET}
 """.strip().splitlines()
 
-    # Act
     diff_color = color_diff(diff)
 
-    # Assert
     output_lines = [line.rstrip() for line in "\n".join(diff_color).splitlines()]
     assert output_lines == expected_lines
-
-
-def no_color(diff: str) -> str:
-    return diff
 
 
 @pytest.mark.parametrize("in_place", [True, False])
@@ -97,9 +88,7 @@ def test_main(  # ruff:ignore[too-many-arguments]
     outcome: str,
     output: str,
     monkeypatch: pytest.MonkeyPatch,
-    mocker: MockerFixture,
 ) -> None:
-    mocker.patch("tox_ini_fmt.__main__.color_diff", no_color)
     if cwd:
         monkeypatch.chdir(tmp_path)
     tox_ini = tmp_path / "tox.ini"
@@ -118,7 +107,7 @@ def test_main(  # ruff:ignore[too-many-arguments]
         name = "tox.ini" if cwd else str(tmp_path / "tox.ini")
         output = output.format(name)
         assert tox_ini.read_text() == outcome
-        assert out == output
+        assert out.replace(GREEN, "").replace(RED, "").replace(RESET, "") == output
     else:
         assert out == outcome
 
@@ -176,12 +165,10 @@ def test_main_check(  # ruff:ignore[too-many-arguments]
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
     monkeypatch: pytest.MonkeyPatch,
-    mocker: MockerFixture,
     start: str,
     code: int,
     output: str,
 ) -> None:
-    mocker.patch("tox_ini_fmt.__main__.color_diff", no_color)
     monkeypatch.chdir(tmp_path)
     tox_ini = tmp_path / "tox.ini"
     tox_ini.write_text(start)
@@ -191,4 +178,22 @@ def test_main_check(  # ruff:ignore[too-many-arguments]
     assert tox_ini.read_text() == start
     out, err = capsys.readouterr()
     assert not err
-    assert out == output
+    assert out.replace(GREEN, "").replace(RED, "").replace(RESET, "") == output
+
+
+def test_main_reports_unchanged_file_after_changed_file(
+    tmp_path: Path,
+    capsys: pytest.CaptureFixture[str],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.chdir(tmp_path)
+    changed = tmp_path / "first.ini"
+    changed.write_text("[tox]\nrequires =\n    tox>=4.2\nenv_list=py311,py310")
+    unchanged = tmp_path / "second.ini"
+    unchanged.write_text("[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n    py310\n")
+
+    assert run([str(changed), str(unchanged)]) == 1
+
+    out, err = capsys.readouterr()
+    assert not err
+    assert out.endswith("no change for second.ini\n")

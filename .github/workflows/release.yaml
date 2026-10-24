@@ -8,41 +8,37 @@ env:
   dists-artifact-name: python-package-distributions
 jobs:
   build:
+    uses: tox-dev/github-workflows/.github/workflows/validate-python-release.yaml@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+    permissions:
+      contents: read
+  github-release-draft:
+    needs:
+      - build
+      - render-notes
     runs-on: ubuntu-26.04
+    environment: release
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          fetch-depth: 0
-          persist-credentials: false
-      - name: Require a changelog section for the tag
+          name: release-notes
+          path: ${{ runner.temp }}/release-notes
+      - name: Stage GitHub Release
+        uses: tox-dev/github-workflows/publish-github-release@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
         env:
-          TAG: ${{ github.ref_name }}
-        run: |
-          if [[ ! "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "::error::unexpected release tag $TAG"
-            exit 1
-          fi
-          if ! grep -qF "## $TAG (" CHANGELOG.md; then
-            echo "::error::CHANGELOG.md has no section for $TAG"
-            exit 1
-          fi
-      - name: Install the latest version of uv
-        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+          GH_TOKEN: ${{ github.token }}
         with:
-          python-version: "3.15"
-          enable-cache: false
-          cache-dependency-glob: "pyproject.toml"
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build package
-        run: uv build --python 3.15 --python-preference only-managed --sdist --wheel . --out-dir dist
-      - name: Store the distribution packages
-        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
-        with:
-          name: ${{ env.dists-artifact-name }}
-          path: dist/*
+          tag: ${{ github.ref_name }}
+          commit: ${{ github.sha }}
+          title: ${{ github.ref_name }}
+          notes-file: ${{ runner.temp }}/release-notes/release-notes.md
+          mode: stage
   release:
     needs:
       - build
+      - render-notes
+      - github-release-draft
     runs-on: ubuntu-26.04
     environment:
       name: release
@@ -58,30 +54,141 @@ jobs:
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
+          packages-dir: dist
           attestations: true
-  github-release:
-    needs: release
+          skip-existing: true
+  verify:
+    needs:
+      - build
+      - render-notes
+      - github-release-draft
+      - release
     runs-on: ubuntu-26.04
     permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: latest-known
+          python-version: "3.15"
+          enable-cache: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ${{ env.dists-artifact-name }}
+          path: dist/
+      - name: Verify complete PyPI release
+        uses: tox-dev/github-workflows/reconcile-pypi-artifacts@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        with:
+          project: tox-ini-fmt
+          version: ${{ github.ref_name }}
+          dist: dist
+  contributor-metadata:
+    needs: build
+    runs-on: ubuntu-26.04
+    environment: release
+    permissions:
       contents: write
+    outputs:
+      previous: ${{ steps.previous.outputs.previous }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Publish GitHub Release
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: latest-known
+          python-version: "3.15"
+          enable-cache: false
+      - uses: tox-dev/github-workflows/install-locked-tools@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        with:
+          groups: release-notes
+          venv: ${{ runner.temp }}/release-tools
+      - name: Select previous release tag
+        id: previous
+        uses: tox-dev/github-workflows/select-previous-tag@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        with:
+          tag: ${{ github.ref_name }}
+      - name: Fetch contributor metadata
         env:
           GH_TOKEN: ${{ github.token }}
           TAG: ${{ github.ref_name }}
+          PREVIOUS: ${{ steps.previous.outputs.previous }}
         run: |
           set -euo pipefail
-          awk -v tag="$TAG" 'index($0, "## " tag " (") == 1 { found = 1; next } found && /^## / { exit } found { print }' CHANGELOG.md > "$RUNNER_TEMP/release-notes.md"
-          test -s "$RUNNER_TEMP/release-notes.md"
-          printf '\n[PyPI release](https://pypi.org/project/tox-ini-fmt/%s/)\n' "$TAG" >> "$RUNNER_TEMP/release-notes.md"
-          previous=$(git tag --list '[0-9]*' | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | awk -v tag="$TAG" '$0 == tag { print previous; exit } { previous = $0 }')
-          if [[ -n "$previous" ]]; then
-            printf '\n**Full Changelog**: https://github.com/%s/compare/%s...%s\n' "$GITHUB_REPOSITORY" "$previous" "$TAG" >> "$RUNNER_TEMP/release-notes.md"
+          if [[ -n "$PREVIOUS" ]]; then
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+              -f tag_name="$TAG" -f previous_tag_name="$PREVIOUS" \
+              --jq .body >"$RUNNER_TEMP/generated-notes.md"
           else
-            printf '\n**Full Changelog**: https://github.com/%s/commits/%s\n' "$GITHUB_REPOSITORY" "$TAG" >> "$RUNNER_TEMP/release-notes.md"
+            gh api -X POST "repos/${GITHUB_REPOSITORY}/releases/generate-notes" \
+              -f tag_name="$TAG" --jq .body >"$RUNNER_TEMP/generated-notes.md"
           fi
-          gh release create "$TAG" --verify-tag --title "$TAG" --notes-file "$RUNNER_TEMP/release-notes.md"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: generated-notes
+          path: ${{ runner.temp }}/generated-notes.md
+          if-no-files-found: error
+          retention-days: 30
+  render-notes:
+    needs: contributor-metadata
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: latest-known
+          python-version: "3.15"
+          enable-cache: false
+      - name: Install locked release tools
+        uses: tox-dev/github-workflows/install-locked-tools@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        with:
+          groups: release-notes
+          venv: ${{ runner.temp }}/release-tools
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: generated-notes
+          path: ${{ runner.temp }}/generated-notes
+      - uses: tox-dev/github-workflows/render-release-notes@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        with:
+          tag: ${{ github.ref_name }}
+          previous: ${{ needs.contributor-metadata.outputs.previous }}
+          changelog: CHANGELOG.md
+          artifact-url: https://pypi.org/project/tox-ini-fmt/${{ github.ref_name }}/
+          generated-notes: ${{ runner.temp }}/generated-notes/generated-notes.md
+          output: ${{ runner.temp }}/release-notes.md
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: release-notes
+          path: ${{ runner.temp }}/release-notes.md
+          if-no-files-found: error
+          retention-days: 30
+  github-release:
+    needs: verify
+    runs-on: ubuntu-26.04
+    environment: release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: release-notes
+          path: ${{ runner.temp }}/release-notes
+      - name: Publish GitHub Release
+        uses: tox-dev/github-workflows/publish-github-release@55f51f9b5cc0b40f280155a95de2d4f0ecbf7be1 # v3.0.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        with:
+          tag: ${{ github.ref_name }}
+          commit: ${{ github.sha }}
+          title: ${{ github.ref_name }}
+          notes-file: ${{ runner.temp }}/release-notes/release-notes.md
+          mode: publish
