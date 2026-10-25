@@ -50,7 +50,7 @@ def run(args: Sequence[str] | None = None) -> int:
             original_newlines = original_newlines[0]
         formatted = format_tox_ini(before, opts)
         changed |= before != formatted
-        if opts.stdout:  # stdout just prints new format to stdout
+        if opts.stdout:
             print(formatted, end="")  # ruff:ignore[print]
         else:
             if before != formatted and not opts.check:
@@ -60,19 +60,22 @@ def run(args: Sequence[str] | None = None) -> int:
                 name = str(tox_ini.relative_to(Path.cwd()))
             except ValueError:
                 name = str(tox_ini)
-            diff = (
-                list(difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name))
-                if changed
-                else []
-            )
-            if diff:
-                diff_text = "\n".join(color_diff(diff))
-                print(diff_text)  # print diff on change  # ruff:ignore[print]
+            if before != formatted:
+                diff = difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
+                print("\n".join(color_diff(diff)))  # ruff:ignore[print]
             else:
                 print(f"no change for {name}")  # ruff:ignore[print]
-    # exit with non success on change
     return 1 if changed else 0
 
 
 if __name__ == "__main__":
     raise SystemExit(run())
+
+
+__all__ = [
+    "GREEN",
+    "RED",
+    "RESET",
+    "color_diff",
+    "run",
+]
