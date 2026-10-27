@@ -1,7 +1,14 @@
 # tox-ini-fmt
 
-See the [changelog](CHANGELOG.md) for released changes. Pull requests need a `changelog.d/<PR>.<type>.md` fragment; use
-the `skip news` label for changes that do not need release notes.
+See the [changelog](CHANGELOG.md) for released changes. A user-facing pull request needs a
+`changelog.d/+short-name.<category>.md` fragment. The release workflow replaces the name with the squash-merged pull
+request number and credits the commit authors and co-authors, so do not write credits by hand. Release preparation runs
+`release-creator contributors` to list first-time contributors. Use the `skip news` label for maintenance changes; bot
+updates need a fragment only when the pull request supplies one.
+
+Choose `feature` for added or removed Python support and new capabilities, `change` for changed behavior, `bugfix` for
+fixes, and `doc` for user documentation. The other categories are `breaking`, `security`, `performance`, `deprecation`,
+`removal`, and `packaging`. Keep each fragment about one user-visible change.
 
 [![PyPI](https://img.shields.io/pypi/v/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
 [![PyPI - Implementation](https://img.shields.io/pypi/implementation/tox-ini-fmt?style=flat-square)](https://pypi.org/project/tox-ini-fmt)
@@ -24,7 +31,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
   - repo: https://github.com/tox-dev/tox-ini-fmt
-    rev: 1.3.1
+    rev: 1.10.0
     hooks:
       - id: tox-ini-fmt
         args: [-p, 'fix_lint,type']
