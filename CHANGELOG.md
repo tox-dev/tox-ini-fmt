@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 <!-- towncrier release notes start -->
 
+<a name="release-1-10-1"></a>
+
+## 1.10.1 (2026-10-27)
+
+<a name="release-1-10-1-fixed"></a>
+
+### Fixed
+
+- Fix repository links in the PyPI project description ([#384](https://github.com/tox-dev/tox-ini-fmt/pull/384)) by
+  [@gaborbernat](https://github.com/gaborbernat).
+- Report an unchanged file after a changed file when formatting multiple files in one command
+  ([#384](https://github.com/tox-dev/tox-ini-fmt/pull/384)) by [@gaborbernat](https://github.com/gaborbernat).
+
 <a name="release-1-10-0"></a>
 
 ## 1.10.0 (2026-10-10)
