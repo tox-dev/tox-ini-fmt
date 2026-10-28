@@ -6,10 +6,10 @@ SECURITY.md wins and we fix this file.
 
 ## How tox-ini-fmt works
 
-tox-ini-fmt reads each `tox.ini` file named on the command line or standard input, parses it with the standard library's
-`configparser`, and writes the formatted text back to the same path, to standard output, or reports a diff with
-`--check`. It runs no code from the file, makes no network requests, and touches no other file. It typically runs as a
-pre-commit hook, often on pre-commit.ci or in CI against content from pull requests.
+tox-ini-fmt reads each `tox.ini` file named on the command line, parses it with the standard library's `configparser`,
+and writes the formatted text back to the same path, to standard output, or reports a diff with `--check`. It runs no
+code from the file, makes no network requests, and touches no other file. It typically runs as a pre-commit hook, often
+on pre-commit.ci or in CI against content from pull requests.
 
 ```mermaid
 flowchart LR
@@ -30,11 +30,11 @@ which first needs a trusted element compromised is out of scope; the first triag
 [DOMPurify](https://github.com/cure53/DOMPurify/blob/main/SECURITY.md#what-we-consider-a-vulnerability) puts it, is what
 the attacker controls.
 
-| Project                                                                               | Language        | Where it draws the line                                                                         |
-| ------------------------------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------- |
-| [tox-toml-fmt](https://github.com/tox-dev/toml-fmt/blob/main/.github/THREAT_MODEL.md) | Rust and Python | The sibling formatter for `tox.toml` follows this same model.                                   |
-| [dprint](https://github.com/dprint/dprint/security/policy)                            | Rust            | Formatter platform; patches only the latest release and takes reports privately.                |
-| [Prettier](https://github.com/prettier/prettier/security/policy)                      | JavaScript      | Formats untrusted source; reports go through Tidelift, and the policy defines no further scope. |
+| Project                                                          | Language        | Where it draws the line                                                                         |
+| ---------------------------------------------------------------- | --------------- | ----------------------------------------------------------------------------------------------- |
+| [tox-toml-fmt](https://github.com/tox-dev/toml-fmt)              | Rust and Python | The sibling formatter for `tox.toml`; it treats the files it formats as data, as this one does. |
+| [dprint](https://github.com/dprint/dprint/security/policy)       | Rust            | Formatter platform; patches only the latest release and takes reports privately.                |
+| [Prettier](https://github.com/prettier/prettier/security/policy) | JavaScript      | Formats untrusted source; reports go through Tidelift, and the policy defines no further scope. |
 
 ## Trusted
 
@@ -60,8 +60,8 @@ An attacker who controls any of these already has what tox-ini-fmt could give th
 ## Release chain
 
 Releases run on the shared [tox-dev/github-workflows](https://github.com/tox-dev/github-workflows) pipeline. A release
-App, not a person, pushes the release commit and tag; the build installs its tools hash-checked from `pylock.toml` with
-a seven-day upload cooldown; PyPI receives the files through
+App, not a person, pushes the release commit and tag; the build installs its tools from a hash-checked `pylock.toml`
+resolved with a seven-day upload cooldown by default; PyPI receives the files through
 [trusted publishing](https://docs.pypi.org/trusted-publishers/) with attestations, and the GitHub Release is immutable.
 Every workflow pins third-party actions to a commit SHA.
 
@@ -72,6 +72,13 @@ Every workflow pins third-party actions to a commit SHA.
 | A crafted `tox.ini` makes tox-ini-fmt write outside the file | Vulnerability | Content must never choose an output path. |
 | A long line makes the formatter take minutes                 | Vulnerability | Small-input hang in CI.                   |
 | Formatting moves a command into another section              | Bug           | Changes meaning; fix it in the open.      |
+
+## Severity
+
+- **High:** formatting an untrusted `tox.ini` file executes code, reads or writes another file, or makes a network
+  request.
+- **Medium:** a small input hangs the formatter or exhausts memory.
+- **Low:** an uncaught exception, panic or crash on malformed input instead of a clean error.
 
 ## Accepted risks
 
