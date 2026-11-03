@@ -16,6 +16,8 @@ fixes, and `doc` for user documentation. The other categories are `breaking`, `s
 [![Downloads](https://static.pepy.tech/badge/tox-ini-fmt/month)](https://pepy.tech/project/tox-ini-fmt)
 [![PyPI - License](https://img.shields.io/pypi/l/tox-ini-fmt?style=flat-square)](https://opensource.org/licenses/MIT)
 [![check](https://github.com/tox-dev/tox-ini-fmt/actions/workflows/check.yaml/badge.svg)](https://github.com/tox-dev/tox-ini-fmt/actions/workflows/check.yaml)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/tox-dev/tox-ini-fmt/badge)](https://scorecard.dev/viewer/?uri=github.com/tox-dev/tox-ini-fmt)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/16264/badge)](https://www.bestpractices.dev/projects/16264)
 
 apply a consistent format to `tox.ini` files
 
