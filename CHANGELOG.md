@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 <!-- towncrier release notes start -->
 
+<a name="release-1-10-2"></a>
+
+## 1.10.2 (2026-11-04)
+
 <a name="release-1-10-1"></a>
 
 ## 1.10.1 (2026-10-27)
