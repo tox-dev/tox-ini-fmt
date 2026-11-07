@@ -17,9 +17,9 @@ def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) 
     """
     Format a tox ini file.
 
-    :param tox_ini:
-    :param opts:
-    :returns:
+    :param tox_ini: the raw text, or the path of the file to read it from
+    :param opts: the options, whose pinned tox environments steer the ordering; defaults to none
+    :returns: the formatted text
     """
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])

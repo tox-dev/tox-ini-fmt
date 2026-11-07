@@ -83,10 +83,10 @@ class ToxIniFmtNamespace(Namespace):
     """
     Options for tox-ini-fmt tool.
 
-    :ivar tox_ini:
-    :ivar stdout:
-    :ivar check:
-    :ivar pin_toxenvs:
+    :ivar tox_ini: the tox ini files to format
+    :ivar stdout: print the formatted text instead of updating the files in place
+    :ivar check: report the files that need formatting, without writing them back
+    :ivar pin_toxenvs: tox environments to move to the start of the env list
     """
 
     tox_ini: list[Path]

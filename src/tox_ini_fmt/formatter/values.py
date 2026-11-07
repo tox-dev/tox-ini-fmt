@@ -35,10 +35,10 @@ def fix_and_reorder(
     Fix and reorder values.
 
     :param parser: the INI parser
-    :param name:  name
+    :param name: the section to fix in place
     :param fix_cfg: values to fix
     :param upgrade: values to upgrade
-    :raises RuntimeError:
+    :raises RuntimeError: when an upgraded key is set alongside the key it replaces
     """
     section = parser[name]
     for key, to in upgrade.items():
@@ -180,11 +180,11 @@ def collect_multi_line(
     """
     Collect multiline values.
 
-    :param value:
-    :param line_split:
-    :param normalize:
-    :param sort_key:
-    :returns:
+    :param value: the raw text, with one entry per line
+    :param line_split: pattern splitting the entries of a line; ``None`` keeps each line whole
+    :param normalize: rewrites the entries of each factor group before they are sorted and output
+    :param sort_key: orders the entries of a group; the natural order when unset
+    :returns: the entries grouped by their factor prefix, and the substitutions returned separately
     """
     groups, substitute = _group_lines(value, line_split)
     normalized_group = normalize(groups) if normalize else groups
