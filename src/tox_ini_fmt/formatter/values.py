@@ -6,7 +6,7 @@ import itertools
 import re
 from collections import defaultdict
 from functools import partial
-from typing import TYPE_CHECKING, TypedDict, cast
+from typing import TYPE_CHECKING, Final, TypedDict, cast
 
 from .requires import requires
 
@@ -57,7 +57,7 @@ def fix_and_reorder(
     parser[name] = new_section
 
 
-_RE_ITEM_REF = re.compile(
+_RE_ITEM_REF: Final[re.Pattern[str]] = re.compile(
     r"""
         (?<!\\)[{]
         (?:(?P<sub_type>[^[:{}]+):)?    # optional sub_type for special rules
@@ -138,7 +138,9 @@ def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
     return -3, 0
 
 
-_TOX_ENV_MATCHER = re.compile(r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)")
+_TOX_ENV_MATCHER: Final[re.Pattern[str]] = re.compile(
+    r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)"
+)
 
 
 class _ToxMatch(TypedDict):
@@ -150,7 +152,7 @@ class _ToxMatch(TypedDict):
 
 # A factor-conditional prefix such as ``py311: pytest``. The ``(?!//)`` guard keeps a URL scheme
 # (``https://...``) from being mistaken for a factor marker, which would split it into ``https: //...``.
-_CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
+_CONDITIONAL_MARKER: Final[re.Pattern[str]] = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
 
 
 def to_py_dependencies(value: str) -> str:
