@@ -54,7 +54,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 def _handle_min_version(tox: SectionProxy) -> None:
     min_version = next((tox.pop(i) for i in ("minversion", "min_version") if i in tox), None)
-    if min_version is None or int(min_version.split(".")[0]) < 4:  # ruff:ignore[magic-value-comparison]
+    if min_version is None or int(min_version.split(".")[0]) < 4:  # ruff:ignore[magic-value-comparison] # below tox 4, which has no requires
         min_version = "4.2"
     tox_requires = [
         Requirement(i)

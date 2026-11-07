@@ -140,7 +140,7 @@ def test_extras(arg: str, output: str) -> None:
         ),
     ],
 )
-def test_format_test_env_ref(  # ruff:ignore[too-many-arguments]
+def test_format_test_env_ref(  # ruff:ignore[too-many-arguments] # fixtures and parametrized cases add arguments
     tox_ini: Path,
     key: str,
     before: str,

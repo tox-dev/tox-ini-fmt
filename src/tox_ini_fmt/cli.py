@@ -35,12 +35,12 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     class CommaSeparatedStr(Action):
         def __call__(
             self,
-            parser: ArgumentParser,  # ruff:ignore[unused-method-argument]
+            parser: ArgumentParser,  # ruff:ignore[unused-method-argument] # argparse fixes this signature
             namespace: Namespace,
             values: str | Sequence[Any] | None,
-            option_string: str | None = None,  # ruff:ignore[unused-method-argument]
+            option_string: str | None = None,  # ruff:ignore[unused-method-argument] # argparse fixes this signature
         ) -> None:
-            if isinstance(values, str):  # pragma: no cover
+            if isinstance(values, str):  # pragma: no cover # argparse always passes a string
                 setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
 
     parser.add_argument(
@@ -72,10 +72,10 @@ def _tox_ini_path_creator(argument: str) -> Path:
         raise ArgumentTypeError(msg)
     if not os.access(path, os.R_OK):
         msg = "cannot read path"
-        raise ArgumentTypeError(msg)  # pragma: no cover
+        raise ArgumentTypeError(msg)  # pragma: no cover # the write-only test is skipped on Windows
     if not os.access(path, os.W_OK):
         msg = "cannot write path"
-        raise ArgumentTypeError(msg)  # pragma: no cover
+        raise ArgumentTypeError(msg)
     return path
 
 

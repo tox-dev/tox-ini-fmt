@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 def test_version() -> None:
-    import tox_ini_fmt  # ruff:ignore[import-outside-top-level]
+    import tox_ini_fmt  # ruff:ignore[import-outside-top-level] # the import itself is under test
 
     assert tox_ini_fmt.__version__
 

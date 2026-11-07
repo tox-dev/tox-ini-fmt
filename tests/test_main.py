@@ -81,7 +81,7 @@ def test_color_diff() -> None:
         ),
     ],
 )
-def test_main(  # ruff:ignore[too-many-arguments]
+def test_main(  # ruff:ignore[too-many-arguments] # fixtures and parametrized cases add arguments
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
     start: str,
@@ -197,7 +197,7 @@ def test_non_ascii_ignores_locale_encoding(tmp_path: Path) -> None:
         ),
     ],
 )
-def test_main_check(  # ruff:ignore[too-many-arguments]
+def test_main_check(  # ruff:ignore[too-many-arguments] # fixtures and parametrized cases add arguments
     tmp_path: Path,
     capsys: pytest.CaptureFixture[str],
     monkeypatch: pytest.MonkeyPatch,

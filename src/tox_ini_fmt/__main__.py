@@ -47,7 +47,7 @@ def run(args: Sequence[str] | None = None) -> int:
         formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:
-            print(formatted, end="")  # ruff:ignore[print]
+            print(formatted, end="")  # ruff:ignore[print] # the file is the output
         else:
             if before != formatted and not opts.check:
                 with tox_ini.open("wt", encoding="utf-8", newline=original_newlines) as file:
@@ -58,9 +58,9 @@ def run(args: Sequence[str] | None = None) -> int:
                 name = str(tox_ini)
             if before != formatted:
                 diff = difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
-                print("\n".join(color_diff(diff)))  # ruff:ignore[print]
+                print("\n".join(color_diff(diff)))  # ruff:ignore[print] # the diff is the output
             else:
-                print(f"no change for {name}")  # ruff:ignore[print]
+                print(f"no change for {name}")  # ruff:ignore[print] # the status is the output
     return 1 if changed else 0
 
 
