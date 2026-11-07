@@ -19,9 +19,6 @@ RESET: Final[str] = "\u001b[0m"
 
 
 def color_diff(diff: Iterable[str]) -> Iterable[str]:
-    # Display diff in colored mode.
-    #
-    # :param diff: the diff lines
     for line in diff:
         if line.startswith("+"):
             yield GREEN + line + RESET
@@ -32,10 +29,6 @@ def color_diff(diff: Iterable[str]) -> Iterable[str]:
 
 
 def run(args: Sequence[str] | None = None) -> int:
-    # Run the formatter.
-    #
-    # :param args: CLI arguments
-    # :return: exit code
     opts = cli_args(sys.argv[1:] if args is None else args)
     changed = False
     for tox_ini in opts.tox_ini:

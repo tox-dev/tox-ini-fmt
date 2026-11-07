@@ -18,10 +18,6 @@ if TYPE_CHECKING:
 
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
-    # Format a tox test environment.
-    #
-    # :param parser: the INI parser
-    # :param name:  name of the test env
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
         "runner": str,
         "description": str,
@@ -85,25 +81,16 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
 
 
 def to_ordered_list(value: str) -> str:
-    # Must be a line separated list - fix comma separated format.
     extras, substitute = collect_multi_line(value)
     return fmt_list(extras, substitute)
 
 
 def to_pass_env(value: str) -> str:
-    # Format the pass env sections.
-    #
-    # :param value:
-    # :return:
     pass_env, substitute = collect_multi_line(value)
     return fmt_list(sorted(pass_env), substitute)
 
 
 def to_set_env(value: str) -> str:
-    # Format the set env.
-    #
-    # :param value:
-    # :return:
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
     set_env: list[str] = []
     for env in raw_set_env:
@@ -120,10 +107,6 @@ def to_set_env(value: str) -> str:
 
 
 def to_commands(value: str) -> str:
-    # Format the tox commands.
-    #
-    # :param value: the raw value
-    # :return: the formatted value
     result: list[str] = []
     cmd_sep: str = "\\"
     ends_with_sep = False
@@ -133,6 +116,7 @@ def to_commands(value: str) -> str:
         if cur_ends_with_sep:
             val = val[:-1].strip()
         if val and val != cmd_sep:
-            result.append(f"{('  ' if ends_with_sep else '')}{val}{(f' {cmd_sep}' if cur_ends_with_sep else '')}")
+            line = f"{'  ' if ends_with_sep else ''}{val}"
+            result.append(f"{line} {cmd_sep}" if cur_ends_with_sep else line)
             ends_with_sep = cur_ends_with_sep
     return fmt_list(result, [])

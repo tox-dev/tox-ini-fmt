@@ -58,11 +58,6 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
 
 
 def _tox_ini_path_creator(argument: str) -> Path:
-    # Validate that tox.ini can be formatted.
-    #
-    # :param argument: the string argument passed in
-    # :returns: the tox.ini path
-    # :raises ArgumentTypeError:
     path = Path(argument).absolute()
     if not path.exists():
         msg = "path does not exists"

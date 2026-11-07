@@ -34,12 +34,6 @@ def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 
 def _load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
-    # Load and order tox env list.
-    #
-    # :param parser: the INI parser
-    # :param pin_toxenvs: envs to pint at the top
-    # :returns: the expanded and ordered list.
-    # :raises RuntimeError:
     result: list[str] = next(
         (explode_env_list(parser["tox"][i]) for i in ("envlist", "env_list") if i in parser["tox"]),
         [],

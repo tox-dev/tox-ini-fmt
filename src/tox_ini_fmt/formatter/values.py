@@ -215,10 +215,6 @@ def _group_lines(value: str, line_split: str | None) -> tuple[defaultdict[str, l
 
 
 def _is_substitute(value: str) -> bool:
-    # Check if has substitute value.
-    #
-    # :param value: the raw value
-    # :returns:
     if match := _RE_ITEM_REF.match(value):
         sub_key = match.group("substitution_value")
         return sub_key.startswith("[") and "]" in sub_key
