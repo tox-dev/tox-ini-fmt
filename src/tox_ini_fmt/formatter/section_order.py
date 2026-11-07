@@ -29,8 +29,8 @@ def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
         if parser.has_section(section):
             sections[section] = dict(parser[section])
             parser.pop(section)
-    for k, v in sections.items():
-        parser[k] = v
+    for name, options in sections.items():
+        parser[name] = options
 
 
 def _load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
