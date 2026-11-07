@@ -11,44 +11,12 @@ if TYPE_CHECKING:
     from collections.abc import Sequence
 
 
-class ToxIniFmtNamespace(Namespace):
-    """Options for tox-ini-fmt tool."""
-
-    tox_ini: list[Path]
-    stdout: bool
-    check: bool
-    pin_toxenvs: list[str]
-
-
-def tox_ini_path_creator(argument: str) -> Path:
-    """
-    Validate that tox.ini can be formatted.
-
-    :param argument: the string argument passed in
-    :return: the tox.ini path
-    """
-    path = Path(argument).absolute()
-    if not path.exists():
-        msg = "path does not exists"
-        raise ArgumentTypeError(msg)
-    if not path.is_file():
-        msg = "path is not a file"
-        raise ArgumentTypeError(msg)
-    if not os.access(path, os.R_OK):
-        msg = "cannot read path"
-        raise ArgumentTypeError(msg)  # pragma: no cover
-    if not os.access(path, os.W_OK):
-        msg = "cannot write path"
-        raise ArgumentTypeError(msg)  # pragma: no cover
-    return path
-
-
 def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
     """
     Load the tools options.
 
     :param args: CLI arguments
-    :return: the parsed options
+    :returns: the parsed options
     """
     parser = ArgumentParser()
     output_mode = parser.add_mutually_exclusive_group()
@@ -83,7 +51,51 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         default=[],
         help="tox environments that pin to the start of the envlist (comma separated)",
     )
-    parser.add_argument("tox_ini", nargs="+", type=tox_ini_path_creator, help="tox ini files to format")
+    parser.add_argument("tox_ini", nargs="+", type=_tox_ini_path_creator, help="tox ini files to format")
     ns = ToxIniFmtNamespace()
     parser.parse_args(namespace=ns, args=args)
     return ns
+
+
+def _tox_ini_path_creator(argument: str) -> Path:
+    # Validate that tox.ini can be formatted.
+    #
+    # :param argument: the string argument passed in
+    # :returns: the tox.ini path
+    # :raises ArgumentTypeError:
+    path = Path(argument).absolute()
+    if not path.exists():
+        msg = "path does not exists"
+        raise ArgumentTypeError(msg)
+    if not path.is_file():
+        msg = "path is not a file"
+        raise ArgumentTypeError(msg)
+    if not os.access(path, os.R_OK):
+        msg = "cannot read path"
+        raise ArgumentTypeError(msg)  # pragma: no cover
+    if not os.access(path, os.W_OK):
+        msg = "cannot write path"
+        raise ArgumentTypeError(msg)  # pragma: no cover
+    return path
+
+
+class ToxIniFmtNamespace(Namespace):
+    """
+    Options for tox-ini-fmt tool.
+
+    :ivar tox_ini:
+    :ivar stdout:
+    :ivar check:
+    :ivar pin_toxenvs:
+    """
+
+    tox_ini: list[Path]
+    stdout: bool
+    check: bool
+    pin_toxenvs: list[str]
+
+
+__all__ = [
+    "ToxIniFmtNamespace",
+    "cli_args",
+]

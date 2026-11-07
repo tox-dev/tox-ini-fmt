@@ -5,7 +5,17 @@ from __future__ import annotations
 from packaging.requirements import InvalidRequirement, Requirement
 
 
-def normalize_req(req: str) -> str:
+def requires(raws: list[str]) -> list[str]:
+    """
+    Normalize a list of requires.
+
+    :param raws: the raw values
+    :returns: the formatted values
+    """
+    return sorted((_normalize_req(req) for req in raws if req), key=lambda req: (";" in req, _req_name(req), req))
+
+
+def _normalize_req(req: str) -> str:
     try:
         parsed = Requirement(req)
     except InvalidRequirement:
@@ -25,17 +35,6 @@ def _req_name(req: str) -> str:
         return Requirement(req).name
     except InvalidRequirement:
         return req
-
-
-def requires(raws: list[str]) -> list[str]:
-    """
-    Normalize a list of requires.
-
-    :param raws: the raw values
-    :return: the formatted values
-    """
-    values = (normalize_req(req) for req in raws if req)
-    return sorted(values, key=lambda req: (";" in req, _req_name(req), req))
 
 
 __all__ = [

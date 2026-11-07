@@ -25,8 +25,7 @@ def test_cli_multiple_tox_ini_files_ok(tmp_path: Path) -> None:
     path_2 = tmp_path / "tox2.ini"
     path_2.write_text("")
     result = cli_args([str(path), str(path_2)])
-    assert result.tox_ini[0] == path
-    assert result.tox_ini[1] == path_2
+    assert (result.tox_ini[0], result.tox_ini[1]) == (path, path_2)
 
 
 def test_cli_tox_ini_not_exists(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:

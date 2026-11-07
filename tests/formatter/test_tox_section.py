@@ -122,10 +122,9 @@ def test_order_env_list(arg: list[str], outcome: list[str]) -> None:
 
 
 def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:
-    """tox.ini gets formatted without adding additional whitespace
-
-    This was previously caused by a trailing comma in the `env_list`.
-    """
+    # tox.ini gets formatted without adding additional whitespace
+    #
+    # This was previously caused by a trailing comma in the `env_list`.
     tox_ini.write_text("[tox]\nenv_list=\n    py38,\n    pkg,\n[testenv:pkg]\na=b\n", encoding="utf-8")
     result = format_tox_ini(tox_ini)
     assert result == "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py38\n    pkg\n\n[testenv:pkg]\na = b\n"

@@ -20,7 +20,7 @@ def to_boolean(payload: str) -> str:
     Convert value to boolean.
 
     :param payload: the raw value
-    :return: converted value
+    :returns: converted value
     """
     return "true" if payload.lower() == "true" else "false"
 
@@ -38,9 +38,9 @@ def fix_and_reorder(
     :param name:  name
     :param fix_cfg: values to fix
     :param upgrade: values to upgrade
+    :raises RuntimeError:
     """
     section = parser[name]
-    # upgrade
     for key, to in upgrade.items():
         if key in section:
             if to in section:
@@ -57,7 +57,7 @@ def fix_and_reorder(
     parser[name] = new_section
 
 
-RE_ITEM_REF = re.compile(
+_RE_ITEM_REF = re.compile(
     r"""
         (?<!\\)[{]
         (?:(?P<sub_type>[^[:{}]+):)?    # optional sub_type for special rules
@@ -69,26 +69,13 @@ RE_ITEM_REF = re.compile(
 )
 
 
-def is_substitute(value: str) -> bool:
-    """
-    Check if has substitute value.
-
-    :param value: the raw value
-    """
-    match = RE_ITEM_REF.match(value)
-    if match:
-        sub_key = match.group("substitution_value")
-        return sub_key.startswith("[") and "]" in sub_key
-    return False
-
-
 def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     """
     Expand list of tox envs.
 
     :param pin_toxenvs: envs to pin at top.
     :param payload: the tox envs list
-    :return: the expanded tox env list
+    :returns: the expanded tox env list
 
     Example:
     -------
@@ -112,8 +99,7 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
             if within_braces:
                 pass
             else:
-                to_add = cur_str.strip()
-                if to_add:
+                if to_add := cur_str.strip():
                     values.append(to_add)
                 cur_str = ""
                 continue
@@ -122,8 +108,7 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
         else:
             cur_str += char
     # avoid adding an empty value, caused e.g. by a trailing comma
-    last_entry = cur_str.strip()
-    if last_entry:
+    if last_entry := cur_str.strip():
         values.append(last_entry)
     # start with higher python version
     order_env_list(values, pin_toxenvs)
@@ -131,14 +116,14 @@ def to_list_of_env_values(pin_toxenvs: list[str], payload: str) -> str:
     return "\n{}".format("\n".join(f"{v}" for v in values))
 
 
-_TOX_ENV_MATCHER = re.compile(r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)")
+def order_env_list(values: list[str], pin_toxenvs: list[str]) -> None:
+    """
+    Order environment list.
 
-
-class _ToxMatch(TypedDict):
-    name: str
-    version: int
-    major: int
-    minor: int
+    :param values: list of environments
+    :param pin_toxenvs: values to pin at top
+    """
+    values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
 
 
 def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
@@ -153,19 +138,35 @@ def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
     return -3, 0
 
 
-def order_env_list(values: list[str], pin_toxenvs: list[str]) -> None:
-    """
-    Order environment list.
+_TOX_ENV_MATCHER = re.compile(r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)")
 
-    :param values: list of environments
-    :param pin_toxenvs: values to pin at top
-    """
-    values.sort(key=partial(_get_py_version, pin_toxenvs), reverse=True)
+
+class _ToxMatch(TypedDict):
+    name: str
+    version: int
+    major: int
+    minor: int
 
 
 # A factor-conditional prefix such as ``py311: pytest``. The ``(?!//)`` guard keeps a URL scheme
 # (``https://...``) from being mistaken for a factor marker, which would split it into ``https: //...``.
-CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
+_CONDITIONAL_MARKER = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
+
+
+def to_py_dependencies(value: str) -> str:
+    """
+    Format to list Python dependencies.
+
+    :param value: the raw value
+    :returns: the formatted value
+    """
+    raw_deps, substitute = collect_multi_line(
+        value,
+        line_split=None,
+        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
+        sort_key=lambda _: "",  # we already sorted as we wanted in normalize, keep it as is
+    )
+    return fmt_list(raw_deps, substitute)
 
 
 def collect_multi_line(
@@ -181,20 +182,18 @@ def collect_multi_line(
     :param line_split:
     :param normalize:
     :param sort_key:
-    :return:
+    :returns:
     """
     groups: defaultdict[str, list[str]] = defaultdict(list)
     substitute: list[str] = []
     for line in value.strip().splitlines():
-        match = CONDITIONAL_MARKER.match(line)
-        if match:
+        if match := _CONDITIONAL_MARKER.match(line):
             elements = match.groupdict()
-            normalized_key = ", ".join(sorted(i.strip() for i in elements["envs"].split(",")))
-            groups[normalized_key].append(elements["value"].strip())
+            groups[", ".join(sorted(i.strip() for i in elements["envs"].split(",")))].append(elements["value"].strip())
         else:
             for part in re.split(line_split, line.strip()) if line_split else [line.strip()]:
                 if part:  # remove empty lines
-                    if is_substitute(part):
+                    if _is_substitute(part):
                         substitute.append(part)
                     elif part not in groups[""]:  # remove duplicates
                         groups[""].append(part)
@@ -208,20 +207,15 @@ def collect_multi_line(
     return result, substitute
 
 
-def to_py_dependencies(value: str) -> str:
-    """
-    Format to list Python dependencies.
-
-    :param value: the raw value
-    :return: the formatted value
-    """
-    raw_deps, substitute = collect_multi_line(
-        value,
-        line_split=None,
-        normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
-        sort_key=lambda _: "",  # we already sorted as we wanted in normalize, keep it as is
-    )
-    return fmt_list(raw_deps, substitute)
+def _is_substitute(value: str) -> bool:
+    # Check if has substitute value.
+    #
+    # :param value: the raw value
+    # :returns:
+    if match := _RE_ITEM_REF.match(value):
+        sub_key = match.group("substitution_value")
+        return sub_key.startswith("[") and "]" in sub_key
+    return False
 
 
 def fmt_list(values: list[str], substitute: list[str]) -> str:
@@ -230,6 +224,17 @@ def fmt_list(values: list[str], substitute: list[str]) -> str:
 
     :param values: the raw values
     :param substitute: substitution
-    :return: formatted list
+    :returns: formatted list
     """
     return "\n".join(["", *sorted(substitute), *values])
+
+
+__all__ = [
+    "collect_multi_line",
+    "fix_and_reorder",
+    "fmt_list",
+    "order_env_list",
+    "to_boolean",
+    "to_list_of_env_values",
+    "to_py_dependencies",
+]

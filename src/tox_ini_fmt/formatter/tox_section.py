@@ -76,3 +76,8 @@ def _handle_min_version(tox: SectionProxy) -> None:
         if len(specifiers) == 0 or Version(specifiers[0].version) < Version(min_version):
             tox_requires[at] = Requirement(f"tox>={min_version}")
     tox["requires"] = "\n".join(str(i) for i in tox_requires)
+
+
+__all__ = [
+    "format_tox_section",
+]

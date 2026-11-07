@@ -3,7 +3,7 @@ from __future__ import annotations
 import difflib
 import subprocess
 import sys
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 import pytest
 
@@ -104,32 +104,33 @@ def test_main(  # ruff:ignore[too-many-arguments]
     assert not err
 
     if in_place:
-        name = "tox.ini" if cwd else str(tmp_path / "tox.ini")
-        output = output.format(name)
+        output = output.format("tox.ini" if cwd else str(tmp_path / "tox.ini"))
         assert tox_ini.read_text() == outcome
         assert out.replace(GREEN, "").replace(RED, "").replace(RESET, "") == output
     else:
         assert out == outcome
 
 
-NON_ASCII = "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n\n[testenv]\ncommands =\n    pytest -k 丁\n"
+_NON_ASCII: Final[str] = (
+    "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    py311\n\n[testenv]\ncommands =\n    pytest -k 丁\n"
+)
 
 
 def test_non_ascii_round_trip(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     tox_ini = tmp_path / "tox.ini"
-    tox_ini.write_text(NON_ASCII, encoding="utf-8")
+    tox_ini.write_text(_NON_ASCII, encoding="utf-8")
 
     assert run([str(tox_ini)]) == 0
 
     capsys.readouterr()
-    assert tox_ini.read_text(encoding="utf-8") == NON_ASCII
+    assert tox_ini.read_text(encoding="utf-8") == _NON_ASCII
 
 
 def test_non_ascii_ignores_locale_encoding(tmp_path: Path) -> None:
     # -X warn_default_encoding turns any locale-dependent open() into an EncodingWarning, so this fails on
     # every platform rather than only where the locale encoding cannot represent the file.
     tox_ini = tmp_path / "tox.ini"
-    tox_ini.write_text(NON_ASCII, encoding="utf-8")
+    tox_ini.write_text(_NON_ASCII, encoding="utf-8")
 
     subprocess.check_call([
         sys.executable,

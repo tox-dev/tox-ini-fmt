@@ -12,8 +12,6 @@ from .section_order import order_sections
 from .test_env import format_test_env
 from .tox_section import format_tox_section
 
-INDENTATION = "    "
-
 
 def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) -> str:
     """
@@ -21,13 +19,12 @@ def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) 
 
     :param tox_ini:
     :param opts:
-    :return:
+    :returns:
     """
     if opts is None:
         opts = ToxIniFmtNamespace(pin_toxenvs=[])
     parser = ConfigParser(interpolation=None)
-    text = tox_ini.read_text(encoding="utf-8") if isinstance(tox_ini, Path) else tox_ini
-    parser.read_string(text)
+    parser.read_string(tox_ini.read_text(encoding="utf-8") if isinstance(tox_ini, Path) else tox_ini)
 
     format_tox_section(parser, opts.pin_toxenvs)
     for section_name in parser.sections():
@@ -42,5 +39,5 @@ def _generate_tox_ini(parser: ConfigParser) -> str:
     output = StringIO()
     parser.write(output)
     result = output.getvalue().strip() + "\n"
-    result = result.replace("\t", INDENTATION)
+    result = result.replace("\t", "    ")
     return result.replace(" \n", "\n")
