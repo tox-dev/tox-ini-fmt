@@ -18,7 +18,14 @@ def test_platform_default(tox_ini: Path) -> None:
     assert tox_ini.read_bytes() == f"[tox]{os.linesep}requires ={os.linesep}    tox>=4.2{os.linesep}".encode()
 
 
-@pytest.mark.parametrize("newline", ["\r\n", "\n", "\r"])
+@pytest.mark.parametrize(
+    "newline",
+    [
+        pytest.param("\r\n", id="crlf"),
+        pytest.param("\n", id="lf"),
+        pytest.param("\r", id="cr"),
+    ],
+)
 def test_line_endings(tox_ini: Path, newline: str) -> None:
     # The ini file's existing newlines must be respected when reformatting.
     original_text = f"[tox]{newline}requires ={newline}    tox>=4.2{newline}env_list=py39"

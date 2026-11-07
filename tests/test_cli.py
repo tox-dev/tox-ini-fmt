@@ -49,11 +49,12 @@ def test_cli_tox_ini_not_file(tmp_path: Path, capsys: pytest.CaptureFixture[str]
 @pytest.mark.parametrize(
     ("flag", "error"),
     [
-        (S_IREAD, "write"),
+        pytest.param(S_IREAD, "write", id="read-only"),
         pytest.param(
             S_IWRITE,
             "read",
             marks=pytest.mark.skipif(sys.platform == "win32", reason="On Windows, files cannot be write-only"),
+            id="write-only",
         ),
     ],
 )

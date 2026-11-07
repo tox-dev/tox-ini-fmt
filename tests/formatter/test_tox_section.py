@@ -84,16 +84,16 @@ def test_tox_section_order(tox_ini: Path) -> None:
 @pytest.mark.parametrize(
     "key",
     [
-        "skip_missing_interpreters",
+        pytest.param("skip_missing_interpreters", id="skip-missing-interpreters"),
     ],
 )
 @pytest.mark.parametrize(
     ("value", "result"),
     [
-        ("True", "true"),
-        ("False", "false"),
-        ("TRUE", "true"),
-        ("FALSE", "false"),
+        pytest.param("True", "true", id="true-title"),
+        pytest.param("False", "false", id="false-title"),
+        pytest.param("TRUE", "true", id="true-upper"),
+        pytest.param("FALSE", "false", id="false-upper"),
     ],
 )
 def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> None:
@@ -106,14 +106,30 @@ def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> No
 @pytest.mark.parametrize(
     ("arg", "outcome"),
     [
-        ([], []),
-        (["py38", "py37"], ["py38", "py37"]),
-        (["py37", "py38"], ["py38", "py37"]),
-        (["py", "py37", "pypy3", "py38", "pypy2", "pypy"], ["py38", "py37", "py", "pypy3", "pypy2", "pypy"]),
-        (["py38-dpkg", "py38", "py37-dpkg", "py37"], ["py38-dpkg", "py38", "py37-dpkg", "py37"]),
-        (["py37-dpkg", "py37", "py38-dpkg", "py38"], ["py38-dpkg", "py38", "py37-dpkg", "py37"]),
-        (["py37", "py37-dpkg", "py38", "py38-dpkg"], ["py38", "py38-dpkg", "py37", "py37-dpkg"]),
-        (["Jython", "jython36", "jython", "Jython27", "py38"], ["py38", "jython36", "Jython27", "Jython", "jython"]),
+        pytest.param([], [], id="empty"),
+        pytest.param(["py38", "py37"], ["py38", "py37"], id="sorted"),
+        pytest.param(["py37", "py38"], ["py38", "py37"], id="reversed"),
+        pytest.param(
+            ["py", "py37", "pypy3", "py38", "pypy2", "pypy"],
+            ["py38", "py37", "py", "pypy3", "pypy2", "pypy"],
+            id="pypy-and-unversioned",
+        ),
+        pytest.param(
+            ["py38-dpkg", "py38", "py37-dpkg", "py37"], ["py38-dpkg", "py38", "py37-dpkg", "py37"], id="dpkg-sorted"
+        ),
+        pytest.param(
+            ["py37-dpkg", "py37", "py38-dpkg", "py38"], ["py38-dpkg", "py38", "py37-dpkg", "py37"], id="dpkg-reversed"
+        ),
+        pytest.param(
+            ["py37", "py37-dpkg", "py38", "py38-dpkg"],
+            ["py38", "py38-dpkg", "py37", "py37-dpkg"],
+            id="dpkg-interleaved",
+        ),
+        pytest.param(
+            ["Jython", "jython36", "jython", "Jython27", "py38"],
+            ["py38", "jython36", "Jython27", "Jython", "jython"],
+            id="jython-case",
+        ),
     ],
 )
 def test_order_env_list(arg: list[str], outcome: list[str]) -> None:
