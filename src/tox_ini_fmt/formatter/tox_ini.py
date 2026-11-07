@@ -38,7 +38,7 @@ def format_tox_ini(tox_ini: str | Path, opts: ToxIniFmtNamespace | None = None) 
 def _generate_tox_ini(parser: ConfigParser) -> str:
     output = StringIO()
     parser.write(output)
-    result = output.getvalue().strip() + "\n"
+    result = f"{output.getvalue().strip()}\n"
     result = result.replace("\t", "    ")
     return result.replace(" \n", "\n")
 
