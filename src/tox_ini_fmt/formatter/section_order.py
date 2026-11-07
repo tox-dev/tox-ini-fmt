@@ -5,7 +5,7 @@ from __future__ import annotations
 import itertools
 from typing import TYPE_CHECKING
 
-from .util import order_env_list
+from .values import order_env_list
 
 if TYPE_CHECKING:
     from configparser import ConfigParser

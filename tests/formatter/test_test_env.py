@@ -7,7 +7,7 @@ import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.test_env import to_ordered_list
-from tox_ini_fmt.formatter.util import to_py_dependencies
+from tox_ini_fmt.formatter.values import to_py_dependencies
 
 if TYPE_CHECKING:
     from pathlib import Path

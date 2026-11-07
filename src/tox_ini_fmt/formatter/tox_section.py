@@ -9,7 +9,7 @@ from packaging.requirements import Requirement
 from packaging.version import Version
 
 from .requires import requires
-from .util import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
+from .values import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping

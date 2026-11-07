@@ -1,4 +1,4 @@
-"""Utility methods."""
+"""Convert raw tox ini values into their canonical form."""
 
 from __future__ import annotations
 
