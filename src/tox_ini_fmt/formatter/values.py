@@ -186,6 +186,18 @@ def collect_multi_line(
     :param sort_key:
     :returns:
     """
+    groups, substitute = _group_lines(value, line_split)
+    normalized_group = normalize(groups) if normalize else groups
+    result = list(
+        itertools.chain.from_iterable(
+            (f"{k}: {d}" if k else d for d in sorted(v, key=sort_key))
+            for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
+        ),
+    )
+    return result, substitute
+
+
+def _group_lines(value: str, line_split: str | None) -> tuple[defaultdict[str, list[str]], list[str]]:
     groups: defaultdict[str, list[str]] = defaultdict(list)
     substitute: list[str] = []
     for line in value.strip().splitlines():
@@ -199,14 +211,7 @@ def collect_multi_line(
                         substitute.append(part)
                     elif part not in groups[""]:  # remove duplicates
                         groups[""].append(part)
-    normalized_group = normalize(groups) if normalize else groups
-    result = list(
-        itertools.chain.from_iterable(
-            (f"{k}: {d}" if k else d for d in sorted(v, key=sort_key))
-            for k, v in sorted(normalized_group.items(), key=lambda i: (len(i[0].split(", ")), i[0]))
-        ),
-    )
-    return result, substitute
+    return groups, substitute
 
 
 def _is_substitute(value: str) -> bool:
