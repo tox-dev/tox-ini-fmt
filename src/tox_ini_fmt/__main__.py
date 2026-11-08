@@ -5,7 +5,7 @@ from __future__ import annotations
 import difflib
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Final
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
@@ -13,17 +13,12 @@ from tox_ini_fmt.formatter import format_tox_ini
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
 
-GREEN = "\u001b[32m"
-RED = "\u001b[31m"
-RESET = "\u001b[0m"
+GREEN: Final[str] = "\u001b[32m"
+RED: Final[str] = "\u001b[31m"
+RESET: Final[str] = "\u001b[0m"
 
 
 def color_diff(diff: Iterable[str]) -> Iterable[str]:
-    """
-    Display diff in colored mode.
-
-    :param diff: the diff lines
-    """
     for line in diff:
         if line.startswith("+"):
             yield GREEN + line + RESET
@@ -34,12 +29,6 @@ def color_diff(diff: Iterable[str]) -> Iterable[str]:
 
 
 def run(args: Sequence[str] | None = None) -> int:
-    """
-    Run the formatter.
-
-    :param args: CLI arguments
-    :return: exit code
-    """
     opts = cli_args(sys.argv[1:] if args is None else args)
     changed = False
     for tox_ini in opts.tox_ini:
@@ -51,7 +40,7 @@ def run(args: Sequence[str] | None = None) -> int:
         formatted = format_tox_ini(before, opts)
         changed |= before != formatted
         if opts.stdout:
-            print(formatted, end="")  # ruff:ignore[print]
+            print(formatted, end="")  # ruff:ignore[print] # the file is the output
         else:
             if before != formatted and not opts.check:
                 with tox_ini.open("wt", encoding="utf-8", newline=original_newlines) as file:
@@ -62,9 +51,9 @@ def run(args: Sequence[str] | None = None) -> int:
                 name = str(tox_ini)
             if before != formatted:
                 diff = difflib.unified_diff(before.splitlines(), formatted.splitlines(), fromfile=name, tofile=name)
-                print("\n".join(color_diff(diff)))  # ruff:ignore[print]
+                print("\n".join(color_diff(diff)))  # ruff:ignore[print] # the diff is the output
             else:
-                print(f"no change for {name}")  # ruff:ignore[print]
+                print(f"no change for {name}")  # ruff:ignore[print] # the status is the output
     return 1 if changed else 0
 
 

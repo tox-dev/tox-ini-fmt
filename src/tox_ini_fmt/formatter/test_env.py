@@ -1,11 +1,9 @@
-"""Formatting the test environment sections."""
-
 from __future__ import annotations
 
 from functools import partial
 from typing import TYPE_CHECKING
 
-from .util import (
+from .values import (
     collect_multi_line,
     fix_and_reorder,
     fmt_list,
@@ -20,12 +18,6 @@ if TYPE_CHECKING:
 
 
 def format_test_env(parser: ConfigParser, name: str) -> None:
-    """
-    Format a tox test environment.
-
-    :param parser: the INI parser
-    :param name:  name of the test env
-    """
     tox_section_cfg: Mapping[str, Callable[[str], str]] = {
         "runner": str,
         "description": str,
@@ -62,6 +54,11 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "terminate_timeout": str,
         "depends": partial(to_list_of_env_values, []),
     }
+
+    section = parser[name]
+    if to_boolean(next((section.pop(i) for i in ("usedevelop", "use_develop") if i in section), "false")) == "true":
+        parser[name]["package"] = "editable"
+
     upgrade = {
         "alwayscopy": "always_copy",
         "basepython": "base_python",
@@ -80,39 +77,20 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "sitepackages": "system_site_packages",
         "skipsdist": "no_package",
     }
-
-    section = parser[name]
-    use_develop = next((section.pop(i) for i in ("usedevelop", "use_develop") if i in section), "false")
-    if to_boolean(use_develop) == "true":
-        parser[name]["package"] = "editable"
-
     fix_and_reorder(parser, name, tox_section_cfg, upgrade)
 
 
 def to_ordered_list(value: str) -> str:
-    """Must be a line separated list - fix comma separated format."""
     extras, substitute = collect_multi_line(value)
     return fmt_list(extras, substitute)
 
 
 def to_pass_env(value: str) -> str:
-    """
-    Format the pass env sections.
-
-    :param value:
-    :return:
-    """
     pass_env, substitute = collect_multi_line(value)
     return fmt_list(sorted(pass_env), substitute)
 
 
 def to_set_env(value: str) -> str:
-    """
-    Format the set env.
-
-    :param value:
-    :return:
-    """
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
     set_env: list[str] = []
     for env in raw_set_env:
@@ -128,26 +106,17 @@ def to_set_env(value: str) -> str:
     return fmt_list(sorted(set_env), substitute)
 
 
-_CMD_SEP = "\\"
-
-
 def to_commands(value: str) -> str:
-    """
-    Format the tox commands.
-
-    :param value: the raw value
-    :return: the formatted value
-    """
     result: list[str] = []
+    cmd_sep: str = "\\"
     ends_with_sep = False
     for raw_val in value.splitlines():
         val = raw_val.strip()
-        cur_ends_with_sep = val.endswith(_CMD_SEP)
+        cur_ends_with_sep = val.endswith(cmd_sep)
         if cur_ends_with_sep:
             val = val[:-1].strip()
-        if val and val != _CMD_SEP:
-            ending = f" {_CMD_SEP}" if cur_ends_with_sep else ""
-            prepend = "  " if ends_with_sep else ""
-            result.append(f"{prepend}{val}{ending}")
+        if val and val != cmd_sep:
+            line = f"{'  ' if ends_with_sep else ''}{val}"
+            result.append(f"{line} {cmd_sep}" if cur_ends_with_sep else line)
             ends_with_sep = cur_ends_with_sep
     return fmt_list(result, [])

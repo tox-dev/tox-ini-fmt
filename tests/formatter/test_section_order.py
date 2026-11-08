@@ -16,9 +16,13 @@ if TYPE_CHECKING:
 @pytest.mark.parametrize(
     ("argument", "output"),
     [
-        ("{py38,py37}-{,magic}\npy39-ok\npy37", ["py38", "py38-magic", "py37", "py37-magic", "py39-ok", "py37"]),
-        ("py38\npy37", ["py38", "py37"]),
-        ("py37\npy38", ["py37", "py38"]),
+        pytest.param(
+            "{py38,py37}-{,magic}\npy39-ok\npy37",
+            ["py38", "py38-magic", "py37", "py37-magic", "py39-ok", "py37"],
+            id="expands-braces",
+        ),
+        pytest.param("py38\npy37", ["py38", "py37"], id="plain-entries"),
+        pytest.param("py37\npy38", ["py37", "py38"], id="plain-entries-in-order-given"),
     ],
 )
 def test_env_list_explode(argument: str, output: list[str]) -> None:

@@ -7,7 +7,7 @@ import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
 from tox_ini_fmt.formatter.test_env import to_ordered_list
-from tox_ini_fmt.formatter.util import to_py_dependencies
+from tox_ini_fmt.formatter.values import to_py_dependencies
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -82,16 +82,20 @@ def test_format_test_env(tox_ini: Path) -> None:
 @pytest.mark.parametrize(
     ("arg", "output"),
     [
-        ("", ""),
-        ("\t", ""),
-        ("\n", ""),
-        ("a", "\na"),
-        (" a ", "\na"),
-        ("b,a", "\na\nb"),
-        ("a,b", "\na\nb"),
-        ("b\n  a,c", "\na\nb\nc"),
-        ("c\n  c,c", "\nc"),
-        ("\n b\n a\n a: b\n b: c\n a,b: g\n b, a: h\n ", "\na\nb\na: b\nb: c\na, b: g\na, b: h"),
+        pytest.param("", "", id="empty"),
+        pytest.param("\t", "", id="tab"),
+        pytest.param("\n", "", id="newline"),
+        pytest.param("a", "\na", id="single"),
+        pytest.param(" a ", "\na", id="stripped"),
+        pytest.param("b,a", "\na\nb", id="comma-sorted"),
+        pytest.param("a,b", "\na\nb", id="comma-already-sorted"),
+        pytest.param("b\n  a,c", "\na\nb\nc", id="multi-line-merged"),
+        pytest.param("c\n  c,c", "\nc", id="duplicates-removed"),
+        pytest.param(
+            "\n b\n a\n a: b\n b: c\n a,b: g\n b, a: h\n ",
+            "\na\nb\na: b\nb: c\na, b: g\na, b: h",
+            id="conditional-factors",
+        ),
     ],
 )
 def test_extras(arg: str, output: str) -> None:
@@ -136,7 +140,7 @@ def test_extras(arg: str, output: str) -> None:
         ),
     ],
 )
-def test_format_test_env_ref(  # ruff:ignore[too-many-arguments]
+def test_format_test_env_ref(  # ruff:ignore[too-many-arguments] # fixtures and parametrized cases add arguments
     tox_ini: Path,
     key: str,
     before: str,
@@ -190,7 +194,13 @@ def test_depends_ordering(tox_ini: Path) -> None:
     assert outcome == msg
 
 
-@pytest.mark.parametrize("key", ["usedevelop", "use_develop"])
+@pytest.mark.parametrize(
+    "key",
+    [
+        pytest.param("usedevelop", id="usedevelop"),
+        pytest.param("use_develop", id="use-develop"),
+    ],
+)
 def test_use_develop_upgrade(tox_ini: Path, key: str) -> None:
     text = f"""\
     [tox]

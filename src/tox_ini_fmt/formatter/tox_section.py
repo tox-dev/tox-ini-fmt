@@ -9,7 +9,7 @@ from packaging.requirements import Requirement
 from packaging.version import Version
 
 from .requires import requires
-from .util import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
+from .values import collect_multi_line, fix_and_reorder, to_boolean, to_list_of_env_values, to_py_dependencies
 
 if TYPE_CHECKING:
     from collections.abc import Callable, Mapping
@@ -54,7 +54,7 @@ def format_tox_section(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 def _handle_min_version(tox: SectionProxy) -> None:
     min_version = next((tox.pop(i) for i in ("minversion", "min_version") if i in tox), None)
-    if min_version is None or int(min_version.split(".")[0]) < 4:  # ruff:ignore[magic-value-comparison]
+    if min_version is None or int(min_version.split(".")[0]) < 4:  # ruff:ignore[magic-value-comparison] # below tox 4, which has no requires
         min_version = "4.2"
     tox_requires = [
         Requirement(i)
@@ -76,3 +76,8 @@ def _handle_min_version(tox: SectionProxy) -> None:
         if len(specifiers) == 0 or Version(specifiers[0].version) < Version(min_version):
             tox_requires[at] = Requirement(f"tox>={min_version}")
     tox["requires"] = "\n".join(str(i) for i in tox_requires)
+
+
+__all__ = [
+    "format_tox_section",
+]
