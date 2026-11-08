@@ -139,7 +139,12 @@ def _get_py_version(pin_toxenvs: list[str], env_list: str) -> tuple[int, ...]:
 
 
 _TOX_ENV_MATCHER: Final[re.Pattern[str]] = re.compile(
-    r"((?P<major>\d)([.](?P<minor>\d+))?)|(?P<name>[a-zA-Z]*)(?P<version>\d*)"
+    r"""
+        (?P<major>\d)(?:[.](?P<minor>\d+))?  # numeric version, such as 3 or 3.11
+        |
+        (?P<name>[a-zA-Z]*)(?P<version>\d*)  # name with an optional version, such as py311
+        """,
+    re.VERBOSE,
 )
 
 
@@ -152,7 +157,15 @@ class _ToxMatch(TypedDict):
 
 # A factor-conditional prefix such as ``py311: pytest``. The ``(?!//)`` guard keeps a URL scheme
 # (``https://...``) from being mistaken for a factor marker, which would split it into ``https: //...``.
-_CONDITIONAL_MARKER: Final[re.Pattern[str]] = re.compile(r"(?P<envs>[a-zA-Z0-9, ]+):(?!//)(?P<value>.*)")
+_CONDITIONAL_MARKER: Final[re.Pattern[str]] = re.compile(
+    r"""
+    (?P<envs>[a-zA-Z0-9, ]+)  # factor names
+    :
+    (?!//)
+    (?P<value>.*)
+    """,
+    re.VERBOSE,
+)
 
 
 def to_py_dependencies(value: str) -> str:
