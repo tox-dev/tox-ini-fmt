@@ -23,6 +23,7 @@ if TYPE_CHECKING:
         ),
         pytest.param("py38\npy37", ["py38", "py37"], id="plain-entries"),
         pytest.param("py37\npy38", ["py37", "py38"], id="plain-entries-in-order-given"),
+        pytest.param("py311-\npy310", ["py311", "py310"], id="trailing-dash"),
     ],
 )
 def test_env_list_explode(argument: str, output: list[str]) -> None:

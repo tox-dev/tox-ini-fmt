@@ -57,7 +57,7 @@ def explode_env_list(env_list: str) -> list[str]:
         if entry := raw_entry.strip():
             parts = []
             for part in entry.split("-"):
-                sub_part = part[1:-1] if part[0] == "{" and part[-1] == "}" else part
+                sub_part = part[1:-1] if part[:1] == "{" and part[-1:] == "}" else part
                 parts.append([i.strip() for i in sub_part.split(",")])
             result.extend("-".join(i).strip("-") for i in itertools.product(*parts))
     return result
