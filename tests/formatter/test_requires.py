@@ -30,6 +30,11 @@ from tox_ini_fmt.formatter.requires import requires
         ),
         pytest.param("pytest>=6.0.0", ["pytest>=6"], id="ge-trims-patch"),
         pytest.param("pytest==6.0.0", ["pytest==6"], id="eq-trims-patch"),
+        pytest.param(
+            'pytest[testing]>=6.0.0,!=7.0.0; python_version >= "3.11"',
+            ['pytest[testing]!=7.0.0,>=6; python_version >= "3.11"'],
+            id="multiple-specifiers-with-extras-and-marker",
+        ),
         pytest.param("pytest~=6.0.0", ["pytest~=6.0.0"], id="compatible-kept"),
     ],
 )

@@ -64,12 +64,7 @@ def _handle_min_version(tox: SectionProxy) -> None:
             normalize=lambda groups: {k: requires(v) for k, v in groups.items()},
         )[0]
     ]
-    for at, entry in enumerate(tox_requires):  # ruff:ignore[unused-loop-control-variable] # false positive
-        if entry.name == "tox":
-            break
-    else:
-        at = -1
-    if at == -1:
+    if (at := next((index for index, entry in enumerate(tox_requires) if entry.name == "tox"), -1)) == -1:
         tox_requires.append(Requirement(f"tox>={min_version}"))
     else:
         specifiers = list(tox_requires[at].specifier)
