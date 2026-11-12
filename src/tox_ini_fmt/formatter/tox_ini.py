@@ -8,8 +8,8 @@ from pathlib import Path
 
 from tox_ini_fmt.cli import ToxIniFmtNamespace
 
+from ._environment import format_test_env
 from .section_order import order_sections
-from .test_env import format_test_env
 from .tox_section import format_tox_section
 
 

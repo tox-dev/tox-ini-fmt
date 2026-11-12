@@ -38,16 +38,16 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "extras": to_ordered_list,
         "recreate": to_boolean,
         "parallel_show_output": to_boolean,
-        "pass_env": to_pass_env,
-        "set_env": to_set_env,
-        "setenv": to_set_env,
+        "pass_env": _to_pass_env,
+        "set_env": _to_set_env,
+        "setenv": _to_set_env,
         "change_dir": str,
         "args_are_paths": to_boolean,
         "ignore_errors": to_boolean,
         "ignore_outcome": to_boolean,
-        "commands_pre": to_commands,
-        "commands": to_commands,
-        "commands_post": to_commands,
+        "commands_pre": _to_commands,
+        "commands": _to_commands,
+        "commands_post": _to_commands,
         "allowlist_externals": to_ordered_list,
         "suicide_timeout": str,
         "interrupt_timeout": str,
@@ -85,12 +85,12 @@ def to_ordered_list(value: str) -> str:
     return fmt_list(extras, substitute)
 
 
-def to_pass_env(value: str) -> str:
+def _to_pass_env(value: str) -> str:
     pass_env, substitute = collect_multi_line(value)
     return fmt_list(sorted(pass_env), substitute)
 
 
-def to_set_env(value: str) -> str:
+def _to_set_env(value: str) -> str:
     raw_set_env, substitute = collect_multi_line(value, line_split=None)
     set_env: list[str] = []
     for env in raw_set_env:
@@ -106,7 +106,7 @@ def to_set_env(value: str) -> str:
     return fmt_list(sorted(set_env), substitute)
 
 
-def to_commands(value: str) -> str:
+def _to_commands(value: str) -> str:
     result: list[str] = []
     cmd_sep: str = "\\"
     ends_with_sep = False
@@ -120,3 +120,9 @@ def to_commands(value: str) -> str:
             result.append(f"{line} {cmd_sep}" if cur_ends_with_sep else line)
             ends_with_sep = cur_ends_with_sep
     return fmt_list(result, [])
+
+
+__all__ = [
+    "format_test_env",
+    "to_ordered_list",
+]
