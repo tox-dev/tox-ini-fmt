@@ -11,6 +11,8 @@ from tox_ini_fmt.cli import cli_args
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from pytest_mock import MockerFixture
+
 
 def test_cli_tox_ini_ok(tmp_path: Path) -> None:
     path = tmp_path / "tox.ini"
@@ -71,6 +73,18 @@ def test_cli_tox_ini_permission_fail(tmp_path: Path, capsys: pytest.CaptureFixtu
     out, err = capsys.readouterr()
     assert not out
     assert f"argument tox_ini: cannot {error} path" in err
+
+
+def test_cli_tox_ini_unreadable(tmp_path: Path, mocker: MockerFixture, capsys: pytest.CaptureFixture[str]) -> None:
+    path = tmp_path / "tox.ini"
+    path.write_text("")
+    mocker.patch("tox_ini_fmt.cli.os.access", autospec=True, return_value=False)
+
+    with pytest.raises(SystemExit) as error:
+        cli_args([str(path)])
+
+    out, err = capsys.readouterr()
+    assert (error.value.code, out, "argument tox_ini: cannot read path" in err) == (2, "", True)
 
 
 def test_tox_ini_resolved(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
