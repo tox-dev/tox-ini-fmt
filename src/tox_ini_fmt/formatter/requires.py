@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from packaging.requirements import InvalidRequirement, Requirement
+from packaging.specifiers import SpecifierSet
 
 
 def requires(raws: list[str]) -> list[str]:
@@ -21,12 +22,14 @@ def _normalize_req(req: str) -> str:
     except InvalidRequirement:
         return req
 
+    normalized = []
     for spec in parsed.specifier:
+        version = spec.version
         if spec.operator in {">=", "=="}:
-            version = spec.version
             while version.endswith(".0"):
                 version = version[:-2]
-                spec._spec = (spec._spec[0], version)  # ruff:ignore[private-member-access] # packaging has no public setter
+        normalized.append(f"{spec.operator}{version}")
+    parsed.specifier = SpecifierSet(",".join(normalized))
     return str(parsed)
 
 
