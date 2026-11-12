@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.test_env import to_ordered_list
+from tox_ini_fmt.formatter._environment import to_ordered_list  # ruff: ignore[import-private-name]  # exercise its value normalization cases
 from tox_ini_fmt.formatter.values import to_py_dependencies
 
 if TYPE_CHECKING:
