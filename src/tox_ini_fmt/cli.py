@@ -67,7 +67,7 @@ def _tox_ini_path_creator(argument: str) -> Path:
         raise ArgumentTypeError(msg)
     if not os.access(path, os.R_OK):
         msg = "cannot read path"
-        raise ArgumentTypeError(msg)  # pragma: no cover # the write-only test is skipped on Windows
+        raise ArgumentTypeError(msg)
     if not os.access(path, os.W_OK):
         msg = "cannot write path"
         raise ArgumentTypeError(msg)
