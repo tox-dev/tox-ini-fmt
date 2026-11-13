@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from textwrap import dedent
+from textwrap import dedent, indent
 from typing import TYPE_CHECKING
 
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter._environment import to_ordered_list  # ruff: ignore[import-private-name]  # exercise its value normalization cases
-from tox_ini_fmt.formatter.values import to_py_dependencies
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -99,8 +97,8 @@ def test_format_test_env(tox_ini: Path) -> None:
     ],
 )
 def test_extras(arg: str, output: str) -> None:
-    result = to_ordered_list(arg)
-    assert result == output
+    result = format_tox_ini(f"[testenv]\nextras = {arg}\n")
+    assert result == f"[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\nextras ={indent(output, '    ')}\n"
 
 
 @pytest.mark.parametrize(
@@ -162,29 +160,36 @@ def test_fail_on_bad_set_env(tox_ini: Path) -> None:
 
 
 def test_deps_conditional() -> None:
-    result = to_py_dependencies(
-        "\ncoverage,codecov: coverage\ncodecov: codecov"
-        "\n-r{toxinidir}/test-requirements.txt\n-r{toxinidir}/dev-requirements.txt"
-        "\nvirtue\nb",
+    result = format_tox_ini(
+        "[testenv]\ndeps =\n    coverage,codecov: coverage\n    codecov: codecov"
+        "\n    -r{toxinidir}/test-requirements.txt\n    -r{toxinidir}/dev-requirements.txt"
+        "\n    virtue\n    b",
     )
-    assert (
-        result == "\n-r{toxinidir}/dev-requirements.txt\n-r{toxinidir}/test-requirements.txt"
-        "\nb\nvirtue"
-        "\ncodecov: codecov\ncodecov, coverage: coverage"
+    assert result == (
+        "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ndeps ="
+        "\n    -r{toxinidir}/dev-requirements.txt\n    -r{toxinidir}/test-requirements.txt"
+        "\n    b\n    virtue\n    codecov: codecov\n    codecov, coverage: coverage\n"
     )
 
 
 def test_deps_url_not_split_as_conditional() -> None:
-    # A URL scheme must not be mistaken for a factor-conditional marker (``https://`` -> ``https: //``).
-    result = to_py_dependencies(
-        "\nhttps://releases.wagtail.org/nightly/dist/latest.whl\ngit+https://github.com/x/y.git\npytest>=7",
+    result = format_tox_ini(
+        "[testenv]\ndeps =\n    https://releases.wagtail.org/nightly/dist/latest.whl"
+        "\n    git+https://github.com/x/y.git\n    pytest>=7",
     )
-    assert result == "\ngit+https://github.com/x/y.git\nhttps://releases.wagtail.org/nightly/dist/latest.whl\npytest>=7"
+    assert result == (
+        "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ndeps ="
+        "\n    git+https://github.com/x/y.git\n    https://releases.wagtail.org/nightly/dist/latest.whl"
+        "\n    pytest>=7\n"
+    )
 
 
 def test_python_req_sort_by_name() -> None:
-    result = to_py_dependencies("pytest-cov\npytest\npytest-magic>=1\npytest>=1")
-    assert result == "\npytest\npytest>=1\npytest-cov\npytest-magic>=1"
+    result = format_tox_ini("[testenv]\ndeps =\n    pytest-cov\n    pytest\n    pytest-magic>=1\n    pytest>=1")
+    assert result == (
+        "[tox]\nrequires =\n    tox>=4.2\n\n[testenv]\ndeps ="
+        "\n    pytest\n    pytest>=1\n    pytest-cov\n    pytest-magic>=1\n"
+    )
 
 
 def test_depends_ordering(tox_ini: Path) -> None:

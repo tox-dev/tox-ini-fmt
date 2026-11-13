@@ -136,6 +136,16 @@ def test_main_stdout(
     assert out == outcome
 
 
+def test_main_pins_environments_in_cli_order(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
+    tox_ini = tmp_path / "tox.ini"
+    tox_ini.write_text("[tox]\nenv_list = py39,py38,pkg,pin\n", encoding="utf-8")
+
+    assert run(["-p", "pkg, pin", "--stdout", str(tox_ini)]) == 1
+
+    out, err = capsys.readouterr()
+    assert (out, err) == ("[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    pkg\n    pin\n    py39\n    py38\n", "")
+
+
 def test_main_names_file_outside_cwd(tmp_path: Path, capsys: pytest.CaptureFixture[str]) -> None:
     tox_ini = tmp_path / "tox.ini"
     tox_ini.write_text("[tox]\nrequires =\n    tox>=4.2\nenv_list=py311,py310")

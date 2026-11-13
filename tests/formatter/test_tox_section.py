@@ -6,7 +6,6 @@ from typing import TYPE_CHECKING
 import pytest
 
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.values import order_env_list
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -133,8 +132,9 @@ def test_tox_fmt_boolean(tox_ini: Path, key: str, value: str, result: str) -> No
     ],
 )
 def test_order_env_list(arg: list[str], outcome: list[str]) -> None:
-    order_env_list(arg, [])
-    assert arg == outcome
+    result = format_tox_ini(f"[tox]\nenv_list = {','.join(arg)}")
+    expected = "[tox]\nrequires =\n    tox>=4.2\nenv_list =" + "".join(f"\n    {env}" for env in outcome) + "\n"
+    assert result == expected
 
 
 def test_format_tox_ini_handles_trailing_comma(tox_ini: Path) -> None:

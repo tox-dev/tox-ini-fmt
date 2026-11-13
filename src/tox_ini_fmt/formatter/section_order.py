@@ -35,7 +35,7 @@ def order_sections(parser: ConfigParser, pin_toxenvs: list[str]) -> None:
 
 def _load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> list[str]:
     result: list[str] = next(
-        (explode_env_list(parser["tox"][i]) for i in ("envlist", "env_list") if i in parser["tox"]),
+        (_explode_env_list(parser["tox"][i]) for i in ("envlist", "env_list") if i in parser["tox"]),
         [],
     )
     if missing := [e for e in pin_toxenvs if e not in result]:
@@ -45,13 +45,7 @@ def _load_and_order_env_list(parser: ConfigParser, pin_toxenvs: list[str]) -> li
     return result
 
 
-def explode_env_list(env_list: str) -> list[str]:
-    """
-    Explode a tox env list.
-
-    :param env_list: the raw value
-    :returns: exploded representation
-    """
+def _explode_env_list(env_list: str) -> list[str]:
     result: list[str] = []
     for raw_entry in env_list.split("\n"):
         if entry := raw_entry.strip():
@@ -64,6 +58,5 @@ def explode_env_list(env_list: str) -> list[str]:
 
 
 __all__ = [
-    "explode_env_list",
     "order_sections",
 ]
