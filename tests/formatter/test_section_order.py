@@ -7,27 +7,26 @@ import pytest
 
 from tox_ini_fmt.cli import ToxIniFmtNamespace
 from tox_ini_fmt.formatter import format_tox_ini
-from tox_ini_fmt.formatter.section_order import explode_env_list
 
 if TYPE_CHECKING:
     from pathlib import Path
 
 
-@pytest.mark.parametrize(
-    ("argument", "output"),
-    [
-        pytest.param(
-            "{py38,py37}-{,magic}\npy39-ok\npy37",
-            ["py38", "py38-magic", "py37", "py37-magic", "py39-ok", "py37"],
-            id="expands-braces",
-        ),
-        pytest.param("py38\npy37", ["py38", "py37"], id="plain-entries"),
-        pytest.param("py37\npy38", ["py37", "py38"], id="plain-entries-in-order-given"),
-    ],
-)
-def test_env_list_explode(argument: str, output: list[str]) -> None:
-    result = explode_env_list(argument)
-    assert result == output
+def test_section_order_expands_brace_env_list() -> None:
+    result = format_tox_ini(
+        "[tox]\nenv_list = {py38,py37}-{,magic}\n"
+        "[testenv:py37-magic]\na = 1\n"
+        "[testenv:py38-magic]\na = 2\n"
+        "[testenv:py37]\na = 3\n"
+        "[testenv:py38]\na = 4\n",
+    )
+    assert result == (
+        "[tox]\nrequires =\n    tox>=4.2\nenv_list =\n    {py38, py37}-{, magic}\n\n"
+        "[testenv:py38]\na = 4\n\n"
+        "[testenv:py38-magic]\na = 2\n\n"
+        "[testenv:py37]\na = 3\n\n"
+        "[testenv:py37-magic]\na = 1\n"
+    )
 
 
 def test_section_order(tox_ini: Path) -> None:

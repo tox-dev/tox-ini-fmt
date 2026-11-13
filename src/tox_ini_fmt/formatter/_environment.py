@@ -35,7 +35,7 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "pkg_dir": str,
         "pip_pre": to_boolean,
         "deps": to_py_dependencies,
-        "extras": to_ordered_list,
+        "extras": _to_ordered_list,
         "recreate": to_boolean,
         "parallel_show_output": to_boolean,
         "pass_env": _to_pass_env,
@@ -48,7 +48,7 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
         "commands_pre": _to_commands,
         "commands": _to_commands,
         "commands_post": _to_commands,
-        "allowlist_externals": to_ordered_list,
+        "allowlist_externals": _to_ordered_list,
         "suicide_timeout": str,
         "interrupt_timeout": str,
         "terminate_timeout": str,
@@ -80,7 +80,7 @@ def format_test_env(parser: ConfigParser, name: str) -> None:
     fix_and_reorder(parser, name, tox_section_cfg, upgrade)
 
 
-def to_ordered_list(value: str) -> str:
+def _to_ordered_list(value: str) -> str:
     extras, substitute = collect_multi_line(value)
     return fmt_list(extras, substitute)
 
@@ -124,5 +124,4 @@ def _to_commands(value: str) -> str:
 
 __all__ = [
     "format_test_env",
-    "to_ordered_list",
 ]

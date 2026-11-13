@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import os
-from argparse import Action, ArgumentParser, ArgumentTypeError, Namespace
+from argparse import ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
@@ -32,22 +32,11 @@ def cli_args(args: Sequence[str]) -> ToxIniFmtNamespace:
         help="check files are formatted without writing them back (exit code 1 on change)",
     )
 
-    class CommaSeparatedStr(Action):
-        def __call__(
-            self,
-            parser: ArgumentParser,  # ruff:ignore[unused-method-argument] # argparse fixes this signature
-            namespace: Namespace,
-            values: str | Sequence[Any] | None,
-            option_string: str | None = None,  # ruff:ignore[unused-method-argument] # argparse fixes this signature
-        ) -> None:
-            if isinstance(values, str):  # pragma: no cover # argparse always passes a string
-                setattr(namespace, self.dest, [i.strip() for i in values.split(",")])
-
     parser.add_argument(
         "-p",
         dest="pin_toxenvs",
         metavar="toxenv",
-        action=CommaSeparatedStr,
+        type=lambda value: [env.strip() for env in value.split(",")],
         default=[],
         help="tox environments that pin to the start of the envlist (comma separated)",
     )
