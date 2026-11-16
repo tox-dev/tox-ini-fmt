@@ -495,28 +495,28 @@ sha256 = "25d013af9bf23bc1c7b2b093dff4208166c53a94786c9e447808335ef1185fea"
 
 [[packages]]
 name = "filelock"
-version = "4.2.9"
+version = "4.2.10"
 marker = "\"dev\" in dependency_groups or \"lint\" in dependency_groups"
 requires-python = ">=3.11"
 index = "https://pypi.org/simple/"
 
 [packages.sdist]
-name = "filelock-4.2.9.tar.gz"
-upload-time = 2026-11-04T18:37:10.014554+00:00
-url = "https://files.pythonhosted.org/packages/a3/1d/d730c664fcb4f1d264a722722a3134cf0881854f73c1fd58abf87572f232/filelock-4.2.9.tar.gz"
-size = 663116
+name = "filelock-4.2.10.tar.gz"
+upload-time = 2026-11-09T18:58:00.540598+00:00
+url = "https://files.pythonhosted.org/packages/a1/cf/05bcdacabdc0aec7dc8e19d76281bd82325df62dae3b6430e9ba57397689/filelock-4.2.10.tar.gz"
+size = 670595
 
 [packages.sdist.hashes]
-sha256 = "96530b7c538d4ea08493ab067247aab7948c54d8cd622cce711c97cccc5d9896"
+sha256 = "fcc3c0cb8bfe7f4b3bb0e231c04b15dbad068cb3c2515f343d8fde4dce93bd5d"
 
 [[packages.wheels]]
-name = "filelock-4.2.9-py3-none-any.whl"
-upload-time = 2026-11-04T18:37:08.273170+00:00
-url = "https://files.pythonhosted.org/packages/00/05/76184fe08339723d643ab47887a8e4de8f2921ca4e008617ab7490af7857/filelock-4.2.9-py3-none-any.whl"
-size = 164734
+name = "filelock-4.2.10-py3-none-any.whl"
+upload-time = 2026-11-09T18:57:59.088963+00:00
+url = "https://files.pythonhosted.org/packages/ef/90/5d0096a325aa0f83ba7a3968bfb485b67e32c947bdf9cd0fcb4b485be718/filelock-4.2.10-py3-none-any.whl"
+size = 218040
 
 [packages.wheels.hashes]
-sha256 = "a379c50a729e5b68c8519a4d26489f755d9769960a236ecd838190e2a78db2e9"
+sha256 = "9479aaeb4db20b5a53e3da28493edd24720b66b8a0b84030aa56ccdf243d6857"
 
 [[packages]]
 name = "hatch-fancy-pypi-readme"
@@ -2274,7 +2274,7 @@ sha256 = "04e15df7083642d5b791e51f597cffef8a92d770ecf5160c529b5a7b53b40100"
 
 [tool.nab]
 nab-version = "0.0.27"
-created-at = 2026-11-16T08:07:42.008232+00:00
+created-at = 2026-11-16T19:03:14.735898+00:00
 command-line = [
     "nab",
     "lock",
@@ -2292,6 +2292,6 @@ platforms = [
 
 [tool.nab.validation]
 version = 1
-all-inputs-sha256 = "13da5d665a6eb5c52e05f5c37c748328ce4f0271b64476564ad02baace506829"
-selection-inputs-sha256 = "f725c1de30b56b32cd7a7617d74c8edff67ff4a54f846be348a2a916a250eb5b"
-contents-sha256 = "6835e0e44ba95cc89313517387d707709078c842182358babc9e1d449ad43e80"
+all-inputs-sha256 = "06d6ca20fe541f7bfae931e50340387f37234c0726a034a5bc3cc8bdfc233edc"
+selection-inputs-sha256 = "78904518573719befb35596ea56ad483b1d9b021d74407cbe5ae17c926ee264a"
+contents-sha256 = "5414e8bba8a79d9740c1a7d6f71c4f95c6274d8937ce5ffade6f36a5051f0ca8"
