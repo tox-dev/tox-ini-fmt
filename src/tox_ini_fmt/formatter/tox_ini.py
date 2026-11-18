@@ -2,6 +2,16 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "configparser",
+    "io",
+    "pathlib",
+    "tox_ini_fmt.cli",
+    f"{__spec__.parent}._environment",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+    f"{__spec__.parent}.section_order",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+    f"{__spec__.parent}.tox_section",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+]
+
 from configparser import ConfigParser
 from io import StringIO
 from pathlib import Path

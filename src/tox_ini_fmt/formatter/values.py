@@ -2,6 +2,13 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "collections",
+    "functools",
+    "itertools",
+    f"{__spec__.parent}.requires",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+]
+
 import itertools
 import re
 from collections import defaultdict

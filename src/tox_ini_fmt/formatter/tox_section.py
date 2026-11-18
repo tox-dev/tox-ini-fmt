@@ -2,6 +2,14 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "functools",
+    "packaging.requirements",
+    "packaging.version",
+    f"{__spec__.parent}.requires",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+    f"{__spec__.parent}.values",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+]
+
 from functools import partial
 from typing import TYPE_CHECKING
 
