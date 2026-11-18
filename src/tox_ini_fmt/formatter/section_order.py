@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
-__lazy_modules__ = ["itertools", f"{__spec__.parent}.values"]  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+__lazy_modules__ = [
+    "itertools",
+    f"{__spec__.parent}.values",  # ty: ignore[missing-union-attribute]  # imported modules have a spec
+]
 
 import itertools
 from typing import TYPE_CHECKING

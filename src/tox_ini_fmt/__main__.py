@@ -2,7 +2,12 @@
 
 from __future__ import annotations
 
-__lazy_modules__ = ["difflib", "pathlib", "tox_ini_fmt.cli", "tox_ini_fmt.formatter"]
+__lazy_modules__ = [
+    "difflib",
+    "pathlib",
+    "tox_ini_fmt.cli",
+    "tox_ini_fmt.formatter",
+]
 
 import difflib
 import sys
