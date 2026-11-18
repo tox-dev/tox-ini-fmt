@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = ["pathlib"]
+
 import os
 from argparse import ArgumentParser, ArgumentTypeError, Namespace
 from pathlib import Path
-from typing import TYPE_CHECKING
 
+TYPE_CHECKING = False
 if TYPE_CHECKING:
     from collections.abc import Sequence
 

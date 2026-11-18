@@ -2,16 +2,24 @@
 
 from __future__ import annotations
 
+__lazy_modules__ = [
+    "difflib",
+    "pathlib",
+    "tox_ini_fmt.cli",
+    "tox_ini_fmt.formatter",
+]
+
 import difflib
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Final
 
 from tox_ini_fmt.cli import cli_args
 from tox_ini_fmt.formatter import format_tox_ini
 
+TYPE_CHECKING = False
 if TYPE_CHECKING:
     from collections.abc import Iterable, Sequence
+    from typing import Final
 
 GREEN: Final[str] = "\u001b[32m"
 RED: Final[str] = "\u001b[31m"

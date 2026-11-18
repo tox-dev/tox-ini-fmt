@@ -39,6 +39,12 @@ repos:
       - id: ruff
         priority: 5
         args: ["--fix", "--unsafe-fixes", "--exit-non-zero-on-fix"]
+  - repo: https://github.com/henryiii/flake8-lazy
+    rev: 7f268b3b3aaf7feca756ca610e37971382976365 # frozen: v0.11.0
+    hooks:
+      - id: flake8-lazy
+        priority: 3
+        files: ^src/
   - repo: https://github.com/gaborbernat/simplint-pre-commit
     rev: "a12d8eaac290be24041a3e2778c636c56453722e" # frozen: v0.12.2
     hooks:
